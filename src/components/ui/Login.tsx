@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
     Box,
     Button,
@@ -11,6 +12,13 @@ import {
 import { FaTwitter } from 'react-icons/fa';
 
 const Login = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleLogin = (e: React.FormEvent) => {
+        e.preventDefault(); // Prevent page reload
+        console.log('Logging in with:', { email, password });
+    }
     return (
         <Flex minH="100vh">
             {/* Left Section (Illustration / Branding) */}
@@ -46,18 +54,18 @@ const Login = () => {
                         Sign in to Twitter
                     </Heading>
 
-                    <VStack as="form">
+                    <VStack onSubmit={handleLogin} as="form">
                         <Field.Root>
                             <Field.Label>Email</Field.Label>
-                            <Input type="email" placeholder="Enter your email" />
+                            <Input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} />
                         </Field.Root>
 
                         <Field.Root>
                             <Field.Label>Password</Field.Label>
-                            <Input type="password" placeholder="Enter your password" />
+                            <Input type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} />
                         </Field.Root>
 
-                        <Button bg="gray.800" color="white" width="full">
+                        <Button bg="gray.800" color="white" width="full" type='submit'>
                             Log In
                         </Button>
 
