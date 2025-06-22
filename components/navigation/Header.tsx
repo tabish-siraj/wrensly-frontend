@@ -1,0 +1,65 @@
+import { Search, Bell, Mail, Bookmark, MoreHorizontal } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import UserDropdown from "@/components/dropdown/UserDropdown";
+
+interface HeaderProps {
+  user?: {
+    avatar: string;
+    displayName: string;
+  };
+}
+
+export function Header({ user }: HeaderProps) {
+  console.log(user); // it will be used later
+  return (
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+      <div className="max-w-6xl mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="flex items-center">
+            <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
+              <span className="text-white font-bold text-lg">𝕏</span>
+            </div>
+          </div>
+
+          {/* Search - Hidden on mobile */}
+          <div className="hidden md:flex flex-1 max-w-md mx-8">
+            <div className="relative w-full">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                placeholder="Search"
+                className="pl-10 bg-gray-100 border-none rounded-full"
+              />
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <div className="flex items-center space-x-2">
+            <Button variant="ghost" size="icon" className="hidden md:flex">
+              <Bell className="w-5 h-5" />
+            </Button>
+            <Button variant="ghost" size="icon" className="hidden md:flex">
+              <Mail className="w-5 h-5" />
+            </Button>
+            <Button variant="ghost" size="icon" className="hidden md:flex">
+              <Bookmark className="w-5 h-5" />
+            </Button>
+
+            <UserDropdown
+              user={{
+                avatar: "https://placehold.co/50x50",
+                displayName: "User",
+              }}
+            />
+
+            <Button variant="ghost" size="icon" className="md:hidden">
+              <MoreHorizontal className="w-5 h-5" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}

@@ -1,23 +1,37 @@
-import { create } from 'zustand';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export interface User {
-    id: string;
-    email: string;
-    // add other user fields as needed
+  id: string;
+  email: string;
+  token?: string;
+  // add other user fields as needed
 }
 
 export interface UserState {
-    user: User | null;
-    isAuthenticated: boolean;
-    setUser: (user: User) => void;
-    clearUser: () => void;
+  user: User | null;
+  isAuthenticated: boolean;
+  setUser: (user: User) => void;
+  clearUser: () => void;
 }
 
-const useUserStore = create<UserState>((set) => ({
-    user: null,
-    isAuthenticated: false,
-    setUser: (user) => set({ user, isAuthenticated: true }),
-    clearUser: () => set({ user: null, isAuthenticated: false }),
-}));
+const useUserStore = create<UserState>()(
+  persist(
+    (set) => ({
+      user: null,
+      isAuthenticated: false,
+      setUser: (user) => set({ user, isAuthenticated: true }),
+      clearUser: () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
+        window.location.replace("/auth/login");
+        return set({ user: null, isAuthenticated: false });
+      },
+    }),
+    {
+      name: "user-storage", // localStorage key
+    }
+  )
+);
 
 export default useUserStore;
