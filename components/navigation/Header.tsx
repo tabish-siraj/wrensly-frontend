@@ -12,7 +12,6 @@ interface HeaderProps {
 }
 
 export function Header({ user }: HeaderProps) {
-  console.log(user); // it will be used later
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
       <div className="max-w-6xl mx-auto px-4">

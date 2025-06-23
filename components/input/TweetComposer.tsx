@@ -25,7 +25,6 @@ export function TweetComposer({
 
   const handleSubmit = () => {
     if (content.trim() !== "") {
-      console.log(content)
       postMutation.mutate({
         content: content.trim(),
         parentId: null,
