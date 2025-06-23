@@ -2,6 +2,7 @@
 
 import { usePost } from "@/hooks/post/usePost";
 import { TweetCard } from "@/components/card/TweetCard";
+import { TweetComposer } from "@/components/input/TweetComposer";
 
 
 export default function FeedPage() {
@@ -16,6 +17,15 @@ export default function FeedPage() {
       nav
       </div>
       <div className="w-full md:w-1/2">
+      <TweetComposer user={
+        {
+          id: "1",
+          username: "testuser",
+          displayName: "Test User",
+          avatar: "https://example.com/profile.jpg",
+        }
+        
+      }/>
       {posts.data.map((post) => (
         <TweetCard
           key={post.id}

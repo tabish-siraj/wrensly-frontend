@@ -20,14 +20,16 @@ export function TweetComposer({
   placeholder = "What is happening?!",
 }: TweetComposerProps) {
   const [content, setContent] = useState("");
-  const maxLength = 280;
+  const maxLength = 500;
+  const postMutation = usePostMutation();
 
   const handleSubmit = () => {
-    if (content.trim() && onTweet) {
-      usePostMutation().mutate({
-        content,
+    if (content.trim() !== "") {
+      console.log(content)
+      postMutation.mutate({
+        content: content.trim(),
         parentId: null,
-      })
+      });
     }
   };
 
