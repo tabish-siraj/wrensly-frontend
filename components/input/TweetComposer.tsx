@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ImageIcon, Smile, Calendar, MapPin } from "lucide-react";
 import { User } from "@/src/types";
+import { usePostMutation } from "@/hooks/post/usePost"; // Adjust the import path as necessary
 
 interface TweetComposerProps {
   user: User;
@@ -23,8 +24,10 @@ export function TweetComposer({
 
   const handleSubmit = () => {
     if (content.trim() && onTweet) {
-      onTweet(content);
-      setContent("");
+      usePostMutation().mutate({
+        content,
+        parentId: null,
+      })
     }
   };
 

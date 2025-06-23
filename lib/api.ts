@@ -25,12 +25,12 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
-        if (error.response.status === 401 &&
+        if ((error.response.status === 401 || error.response.status === 403) &&
             !originalRequest._retry) {
             originalRequest._retry = true;
 
             try {
-                const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
+                const response = await axios.post(`${API_BASE_URL}/auth/token/refresh`, {
                     token: localStorage.getItem("refreshToken"),
                 });
 
@@ -45,7 +45,7 @@ api.interceptors.response.use(
                 console.error("Refresh token failed:", error);
                 localStorage.removeItem("token");
                 localStorage.removeItem("refreshToken");
-                window.location.href = "/login"; // Redirect to login page
+                window.location.href = "/auth/login"; // Redirect to login page
             }
         }
         return Promise.reject(error);

@@ -6,21 +6,18 @@ export interface User {
   verified?: boolean;
 }
 
-export interface Tweet {
+export interface Post {
   id: string;
-  user: User;
   content: string;
-  timestamp: string;
-  likes: number;
-  retweets: number;
-  replies: number;
-  image?: string;
-  isLiked?: boolean;
-  isRetweeted?: boolean;
+  userId: string;
+  parentId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
 }
-
-export interface TrendingTopic {
-  category: string;
-  title: string;
-  posts: string;
+export interface Posts {
+  success: boolean;
+  message: string;
+  data: Post[];
+  status: number;
 }
