@@ -1,30 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Posts } from "@/src/types";
 import api from "@/lib/api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function usePost() {
-    const [posts, setPosts] = useState<Posts>({} as Posts);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        const fetchPosts = async () => {
-            try {
-                setLoading(true);
-                const response = await api.get("/post");
-                setPosts(response.data);
-            } catch (err) {
-                setError("Failed to fetch posts");
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchPosts();
-    }, []);
+    const {data: posts, isLoading: loading, isError: error} = useQuery({
+        queryKey: ["posts"],
+        queryFn: async () => {
+            const response = await api.get("/post");
+            return response.data;
+        },
+    });
 
     return { posts, loading, error };
 }
