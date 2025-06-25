@@ -28,3 +28,9 @@ export interface Posts {
   data: Post[];
   status: number;
 }
+
+export interface TrendingTopic {
+  title: string;
+  category: string;
+  posts: string;
+}
