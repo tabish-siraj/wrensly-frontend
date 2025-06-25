@@ -1,14 +1,18 @@
-type ProfilePageProps = {
+import { FC } from 'react';
+
+interface ProfilePageProps {
   params: {
     id: string;
-  }
+  };
 }
 
-export default function ProfilePage({ params }: ProfilePageProps) {
-  const { id } = params;
+const ProfilePage: FC<ProfilePageProps> = ({ params }) => {
   return (
     <div>
-      Profile ID: {id}
+      <h1>Profile Page</h1>
+      <p>User ID: {params.id}</p>
     </div>
   );
-}
+};
+
+export default ProfilePage;
