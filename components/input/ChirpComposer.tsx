@@ -8,17 +8,17 @@ import { ImageIcon, Smile, Calendar, MapPin } from "lucide-react";
 import { User } from "@/src/types";
 import { usePostMutation } from "@/hooks/post/usePost"; // Adjust the import path as necessary
 
-interface TweetComposerProps {
+interface ChirpComposerProps {
   user: User;
-  onTweet?: (content: string) => void;
+  onChirp?: (content: string) => void;
   placeholder?: string;
 }
 
-export function TweetComposer({
+export function ChirpComposer({
   user,
-  // onTweet,
+  // onChirp,
   placeholder = "What is happening?!",
-}: TweetComposerProps) {
+}: ChirpComposerProps) {
   const [content, setContent] = useState("");
   const maxLength = 500;
   const postMutation = usePostMutation();
@@ -87,8 +87,8 @@ export function TweetComposer({
             <div className="flex items-center space-x-3">
               <span
                 className={`text-sm ${content.length > maxLength * 0.9
-                    ? "text-red-500"
-                    : "text-gray-500"
+                  ? "text-red-500"
+                  : "text-gray-500"
                   }`}
               >
                 {maxLength - content.length}

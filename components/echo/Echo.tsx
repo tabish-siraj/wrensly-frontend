@@ -1,25 +1,25 @@
-// create a repost component that displays a retweet icon and a count of retweets
+// create a repost component that displays a Echo icon and a count of Echos
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { RepeatIcon } from 'lucide-react';
 
-interface RetweetProps {
-  isRetweeted: boolean;
+interface EchoProps {
+  isEchoed: boolean;
   count: number;
-  onToggleRetweet: () => void;
+  onToggleEcho: () => void;
 }
 
-export function Retweet({ isRetweeted, count, onToggleRetweet }: RetweetProps) {
+export function Echo({ isEchoed, count, onToggleEcho }: EchoProps) {
   return (
     <Button
       variant="ghost"
       size="icon"
-      onClick={onToggleRetweet}
+      onClick={onToggleEcho}
       className="text-gray-500 hover:text-green-500 transition-colors"
     >
       <RepeatIcon
-        className={`h-5 w-5 ${isRetweeted ? 'text-green-500' : 'text-gray-500'}`}
+        className={`h-5 w-5 ${isEchoed ? 'text-green-500' : 'text-gray-500'}`}
       />
       {count > 0 && (
         <span className="ml-2 text-sm text-gray-700">{count}</span>

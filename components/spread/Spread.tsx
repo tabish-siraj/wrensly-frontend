@@ -4,22 +4,22 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ShareIcon } from 'lucide-react';
 
-interface ShareProps {
-  isShared: boolean;
+interface SpreadProps {
+  isSpread: boolean;
   count: number;
-  onToggleShare: () => void;
+  onToggleSpread: () => void;
 }
 
-export function Share({ isShared, count, onToggleShare }: ShareProps) {
+export function Spread({ isSpread, count, onToggleSpread }: SpreadProps) {
   return (
     <Button
       variant="ghost"
       size="icon"
-      onClick={onToggleShare}
+      onClick={onToggleSpread}
       className="text-gray-500 hover:text-blue-500 transition-colors"
     >
       <ShareIcon
-        className={`h-5 w-5 ${isShared ? 'text-blue-500' : 'text-gray-500'}`}
+        className={`h-5 w-5 ${isSpread ? 'text-blue-500' : 'text-gray-500'}`}
       />
       {count > 0 && (
         <span className="ml-2 text-sm text-gray-700">{count}</span>

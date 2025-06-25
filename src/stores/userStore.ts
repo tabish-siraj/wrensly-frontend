@@ -1,12 +1,42 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+// interfaces/user.ts
+
+export interface UserProfile {
+  id: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  gender: string;
+  bio: string;
+  avatar: string;
+  city: string;
+  state: string;
+  country: string;
+  phone: string;
+  website: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+}
+
 export interface User {
   id: string;
+  username: string;
   email: string;
-  token?: string;
-  // add other user fields as needed
+  password: string;
+  isActive: boolean;
+  isVerified: boolean;
+  isAdmin: boolean;
+  isBanned: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  Profile: UserProfile;
 }
+
 
 export interface UserState {
   user: User | null;

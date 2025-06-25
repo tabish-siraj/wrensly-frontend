@@ -2,6 +2,7 @@ import { Search, Bell, Mail, Bookmark, MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 import UserDropdown from "@/components/dropdown/UserDropdown";
 
 interface HeaderProps {
@@ -19,9 +20,11 @@ export function Header({ user }: HeaderProps) {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-lg">𝕏</span>
-            </div>
+            <Link href="/">
+              <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-lg">W</span>
+              </div>
+            </Link>
           </div>
 
           {/* Search - Hidden on mobile */}

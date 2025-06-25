@@ -1,8 +1,8 @@
 "use client";
 
 import { usePost } from "@/hooks/post/usePost";
-import { TweetCard } from "@/components/card/TweetCard";
-import { TweetComposer } from "@/components/input/TweetComposer";
+import { ChirpCard } from "@/components/card/ChirpCard";
+import { ChirpComposer } from "@/components/input/ChirpComposer";
 import { Loader2 } from "lucide-react";
 import { Post } from "@/src/types";
 
@@ -13,7 +13,7 @@ export default function FeedPage() {
     <div className="flex flex-col md:flex-row gap-4 p-4">
       <div className="w-full md:w-1/4">nav</div>
       <div className="w-full md:w-1/2">
-        <TweetComposer
+        <ChirpComposer
           user={{
             id: "1",
             username: "testuser",
@@ -29,20 +29,20 @@ export default function FeedPage() {
           <div className="text-red-500 py-8">Error loading posts: {error}</div>
         ) : posts && posts.data && posts.data.length > 0 ? (
           posts.data.map((post: Post) => (
-            <TweetCard
+            <ChirpCard
               key={post.id}
               content={post.content}
               username={post.user.username}
-              isLiked={true}
-              likeCount={0}
-              isRetweeted={true}
-              retweetCount={0}
-              isShared={true}
-              shareCount={0}
+              isFeathered={true}
+              featherCount={0}
+              isEchoed={true}
+              echoCount={0}
               isBookmarked={true}
-              onToggleLike={() => { }}
-              onToggleRetweet={() => { }}
-              onToggleShare={() => { }}
+              isSpread={true}
+              spreadCount={0}
+              onToggleFeather={() => { }}
+              onToggleEcho={() => { }}
+              onToggleSpread={() => { }}
               onToggleBookmark={() => { }}
             />
           ))

@@ -15,7 +15,7 @@ export const useLogin = () => {
       localStorage.setItem("refreshToken", response.data.data.refreshToken);
 
       const user = await api.get("/user/me");
-      setUser(user.data); // use the store's setUser action
+      setUser(user.data.data); // use the store's setUser action
     },
     onSuccess: () => {
       router.replace("/");
