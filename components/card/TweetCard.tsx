@@ -40,7 +40,7 @@ export function TweetCard({
     <Card className="p-4 shadow-md hover:shadow-lg transition-shadow">
       <div className="flex items-center space-x-3 mb-3">
         <Avatar className="h-10 w-10">
-          <AvatarImage alt="avatar" src="" />
+          <AvatarImage alt="avatar" src="https://w7.pngwing.com/pngs/184/113/png-transparent-user-profile-computer-icons-profile-heroes-black-silhouette-thumbnail.png" />
         </Avatar>
         <span className="font-semibold">{username}</span>
       </div>

@@ -17,7 +17,7 @@ export default function FeedPage() {
             id: "1",
             username: "testuser",
             displayName: "Test User",
-            avatar: "https://example.com/profile.jpg",
+            avatar: "https://w7.pngwing.com/pngs/184/113/png-transparent-user-profile-computer-icons-profile-heroes-black-silhouette-thumbnail.png",
           }}
         />
         {loading ? (
