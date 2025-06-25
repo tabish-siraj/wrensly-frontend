@@ -40,13 +40,13 @@ export function TweetCard({
   return (
     <Card className="p-4 shadow-md hover:shadow-lg transition-shadow">
       <div className="flex items-center space-x-3 mb-3">
-        <Link href="/">
+        <Link href={`/profile/${username}`}>
           <Avatar className="h-10 w-10">
             <AvatarImage alt="avatar" src="/placeholder.svg" />
           </Avatar>
         </Link>
         <span className="font-semibold">
-          <Link href="/">
+          <Link href={`/profile/${username}`}>
             {username}
           </Link>
         </span>

@@ -4,6 +4,7 @@ import { usePost } from "@/hooks/post/usePost";
 import { TweetCard } from "@/components/card/TweetCard";
 import { TweetComposer } from "@/components/input/TweetComposer";
 import { Loader2 } from "lucide-react";
+import { Post } from "@/src/types";
 
 export default function FeedPage() {
   const { posts, loading, error } = usePost();
@@ -17,7 +18,7 @@ export default function FeedPage() {
             id: "1",
             username: "testuser",
             displayName: "Test User",
-            avatar: "https://w7.pngwing.com/pngs/184/113/png-transparent-user-profile-computer-icons-profile-heroes-black-silhouette-thumbnail.png",
+            avatar: "/placeholder.svg",
           }}
         />
         {loading ? (
@@ -27,7 +28,7 @@ export default function FeedPage() {
         ) : error ? (
           <div className="text-red-500 py-8">Error loading posts: {error}</div>
         ) : posts && posts.data && posts.data.length > 0 ? (
-          posts.data.map((post) => (
+          posts.data.map((post: Post) => (
             <TweetCard
               key={post.id}
               content={post.content}

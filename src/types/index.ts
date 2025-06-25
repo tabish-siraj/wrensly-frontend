@@ -9,7 +9,14 @@ export interface User {
 export interface Post {
   id: string;
   content: string;
-  userId: string;
+  user: {
+    id: string;
+    username: string;
+    Profile: {
+      firstName: string;
+      lastName: string;
+    }
+  };
   parentId: string | null;
   createdAt: string;
   updatedAt: string;
