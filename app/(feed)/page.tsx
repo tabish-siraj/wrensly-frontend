@@ -31,7 +31,7 @@ export default function FeedPage() {
             <TweetCard
               key={post.id}
               content={post.content}
-              username={post.userId}
+              username={post.user.username}
               isLiked={true}
               likeCount={0}
               isRetweeted={true}
@@ -39,10 +39,10 @@ export default function FeedPage() {
               isShared={true}
               shareCount={0}
               isBookmarked={true}
-              onToggleLike={() => {}}
-              onToggleRetweet={() => {}}
-              onToggleShare={() => {}}
-              onToggleBookmark={() => {}}
+              onToggleLike={() => { }}
+              onToggleRetweet={() => { }}
+              onToggleShare={() => { }}
+              onToggleBookmark={() => { }}
             />
           ))
         ) : (

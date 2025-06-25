@@ -16,7 +16,7 @@ interface TweetComposerProps {
 
 export function TweetComposer({
   user,
-  onTweet,
+  // onTweet,
   placeholder = "What is happening?!",
 }: TweetComposerProps) {
   const [content, setContent] = useState("");
@@ -86,11 +86,10 @@ export function TweetComposer({
 
             <div className="flex items-center space-x-3">
               <span
-                className={`text-sm ${
-                  content.length > maxLength * 0.9
+                className={`text-sm ${content.length > maxLength * 0.9
                     ? "text-red-500"
                     : "text-gray-500"
-                }`}
+                  }`}
               >
                 {maxLength - content.length}
               </span>
