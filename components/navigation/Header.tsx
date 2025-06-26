@@ -1,4 +1,5 @@
-import { Search, Bell, Mail, Bookmark, MoreHorizontal } from "lucide-react";
+import { Search } from "lucide-react";
+// import { Search, Bell, Mail, Bookmark, MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,7 +41,7 @@ export function Header({ user }: HeaderProps) {
 
           {/* Navigation */}
           <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="icon" className="hidden md:flex">
+            {/* <Button variant="ghost" size="icon" className="hidden md:flex">
               <Bell className="w-5 h-5" />
             </Button>
             <Button variant="ghost" size="icon" className="hidden md:flex">
@@ -48,18 +49,18 @@ export function Header({ user }: HeaderProps) {
             </Button>
             <Button variant="ghost" size="icon" className="hidden md:flex">
               <Bookmark className="w-5 h-5" />
-            </Button>
+            </Button> */}
 
             <UserDropdown
               user={{
                 avatar: "https://placehold.co/50x50",
-                displayName: "User",
+                displayName: "John Doe",
               }}
             />
 
-            <Button variant="ghost" size="icon" className="md:hidden">
+            {/* <Button variant="ghost" size="icon" className="md:hidden">
               <MoreHorizontal className="w-5 h-5" />
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>

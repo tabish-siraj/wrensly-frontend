@@ -8,14 +8,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ChevronDown } from "lucide-react";
 import useUserStore from "@/src/stores/userStore";
+import { User } from "@/src/types";
 
 interface UserDropdownProps {
-  user: {
-    avatar: string;
-    displayName: string;
-  };
+  user: User;
 }
 
 export default function UserDropdown({ user }: UserDropdownProps) {
@@ -29,12 +26,11 @@ export default function UserDropdown({ user }: UserDropdownProps) {
         <Button variant="ghost" size="icon" className="flex items-center gap-1">
           <Avatar className="w-8 h-8">
             <AvatarImage
-              src={user.avatar || "/placeholder.svg"}
-              alt={user.displayName}
+              src={user.Profile?.avatar || "/placeholder.svg"}
+              alt={user.username || ""}
             />
-            <AvatarFallback>{user.displayName[0]}</AvatarFallback>
+            <AvatarFallback>{user.Profile?.firstName}</AvatarFallback>
           </Avatar>
-          <ChevronDown className="w-4 h-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

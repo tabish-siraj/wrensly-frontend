@@ -1,11 +1,36 @@
+export interface UserProfile {
+  id: string | null;
+  userId: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  dateOfBirth: string | null;
+  gender: string | null;
+  bio: string | null;
+  avatar: string | null;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  phone: string | null;
+  website: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+  deletedAt: string | null | null;
+}
+
 export interface User {
   id: string;
   username: string;
-  displayName: string;
-  avatar: string;
-  verified?: boolean;
+  email: string;
+  password: string;
+  isActive: boolean;
+  isVerified: boolean;
+  isAdmin: boolean;
+  isBanned: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  Profile: UserProfile | null;
 }
-
 export interface Post {
   id: string;
   content: string;

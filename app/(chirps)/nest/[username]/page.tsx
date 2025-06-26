@@ -10,7 +10,6 @@ interface ProfilePageProps {
 
 export default function ProfilePage({ params }: ProfilePageProps) {
   const { user } = useUserStore();
-  console.log("Line 13: ", user)
   const { username } = React.use(params);
   // if (username !== user?.username) return;
   return (
@@ -38,7 +37,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
 
           {/* Name & Username */}
           <div className="pt-20">
-            <h1 className="text-xl font-bold">{user?.Profile.firstName} {user?.Profile.lastName} </h1>
+            <h1 className="text-xl font-bold">{user?.Profile?.firstName} {user?.Profile?.lastName} </h1>
             <p className="text-gray-500">@{username}</p>
           </div>
         </div>
