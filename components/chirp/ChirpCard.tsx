@@ -61,7 +61,7 @@ export function ChirpCard({
         <p className="text-gray-800 mb-4">{content}</p>
       </CardContent>
       {/* <CardFooter> */}
-      <div className="px-6 flex justify-between">
+      <div className="px-4 flex justify-between">
         <Feather
           isFeathered={isFeathered}
           count={featherCount}

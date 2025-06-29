@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import useUserStore from "@/src/stores/userStore";
+import Link from "next/link";
 
 interface UserDropdownProps {
   username: string
@@ -35,7 +36,7 @@ export default function UserDropdown({ username, avatar }: UserDropdownProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem>Profile</DropdownMenuItem>
+        <DropdownMenuItem><Link href={`/nest/${username}`}>Profile</Link></DropdownMenuItem>
         <DropdownMenuItem>Settings</DropdownMenuItem>
         <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
       </DropdownMenuContent>

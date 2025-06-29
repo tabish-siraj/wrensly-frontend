@@ -9,7 +9,6 @@ import { usePostMutation } from "@/hooks/post/usePost"; // Adjust the import pat
 
 interface ChirpComposerProps {
   user: {
-    id: string
     username: string
     avatar: string | null
   };
