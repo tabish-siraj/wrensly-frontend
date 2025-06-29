@@ -41,7 +41,7 @@ export function ChirpCard({
   onToggleBookmark,
 }: ChirpCardProps) {
   return (
-    <Card className="shadow-md hover:shadow-lg transition-shadow">
+    <Card className="shadow-md hover:shadow-lg transition-shadow mb-4">
       <CardHeader>
         <div className="flex items-center">
           <Link href={`/nest/${username}`}>

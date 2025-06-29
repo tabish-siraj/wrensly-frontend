@@ -16,7 +16,7 @@ export function Echo({ isEchoed, count, onToggleEcho }: EchoProps) {
       variant="ghost"
       size="icon"
       onClick={onToggleEcho}
-      className="text-gray-500 hover:text-green-500 transition-colors"
+      className="text-gray-500 hover:text-green-500 hover:bg-transparent transition-colors"
     >
       <RepeatIcon
         className={`${isEchoed ? 'text-green-500' : 'text-gray-500'}`}

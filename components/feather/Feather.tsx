@@ -16,7 +16,7 @@ export function Feather({ isFeathered, count, onToggleFeather }: FeatherProps) {
             variant="ghost"
             size="icon"
             onClick={onToggleFeather}
-            className="text-gray-500 hover:text-red-500 transition-colors"
+            className="text-gray-500 hover:text-red-500 hover:bg-transparent transition-colors"
         >
             <HeartIcon
                 className={`${isFeathered ? "text-red-500" : "text-gray-500"}`}

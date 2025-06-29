@@ -35,7 +35,7 @@ export function ChirpComposer({
   };
 
   return (
-    <div className="border-b border-gray-200 p-4">
+    <div className="border-b border-gray-200 p-4 mb-4">
       <div className="flex space-x-3">
         <Avatar className="w-12 h-12">
           <AvatarImage
@@ -50,7 +50,7 @@ export function ChirpComposer({
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder={placeholder}
-            className="min-h-[120px] text-xl border-none resize-none focus:ring-0 p-0"
+            className="min-h-[120px] text-xl border-none resize-none focus:ring-0"
             maxLength={maxLength}
           />
 

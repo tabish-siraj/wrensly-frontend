@@ -16,7 +16,7 @@ export function Spread({ isSpread, count, onToggleSpread }: SpreadProps) {
       variant="ghost"
       size="icon"
       onClick={onToggleSpread}
-      className="text-gray-500 hover:text-blue-500 transition-colors"
+      className="text-gray-500 hover:text-blue-500 hover:bg-transparent transition-colors"
     >
       <ShareIcon
         className={`${isSpread ? 'text-blue-500' : 'text-gray-500'}`}

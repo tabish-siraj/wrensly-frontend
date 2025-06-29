@@ -30,7 +30,7 @@ export function Header({ username, avatar }: HeaderProps) {
             </div>
           </div>
 
-          <div className="flex items-center">
+          <div className="flex items-center hover:bg-transparent">
             <UserDropdown username={username} avatar={avatar} />
           </div>
         </div>
