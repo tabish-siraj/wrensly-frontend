@@ -1,11 +1,8 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-interface AuthRedirectProviderProps {
-  children: React.ReactNode;
-}
 
-export function AuthRedirectProvider({ children }: AuthRedirectProviderProps) {
+export function AuthRedirectProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {

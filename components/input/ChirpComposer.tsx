@@ -5,18 +5,20 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ImageIcon, Smile, Calendar, MapPin } from "lucide-react";
-import { User } from "@/src/types";
 import { usePostMutation } from "@/hooks/post/usePost"; // Adjust the import path as necessary
 
 interface ChirpComposerProps {
-  user: User;
+  user: {
+    id: string
+    username: string
+    avatar: string | null
+  };
   onChirp?: (content: string) => void;
   placeholder?: string;
 }
 
 export function ChirpComposer({
   user,
-  // onChirp,
   placeholder = "What is happening?!",
 }: ChirpComposerProps) {
   const [content, setContent] = useState("");
@@ -38,9 +40,9 @@ export function ChirpComposer({
         <Avatar className="w-12 h-12">
           <AvatarImage
             src={user.avatar || "/placeholder.svg"}
-            alt={user.displayName}
+            alt={user.username}
           />
-          <AvatarFallback>{user.displayName[0]}</AvatarFallback>
+          <AvatarFallback>{user.username[0].toUpperCase()}</AvatarFallback>
         </Avatar>
 
         <div className="flex-1">

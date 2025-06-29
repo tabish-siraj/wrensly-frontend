@@ -1,13 +1,18 @@
-import { Header } from "@/components/navigation/Header";
-import React, { ReactNode } from "react";
+"use client"
 
-function layout({ children }: { children: ReactNode }) {
-  return (
-    <React.Fragment>
-      <Header />
-      {children}
-    </React.Fragment>
-  );
+import React from "react";
+import { Header } from "@/components/navigation/Header";
+import useUserStore from "@/src/stores/userStore";
+
+function Layout({ children }: { children: React.ReactNode }) {
+    const { user } = useUserStore();
+    if (!user) return null
+    return (
+        <>
+            <Header username={user.username} avatar={user?.avatar} />
+            {children}
+        </>
+    );
 }
 
-export default layout;
+export default Layout;

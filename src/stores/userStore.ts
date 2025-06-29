@@ -2,8 +2,6 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { User } from "../types";
 
-// interfaces/user.ts
-
 
 export interface UserState {
   user: User | null;

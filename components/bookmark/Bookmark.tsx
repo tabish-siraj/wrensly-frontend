@@ -18,7 +18,7 @@ export function Bookmark({ isBookmarked, onToggleBookmark }: BookmarkProps) {
       className="text-gray-500 hover:text-blue-500 transition-colors"
     >
       <BookmarkIcon
-        className={`h-5 w-5 ${isBookmarked ? 'text-blue-500' : 'text-gray-500'}`}
+        className={`${isBookmarked ? 'text-blue-500' : 'text-gray-500'}`}
       />
     </Button>
   );

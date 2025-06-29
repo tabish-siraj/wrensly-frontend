@@ -19,10 +19,10 @@ export function Echo({ isEchoed, count, onToggleEcho }: EchoProps) {
       className="text-gray-500 hover:text-green-500 transition-colors"
     >
       <RepeatIcon
-        className={`h-5 w-5 ${isEchoed ? 'text-green-500' : 'text-gray-500'}`}
+        className={`${isEchoed ? 'text-green-500' : 'text-gray-500'}`}
       />
-      {count > 0 && (
-        <span className="ml-2 text-sm text-gray-700">{count}</span>
+      {(
+        <span className="text-sm text-gray-700">{count}</span>
       )}
     </Button>
   );

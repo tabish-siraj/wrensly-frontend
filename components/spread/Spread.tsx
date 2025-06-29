@@ -19,10 +19,10 @@ export function Spread({ isSpread, count, onToggleSpread }: SpreadProps) {
       className="text-gray-500 hover:text-blue-500 transition-colors"
     >
       <ShareIcon
-        className={`h-5 w-5 ${isSpread ? 'text-blue-500' : 'text-gray-500'}`}
+        className={`${isSpread ? 'text-blue-500' : 'text-gray-500'}`}
       />
-      {count > 0 && (
-        <span className="ml-2 text-sm text-gray-700">{count}</span>
+      {(
+        <span className="text-sm text-gray-700">{count}</span>
       )}
     </Button>
   );

@@ -19,10 +19,10 @@ export function Feather({ isFeathered, count, onToggleFeather }: FeatherProps) {
             className="text-gray-500 hover:text-red-500 transition-colors"
         >
             <HeartIcon
-                className={`h-5 w-5 ${isFeathered ? "text-red-500" : "text-gray-500"}`}
+                className={`${isFeathered ? "text-red-500" : "text-gray-500"}`}
             />
-            {count > 0 && (
-                <span className="ml-2 text-sm text-gray-700">{count}</span>
+            {(
+                <span className="text-sm text-gray-700">{count}</span>
             )}
         </Button>
     );

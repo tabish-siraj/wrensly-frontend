@@ -1,7 +1,7 @@
 "use client";
 
 import { usePost } from "@/hooks/post/usePost";
-import { ChirpCard } from "@/components/card/ChirpCard";
+import { ChirpCard } from "@/components/chirp/ChirpCard";
 import { ChirpComposer } from "@/components/input/ChirpComposer";
 import { Loader2 } from "lucide-react";
 import { Post } from "@/src/types";
@@ -17,7 +17,6 @@ export default function FeedPage() {
           user={{
             id: "1",
             username: "testuser",
-            displayName: "Test User",
             avatar: "/placeholder.svg",
           }}
         />

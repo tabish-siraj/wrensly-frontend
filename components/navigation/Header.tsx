@@ -1,20 +1,13 @@
 import { Search } from "lucide-react";
-// import { Search, Bell, Mail, Bookmark, MoreHorizontal } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import UserDropdown from "@/components/dropdown/UserDropdown";
-
 interface HeaderProps {
-  user?: {
-    avatar: string;
-    displayName: string;
-  };
+  username: string
+  avatar: string | null
 }
 
-export function Header({ user }: HeaderProps) {
-  console.log(user)
+export function Header({ username, avatar }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
       <div className="max-w-6xl mx-auto px-4">
@@ -40,7 +33,7 @@ export function Header({ user }: HeaderProps) {
           </div>
 
           {/* Navigation */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center">
             {/* <Button variant="ghost" size="icon" className="hidden md:flex">
               <Bell className="w-5 h-5" />
             </Button>
@@ -51,12 +44,7 @@ export function Header({ user }: HeaderProps) {
               <Bookmark className="w-5 h-5" />
             </Button> */}
 
-            <UserDropdown
-              user={{
-                avatar: "https://placehold.co/50x50",
-                displayName: "John Doe",
-              }}
-            />
+            <UserDropdown username={username} avatar={avatar} />
 
             {/* <Button variant="ghost" size="icon" className="md:hidden">
               <MoreHorizontal className="w-5 h-5" />

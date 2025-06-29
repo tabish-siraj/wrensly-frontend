@@ -9,13 +9,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import useUserStore from "@/src/stores/userStore";
-import { User } from "@/src/types";
 
 interface UserDropdownProps {
-  user: User;
+  username: string
+  avatar: string | null
 }
 
-export default function UserDropdown({ user }: UserDropdownProps) {
+export default function UserDropdown({ username, avatar }: UserDropdownProps) {
   const { clearUser } = useUserStore();
   const handleLogout = () => {
     clearUser();
@@ -23,17 +23,20 @@ export default function UserDropdown({ user }: UserDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="flex items-center gap-1">
+        <Button variant="ghost" className="flex items-center gap-2">
+          @{username}
           <Avatar className="w-8 h-8">
             <AvatarImage
-              src={user.Profile?.avatar || "/placeholder.svg"}
-              alt={user.username || ""}
+              src={avatar || "/globe.svg"}
+              alt={username}
             />
-            <AvatarFallback>{user.Profile?.firstName}</AvatarFallback>
+            <AvatarFallback>{username[0].toUpperCase()}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        <DropdownMenuItem>Profile</DropdownMenuItem>
+        <DropdownMenuItem>Settings</DropdownMenuItem>
         <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
