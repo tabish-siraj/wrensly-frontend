@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ImageIcon, Smile, Calendar, MapPin } from "lucide-react";
-import { usePostMutation } from "@/hooks/post/usePost"; // Adjust the import path as necessary
+import { usePostMutation } from "@/hooks/post/usePost";
+import { toast } from "sonner";
 
 interface ChirpComposerProps {
   user: {
@@ -30,6 +31,8 @@ export function ChirpComposer({
         content: content.trim(),
         parentId: null,
       });
+      toast.success("Chirp posted!");
+      setContent("");
     }
   };
 

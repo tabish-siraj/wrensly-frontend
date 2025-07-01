@@ -3,6 +3,8 @@
 import React from "react";
 import { Header } from "@/components/navigation/Header";
 import useUserStore from "@/src/stores/userStore";
+import { Toaster } from "sonner";
+
 
 function Layout({ children }: { children: React.ReactNode }) {
     const { user } = useUserStore();
@@ -11,6 +13,8 @@ function Layout({ children }: { children: React.ReactNode }) {
         <>
             <Header username={user.username} avatar={user?.avatar} />
             {children}
+            <Toaster position="bottom-center" richColors closeButton />
+
         </>
     );
 }

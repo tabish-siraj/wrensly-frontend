@@ -7,6 +7,8 @@ import { Echo } from '../echo/Echo';
 import { Spread } from '../spread/Spread';
 import { Bookmark } from '../bookmark/Bookmark';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { EllipsisVertical } from 'lucide-react';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import Link from 'next/link';
 
 interface ChirpCardProps {
@@ -43,18 +45,33 @@ export function ChirpCard({
   return (
     <Card className="shadow-md hover:shadow-lg transition-shadow mb-4">
       <CardHeader>
-        <div className="flex items-center">
-          <Link href={`/nest/${username}`}>
-            <Avatar className="h-10 w-10">
-              <AvatarImage alt="avatar" src="/placeholder.svg" />
-              <AvatarFallback>{username[0].toUpperCase()}</AvatarFallback>
-            </Avatar>
-          </Link>
-          <span className="font-semibold ml-2">
+        <div className="flex justify-between">
+          <div className="flex items-center">
             <Link href={`/nest/${username}`}>
-              {username}
+              <Avatar className="h-10 w-10">
+                <AvatarImage alt="avatar" src="/placeholder.svg" />
+                <AvatarFallback>{username[0].toUpperCase()}</AvatarFallback>
+              </Avatar>
             </Link>
-          </span>
+            <span className="font-semibold ml-2">
+              <Link href={`/nest/${username}`}>
+                {username}
+              </Link>
+            </span>
+          </div>
+          <div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="p-1 rounded-full hover:bg-gray-100">
+                  <EllipsisVertical size={20} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuItem>Delete</DropdownMenuItem>
+                <DropdownMenuItem>Report</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </CardHeader>
       <CardContent>

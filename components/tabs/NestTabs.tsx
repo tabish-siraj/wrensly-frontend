@@ -11,7 +11,7 @@ const TABS = [
     { key: "chirps", label: "Chirps" },
     { key: "spreads", label: "Spreads" },
     { key: "media", label: "Media" },
-    { key: "feathers", label: "Feathers" },
+    { key: "feathers", label: "Feathered" },
 ];
 
 export default function NestTabs() {
@@ -21,10 +21,10 @@ export default function NestTabs() {
 
     return (
 
-        <div className="w-1/2 m-auto">
+        <div className="w-1/2 m-auto mt-2">
             <div className="w-full max-w-4xl mx-auto">
                 {/* Tab Menu */}
-                <div className="flex border-b border-gray-200">
+                <div className="flex border-b border-t border-gray-200">
                     {TABS.map((tab) => (
                         <button
                             key={tab.key}
