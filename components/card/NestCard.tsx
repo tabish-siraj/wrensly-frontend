@@ -1,13 +1,16 @@
+import { useParams } from "next/navigation";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { MapPin, Link as LuicideLink, Calendar, Cake } from "lucide-react"
+import { Button } from "../ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import useUserStore from "@/src/stores/userStore";
 
-
-
 export default function ProfileCard() {
     const { user } = useUserStore();
+    const params = useParams();
+    const isCurrentUser = params.username === user?.username || null;
+
     return (
         <div className="w-1/2 m-auto">
             <div className="w-full max-w-4xl mx-auto">
@@ -21,7 +24,7 @@ export default function ProfileCard() {
                             className="object-cover"
                         />
                     </div>
-                    <div className="px-4">
+                    <div className="px-4 flex justify-between">
                         <div className="relative">
                             <div className="absolute -top-16 left-4">
                                 <Avatar className="w-32 h-32 border-4 border-white">
@@ -30,12 +33,16 @@ export default function ProfileCard() {
                                 </Avatar>
                             </div>
                         </div>
+                        <Button className="mt-4 px-6 py-2 text-white rounded-full font-semibold shadow transition">
+                            {isCurrentUser ? "Edit Profile" : "Follow"}
+                        </Button>
+
                     </div>
                 </div>
                 {/* div for profile info */}
-                <div className="pt-10 px-4">
+                <div className="px-4">
                     <div>
-                        <div className="pt-20">
+                        <div className="pt-5">
                             <h1 className="text-xl font-bold">{user?.firstName} {user?.lastName} </h1>
                             <p className="text-gray-500">@{user?.username}</p>
                         </div>

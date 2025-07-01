@@ -4,10 +4,22 @@ import api from "@/lib/api";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function usePost() {
-    const {data: posts, isLoading: loading, isError: error} = useQuery({
+    const { data: posts, isLoading: loading, isError: error } = useQuery({
         queryKey: ["posts"],
         queryFn: async () => {
             const response = await api.get("/post");
+            return response.data;
+        },
+    });
+
+    return { posts, loading, error };
+}
+
+export function usePostByUserID(userID: string) {
+    const { data: posts, isLoading: loading, isError: error } = useQuery({
+        queryKey: ["posts", userID],
+        queryFn: async () => {
+            const response = await api.get(`/post/user/${userID}`);
             return response.data;
         },
     });
