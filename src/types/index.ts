@@ -14,6 +14,7 @@ export interface User {
   gender: string;
   bio: string;
   avatar: string | "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlHPCQDGxzqlFNGeeP1WPx_5tLK03EMXLwpA&s";
+  cover: string | "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQp8_W4z4PTHC0ogzdUY3UO9t35bbtSzvxFiA&s"
   city: string;
   state: string;
   country: string;

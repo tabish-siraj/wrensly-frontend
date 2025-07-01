@@ -1,7 +1,7 @@
 "use client";
 
 import { usePost } from "@/hooks/post/usePost";
-import { ChirpCard } from "@/components/chirp/ChirpCard";
+import { ChirpCard } from "@/components/card/ChirpCard";
 import { ChirpComposer } from "@/components/input/ChirpComposer";
 import { Loader2 } from "lucide-react";
 import { Post } from "@/src/types";
