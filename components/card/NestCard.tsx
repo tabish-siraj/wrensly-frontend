@@ -1,5 +1,6 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { MapPin, Link, Calendar, Cake } from "lucide-react"
+import { MapPin, Link as LuicideLink, Calendar, Cake } from "lucide-react"
+import Link from "next/link";
 import Image from "next/image";
 import useUserStore from "@/src/stores/userStore";
 
@@ -44,7 +45,7 @@ export default function ProfileCard() {
                     </div>
                     <div className="flex justify-between">
                         <span className="flex flex-row items-center"><MapPin className="size-4 mr-1" /> {user?.country}</span>
-                        <span className="flex flex-row items-center"><Link className="size-4 mr-1" /> {user?.website}</span>
+                        <span className="flex flex-row items-center"><LuicideLink className="size-4 mr-1" /><Link className="text-blue-500 hover:underline" href={user?.website || ""}> {user?.website}</Link></span>
                         <span className="flex flex-row items-center"><Cake className="size-4 mr-1" /> {user?.dateOfBirth ? new Date(user.createdAt).toLocaleDateString(undefined, {
                             month: "long",
                             day: "numeric"
