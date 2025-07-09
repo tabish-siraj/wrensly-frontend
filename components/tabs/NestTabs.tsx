@@ -1,11 +1,12 @@
 "use client"
 
 import React from "react";
-import { usePostByUserID } from "@/hooks/post/usePost";
+import { usePostByUsername } from "@/hooks/post/usePost";
 import { ChirpCard } from "../card/ChirpCard";
 import { Post } from "@/src/types";
-import useUserStore from "@/src/stores/userStore";
+// import useUserStore from "@/src/stores/userStore";
 import { Loader2 } from "lucide-react";
+import { useParams } from "next/navigation";
 
 const TABS = [
     { key: "chirps", label: "Chirps" },
@@ -15,13 +16,14 @@ const TABS = [
 ];
 
 export default function NestTabs() {
-    const { user } = useUserStore()
+    const params = useParams();
+    // const { user } = useUserStore()
     const [activeTab, setActiveTab] = React.useState("chirps");
-    const { posts, loading, error } = usePostByUserID(user?.id || "");
+    const { posts, loading, error } = usePostByUsername(params.username as string);
 
     return (
 
-        <div className="w-1/2 m-auto mt-2">
+        <div className="w-1/2 m-auto mt-4">
             <div className="w-full max-w-4xl mx-auto">
                 {/* Tab Menu */}
                 <div className="flex border-b border-t border-gray-200">
@@ -73,9 +75,96 @@ export default function NestTabs() {
                             <div className="py-8 text-gray-500">No posts available</div>
                         )}
                     </div>}
-                    {activeTab === "spreads" && <div>Your Retweets go here.</div>}
-                    {activeTab === "media" && <div>Your Media go here.</div>}
-                    {activeTab === "feathers" && <div>Your Feathered chirps go here.</div>}
+                    {activeTab === "spreads" && <div>
+                        {loading ? (
+                            <div className="flex justify-center py-8">
+                                <Loader2 className="animate-spin w-8 h-8 text-blue-500" />
+                            </div>
+                        ) : error ? (
+                            <div className="text-red-500 py-8">Error loading posts: {error}</div>
+                        ) : posts && posts.data && posts.data.length > 0 ? (
+                            posts.data.map((post: Post) => (
+                                <ChirpCard
+                                    key={post.id}
+                                    content={post.content}
+                                    username={post.id}
+                                    isFeathered={true}
+                                    featherCount={0}
+                                    isEchoed={true}
+                                    echoCount={0}
+                                    isBookmarked={true}
+                                    isSpread={true}
+                                    spreadCount={0}
+                                    onToggleFeather={() => { }}
+                                    onToggleEcho={() => { }}
+                                    onToggleSpread={() => { }}
+                                    onToggleBookmark={() => { }}
+                                />
+                            ))
+                        ) : (
+                            <div className="py-8 text-gray-500">No posts available</div>
+                        )}
+                    </div>}
+                    {activeTab === "media" && <div>
+                        {loading ? (
+                            <div className="flex justify-center py-8">
+                                <Loader2 className="animate-spin w-8 h-8 text-blue-500" />
+                            </div>
+                        ) : error ? (
+                            <div className="text-red-500 py-8">Error loading posts: {error}</div>
+                        ) : posts && posts.data && posts.data.length > 0 ? (
+                            posts.data.map((post: Post) => (
+                                <ChirpCard
+                                    key={post.id}
+                                    content={post.content}
+                                    username={post.id}
+                                    isFeathered={true}
+                                    featherCount={0}
+                                    isEchoed={true}
+                                    echoCount={0}
+                                    isBookmarked={true}
+                                    isSpread={true}
+                                    spreadCount={0}
+                                    onToggleFeather={() => { }}
+                                    onToggleEcho={() => { }}
+                                    onToggleSpread={() => { }}
+                                    onToggleBookmark={() => { }}
+                                />
+                            ))
+                        ) : (
+                            <div className="py-8 text-gray-500">No posts available</div>
+                        )}
+                    </div>}
+                    {activeTab === "feathers" && <div>
+                        {loading ? (
+                            <div className="flex justify-center py-8">
+                                <Loader2 className="animate-spin w-8 h-8 text-blue-500" />
+                            </div>
+                        ) : error ? (
+                            <div className="text-red-500 py-8">Error loading posts: {error}</div>
+                        ) : posts && posts.data && posts.data.length > 0 ? (
+                            posts.data.map((post: Post) => (
+                                <ChirpCard
+                                    key={post.id}
+                                    content={post.content}
+                                    username={post.id}
+                                    isFeathered={true}
+                                    featherCount={0}
+                                    isEchoed={true}
+                                    echoCount={0}
+                                    isBookmarked={true}
+                                    isSpread={true}
+                                    spreadCount={0}
+                                    onToggleFeather={() => { }}
+                                    onToggleEcho={() => { }}
+                                    onToggleSpread={() => { }}
+                                    onToggleBookmark={() => { }}
+                                />
+                            ))
+                        ) : (
+                            <div className="py-8 text-gray-500">No posts available</div>
+                        )}
+                    </div>}
                 </div>
             </div>
         </div>

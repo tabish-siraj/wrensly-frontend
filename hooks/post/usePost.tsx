@@ -27,6 +27,19 @@ export function usePostByUserID(userID: string) {
     return { posts, loading, error };
 }
 
+
+export function usePostByUsername(username: string) {
+    const { data: posts, isLoading: loading, isError: error } = useQuery({
+        queryKey: ["posts", username],
+        queryFn: async () => {
+            const response = await api.get(`/post/username/${username}`);
+            return response.data;
+        },
+    });
+
+    return { posts, loading, error };
+}
+
 export function usePostMutation() {
     const queryClient = useQueryClient();
 

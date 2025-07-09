@@ -1,12 +1,14 @@
-import { useParams } from "next/navigation";
+"use client"
+
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { MapPin, Link as LuicideLink, Calendar, Cake } from "lucide-react"
 import { Button } from "../ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import useUserStore from "@/src/stores/userStore";
+import { useParams } from "next/navigation";
 
-export default function ProfileCard() {
+export default function NestCard() {
     const { user } = useUserStore();
     const params = useParams();
     const isCurrentUser = params.username === user?.username || null;
