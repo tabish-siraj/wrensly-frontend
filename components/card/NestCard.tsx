@@ -14,8 +14,8 @@ export default function NestCard() {
     const isCurrentUser = params.username === user?.username || null;
 
     return (
-        <div className="w-1/2 m-auto">
-            <div className="w-full max-w-4xl mx-auto">
+        <div className="w-full">
+            <div className="w-full">
                 {/* div for cover and pfp */}
                 <div>
                     <div className="relative w-full h-[200px] bg-gray-200">

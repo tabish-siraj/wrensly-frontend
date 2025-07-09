@@ -14,7 +14,7 @@ const Sidebar = () => {
     };
 
     return (
-        <aside className="w-full h-full p-4 flex flex-col gap-4">
+        <aside className="w-full h-full p-4 flex flex-col gap-4 sticky top-16">
             <button className="flex items-center gap-2 p-2 rounded hover:text-gray-800">
                 <UserIcon /> Profile
             </button>

@@ -23,10 +23,10 @@ export default function NestTabs() {
 
     return (
 
-        <div className="w-1/2 m-auto mt-4">
-            <div className="w-full max-w-4xl mx-auto">
+        <div className="w-full mt-4">
+            <div className="w-full">
                 {/* Tab Menu */}
-                <div className="flex border-b border-t border-gray-200">
+                <div className="flex border-gray-200">
                     {TABS.map((tab) => (
                         <button
                             key={tab.key}
@@ -44,7 +44,7 @@ export default function NestTabs() {
                 </div>
 
                 {/* Tab Content */}
-                <div className="py-6">
+                <div className="p-6">
                     {activeTab === "chirps" && <div>
                         {loading ? (
                             <div className="flex justify-center py-8">
