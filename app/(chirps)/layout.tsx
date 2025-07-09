@@ -12,8 +12,10 @@ function Layout({ children }: { children: React.ReactNode }) {
     return (
         <>
             <Header username={user.username} avatar={user?.avatar} />
-            {children}
-            <Toaster position="bottom-center" richColors closeButton />
+            <div className="container mx-auto">
+                {children}
+                <Toaster position="bottom-center" richColors closeButton />
+            </div>
 
         </>
     );
