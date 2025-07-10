@@ -7,9 +7,8 @@ export const useSignup = () => {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: async (credentials: { username: string; email: string; password: string }) => {
-      const response = await api.post("/user", credentials);
-      console.log(JSON.stringify(response))
+    mutationFn: async (payload: { username: string; email: string; password: string }) => {
+      await api.post("/user", payload);
     },
     onSuccess: () => {
       router.replace("/auth/login");

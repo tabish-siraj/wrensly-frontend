@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 export const UserSchema = z.object({
-    id: z.string().nullable().optional(),
     username: z.string().optional(),
     email: z.string().email().nullable().optional(),
     firstName: z.string().min(1).max(50).nullable().optional(),
@@ -16,9 +15,6 @@ export const UserSchema = z.object({
     country: z.string().nullable().optional(),
     phone: z.string().nullable().optional(),
     website: z.string().nullable().optional(),
-    createdAt: z.string().nullable().optional(),
-    updatedAt: z.string().nullable().optional(),
-    deletedAt: z.string().nullable().optional(),
 
 })
 export type User = z.infer<typeof UserSchema>;
