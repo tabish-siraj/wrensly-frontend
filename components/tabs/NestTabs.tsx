@@ -22,7 +22,6 @@ export default function NestTabs() {
     const { posts, loading, error } = usePostByUsername(params.username as string);
 
     return (
-
         <div className="w-full mt-4">
             <div className="w-full">
                 {/* Tab Menu */}
@@ -51,7 +50,7 @@ export default function NestTabs() {
                                 <Loader2 className="animate-spin w-8 h-8 text-blue-500" />
                             </div>
                         ) : error ? (
-                            <div className="text-red-500 py-8">Error loading posts: {error}</div>
+                            <div className="text-gray-500 py-8">No posts available.</div>
                         ) : posts && posts.data && posts.data.length > 0 ? (
                             posts.data.map((post: Post) => (
                                 <ChirpCard

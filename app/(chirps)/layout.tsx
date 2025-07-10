@@ -15,7 +15,6 @@ function Layout({ children }: { children: React.ReactNode }) {
     if (!user) return null
     const isNestPage = pathname.startsWith("/nest");
 
-
     return (
         <>
             <Header username={user.username} avatar={user?.avatar} />

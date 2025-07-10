@@ -7,11 +7,21 @@ import Link from "next/link";
 import Image from "next/image";
 import useUserStore from "@/src/stores/userStore";
 import { useParams } from "next/navigation";
+import { useFollowUnfollow } from "@/hooks/follow/useFollow";
 
 export default function NestCard() {
     const { user } = useUserStore();
     const params = useParams();
+    const { mutate: followUnfollow } = useFollowUnfollow();
     const isCurrentUser = params.username === user?.username || null;
+
+    const handleFollowUnfollow = () => {
+        if (isCurrentUser) return; // Prevent action if it's the current user
+        followUnfollow({
+            following: user?.id || "",
+            operation: isCurrentUser ? "unfollow" : "follow"
+        });
+    };
 
     return (
         <div className="w-full">
@@ -35,7 +45,7 @@ export default function NestCard() {
                                 </Avatar>
                             </div>
                         </div>
-                        <Button className="mt-4 px-6 py-2 text-white rounded-full font-semibold shadow transition">
+                        <Button className="mt-4 px-6 py-2 text-white rounded-full font-semibold shadow transition" onClick={handleFollowUnfollow}>
                             {isCurrentUser ? "Edit Profile" : "Follow"}
                         </Button>
 

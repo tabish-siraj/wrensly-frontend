@@ -36,7 +36,6 @@ export function usePostByUsername(username: string) {
             return response.data;
         },
     });
-
     return { posts, loading, error };
 }
 
