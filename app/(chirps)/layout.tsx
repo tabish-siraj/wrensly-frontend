@@ -18,7 +18,7 @@ function Layout({ children }: { children: React.ReactNode }) {
     return (
         <>
             <Header username={user.username} avatar={user?.avatar} />
-            <div className="flex flex-col md:flex-row gap-4 p-4 pt-0">
+            <div className="flex flex-col md:flex-row gap-4 p-4 pt-0 container mx-auto">
                 <div className="w-full md:w-1/4 border-r">
                     <Sidebar />
                 </div>

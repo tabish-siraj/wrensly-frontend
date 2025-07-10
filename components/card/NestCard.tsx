@@ -45,7 +45,7 @@ export default function NestCard() {
                                 </Avatar>
                             </div>
                         </div>
-                        <Button className="mt-4 px-6 py-2 text-white rounded-full font-semibold shadow transition" onClick={handleFollowUnfollow}>
+                        <Button className="mt-4 px-6 py-2 text-white rounded-full font-semibold shadow transition" onClick={isCurrentUser ? () => window.location.href = `/nest/${params.username}/edit` : handleFollowUnfollow}>
                             {isCurrentUser ? "Edit Profile" : "Follow"}
                         </Button>
 
