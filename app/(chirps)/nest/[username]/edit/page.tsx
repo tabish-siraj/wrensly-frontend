@@ -13,14 +13,14 @@ import { removeEmptyFields } from "@/lib/utils";
 export default function EditPage() {
     const { user } = useUserStore();
     const updateProfile = useUpdateProfile();
-    console.log(user?.username, "user in edit page");
+    const dateOfBirth = user?.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split("T")[0] : "";
     const form = useForm<User>({
         resolver: zodResolver(UserSchema),
         defaultValues: {
             username: user?.username || "",
             firstName: user?.firstName || "",
             lastName: user?.lastName || "",
-            dateOfBirth: user?.dateOfBirth || "",
+            dateOfBirth: dateOfBirth || "",
             gender: user?.gender || "",
             bio: user?.bio || "",
             avatar: user?.avatar || "",

@@ -10,7 +10,7 @@ export interface User {
   userId: string;
   firstName: string;
   lastName: string;
-  dateOfBirth: date;
+  dateOfBirth: Date;
   gender: string;
   bio: string;
   avatar: string | "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlHPCQDGxzqlFNGeeP1WPx_5tLK03EMXLwpA&s";
@@ -20,6 +20,8 @@ export interface User {
   country: string;
   phone: string;
   website: string;
+  followersCount: number;
+  followingCount: number;
   createdAt: string;
   updatedAt: string;
   deletedAt: string;
