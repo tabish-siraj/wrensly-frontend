@@ -9,6 +9,7 @@ import useUserStore from "@/src/stores/userStore";
 import { useParams } from "next/navigation";
 import { useFollowUnfollow } from "@/hooks/follow/useFollow";
 import { useUserByUsername } from "@/hooks/user/useGetUser";
+import { toast } from "sonner";
 
 export default function NestCard() {
     const { user } = useUserStore();
@@ -20,11 +21,14 @@ export default function NestCard() {
     const handleFollowUnfollow = () => {
         if (isCurrentUser) return; // Prevent action if it's the current user
         if (!user_data) return; // Ensure user_data is available
-        console.log("user_data", user_data)
         followUnfollow({
             following: user_data?.id,
             operation: user_data?.isFollowing ? "unfollow" : "follow"
         });
+        // Optionally, you can add a success message or toast notification here
+        toast.success(`${user_data?.isFollowing ? "Unfollowed" : "Followed"} ${user_data?.username}`);
+        user_data.isFollowing = !user_data.isFollowing; // Toggle the following state
+        user_data.followersCount += user_data.isFollowing ? 1 : -1;
     };
 
     return (
