@@ -11,11 +11,14 @@ import { useParams } from "next/navigation";
 import { useFollowUnfollow, useGetFollowers, useGetFollowings } from "@/hooks/follow/useFollow";
 import { useUserByUsername } from "@/hooks/user/useGetUser";
 import { toast } from "sonner";
-import FollowerModal from "@/components/modals/FollowersModal";
+import FollowListModal from "@/components/modals/FollowersModal";
 
 export default function NestCard() {
   const { user } = useUserStore();
   const params = useParams();
+  const { followers, loading: followersLoading, error: followersError } = useGetFollowers(params.username as string)
+  const { following, loading: followingLoading, error: followingError } = useGetFollowings(params.username as string)
+
   const { mutate: followUnfollow } = useFollowUnfollow();
   const { user: userData } = useUserByUsername(params.username as string);
   const isCurrentUser = params.username === user?.username || null;
@@ -138,13 +141,18 @@ export default function NestCard() {
         </div>
       </div>
 
-      {/* 🟦 Followers / Following Modal */}
-      {showFollowersModal && user_data?.id && (
-        <FollowerModal
+      {showFollowersModal && (
+        <FollowListModal
           isOpen={showFollowersModal}
           onClose={() => setShowFollowersModal(false)}
-          userId={user_data.id}
-          type={modalType}
+          users={
+            modalType === "followers"
+              ? followers.data ?? []
+              : following.data ?? []
+          }
+          _type={modalType}
+          loading={modalType === "followers" ? followersLoading : followingLoading}
+          error={modalType === "followers" ? followersError : followingError}
         />
       )}
     </div>

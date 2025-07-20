@@ -20,7 +20,7 @@ export const useFollowUnfollow = () => {
 // Hook to get followers by username
 export const useGetFollowers = (username: string) => {
     const { data: followers, isLoading: loading, isError: error } = useQuery({
-        queryKey: ["followers"],
+        queryKey: ["followers", username],
         queryFn: async () => {
             const response = await api.get(`/follow/followers/${username}`);
             return response.data;
@@ -32,7 +32,7 @@ export const useGetFollowers = (username: string) => {
 
 export const useGetFollowings = (username: string) => {
     const { data: following, isLoading: loading, isError: error } = useQuery({
-        queryKey: ["following"],
+        queryKey: ["following", username],
         queryFn: async () => {
             const response = await api.get(`/follow/following/${username}`);
             return response.data;
