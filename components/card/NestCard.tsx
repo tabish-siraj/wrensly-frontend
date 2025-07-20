@@ -8,10 +8,10 @@ import Link from "next/link";
 import Image from "next/image";
 import useUserStore from "@/src/stores/userStore";
 import { useParams } from "next/navigation";
-import { useFollowUnfollow } from "@/hooks/follow/useFollow";
+import { useFollowUnfollow, useGetFollowers, useGetFollowings } from "@/hooks/follow/useFollow";
 import { useUserByUsername } from "@/hooks/user/useGetUser";
 import { toast } from "sonner";
-import FollowerModal from "@/components/FollowersModal";
+import FollowerModal from "@/components/modals/FollowersModal";
 
 export default function NestCard() {
   const { user } = useUserStore();

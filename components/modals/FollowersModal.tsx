@@ -159,6 +159,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
+import { useGetFollowers, useGetFollowings } from "@/hooks/follow/useFollow";
+
 
 interface UserListModalProps {
   isOpen: boolean;
@@ -175,40 +177,43 @@ type User = {
   verified: boolean;
 };
 
-// 👉 Static mock data
-const mockFollowers: User[] = [
+// // 👉 Static mock data
+// const mockFollowers: User[] = [
     
- {
-    id: "1",
-    name: "Farah", 
-    username: "farah_21",
-    image: "https://randomuser.me/api/portraits/women/12.jpg",
-    verified: true,
-  },
+//  {
+//     id: "1",
+//     name: "Farah", 
+//     username: "farah_21",
+//     image: "https://randomuser.me/api/portraits/women/12.jpg",
+//     verified: true,
+//   },
 
-  {
-    id: "2",
-    name: "Tabish",
-    username: "tabisht",
-    image: "https://randomuser.me/api/portraits/men/15.jpg",
-    verified: true,
-  },
-  { id: "3", 
-    name: "Amna", 
-    username: "amna_x", 
-    image: "https://randomuser.me/api/portraits/women/60.jpg", 
-    verified: false },
-];
+//   {
+//     id: "2",
+//     name: "Tabish",
+//     username: "tabisht",
+//     image: "https://randomuser.me/api/portraits/men/15.jpg",
+//     verified: true,
+//   },
+//   { id: "3", 
+//     name: "Amna", 
+//     username: "amna_x", 
+//     image: "https://randomuser.me/api/portraits/women/60.jpg", 
+//     verified: false },
+// ];
 
-const mockFollowing: User[] = [
-  { id: "4", name: "Ali", username: "ali_writer", image: "", verified: true },
-  { id: "5", name: "Sara", username: "sara_live", image: "", verified: false },
-  { id: "6", name: "Usman", username: "usman007", image: "", verified: false },
-];
+// const mockFollowing: User[] = [
+//   { id: "4", name: "Ali", username: "ali_writer", image: "", verified: true },
+//   { id: "5", name: "Sara", username: "sara_live", image: "", verified: false },
+//   { id: "6", name: "Usman", username: "usman007", image: "", verified: false },
+// ];
 
 const UserListModal: React.FC<UserListModalProps> = ({ isOpen, onClose, userId, type }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const { followers, loading: followersLoading, error: followersError } = useGetFollowers(params.username as string)
+  const { following, loading: followingLoading, error: followingError } = useGetFollowings(params.username as string)
+
 
   useEffect(() => {
     if (isOpen) {
