@@ -7,6 +7,6 @@ export function cn(...inputs: ClassValue[]) {
 
 export const removeEmptyFields = (obj: Record<string, unknown>) => {
   return Object.fromEntries(
-    Object.entries(obj).filter(([key, value]) => value !== null && value !== "" && value !== undefined)
+    Object.entries(obj).filter(([_, value]) => value !== null && value !== "" && value !== undefined)
   );
 };

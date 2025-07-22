@@ -123,7 +123,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
 import Link from "next/link";
-import { Bird } from "lucide-react";
+// import { Bird } from "lucide-react";
 
 const formSchema = z.object({
   username: z.string().min(3, { message: "Username must be at least 3 characters." }),
@@ -159,14 +159,14 @@ export default function SignupPage() {
       <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg border border-gray-200">
         <div className="flex flex-col items-center mb-6">
           <Link href="/" className="mb-6 block px-2">
-                      <span className="text-4xl font-extrabold text-black tracking-wide">W</span>
-                    </Link>
-           {/* <div className="bg-[#1d9bf0] p-3 rounded-full mb-2 shadow-md">
+            <span className="text-4xl font-extrabold text-black tracking-wide">W</span>
+          </Link>
+          {/* <div className="bg-[#1d9bf0] p-3 rounded-full mb-2 shadow-md">
             <Bird className="h-8 w-8 text-white" />
           </div> */}
           <h1 className="text-2xl font-extrabold text-gray-900">Hatch Your Nest</h1>
           <p className="text-sm text-gray-600 mt-1">Join the flock and start chirping</p>
-               {/* <p className="text-sm text-gray-600 mt-1">Join the flock and start chirping 🐦</p> */}
+          {/* <p className="text-sm text-gray-600 mt-1">Join the flock and start chirping 🐦</p> */}
         </div>
 
         <Form {...form}>

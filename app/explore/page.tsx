@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { TrendingUp } from "lucide-react";
 import LeftSidebar from "../../components/navbar/Sidebar";
-import RightSidebar from "@/app/(chirps)/layout"; // Optional if you’ve created it
+// import RightSidebar from "@/app/(chirps)/layout"; // Optional if you’ve created it
 
 const mockTrends = [
   { title: "TechFeathers", chirps: "12.5K" },
