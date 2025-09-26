@@ -13,8 +13,8 @@ export interface User {
   dateOfBirth: Date;
   gender: string;
   bio: string;
-  avatar: string | "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlHPCQDGxzqlFNGeeP1WPx_5tLK03EMXLwpA&s";
-  cover: string | "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQp8_W4z4PTHC0ogzdUY3UO9t35bbtSzvxFiA&s"
+  avatar: string;
+  cover: string;
   city: string;
   state: string;
   country: string;
@@ -29,14 +29,7 @@ export interface User {
 export interface Post {
   id: string;
   content: string;
-  user: {
-    id: string;
-    username: string;
-    Profile: {
-      firstName: string;
-      lastName: string;
-    }
-  };
+  user: Pick<User, "id" | "username" | "firstName" | "lastName" | "avatar">;
   parentId: string | null;
   createdAt: string;
   updatedAt: string;
@@ -53,4 +46,15 @@ export interface TrendingTopic {
   title: string;
   category: string;
   posts: string;
+}
+
+// This is what your UI components expect
+export interface PostWithInteractions extends Post {
+  isFeathered: boolean;
+  featherCount: number;
+  isEchoed: boolean;
+  echoCount: number;
+  isSpread: boolean;
+  spreadCount: number;
+  isBookmarked: boolean;
 }

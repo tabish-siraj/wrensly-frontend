@@ -1,28 +1,28 @@
-// create a Like component that displays a heart icon and a count of likes
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { HeartIcon } from "lucide-react";
+import usePostStore from "@/src/stores/postStore";
 
 interface FeatherProps {
-    isFeathered: boolean;
-    count: number;
-    onToggleFeather: () => void;
+    postId: string;
 }
 
-export function Feather({ isFeathered, count, onToggleFeather }: FeatherProps) {
+export function Feather({ postId }: FeatherProps) {
+    const post = usePostStore((state) => state.posts.find((p) => p.id === postId));
+    const toggleFeather = usePostStore((state) => state.toggleFeather);
+    if (!post) return null;
     return (
         <Button
             variant="ghost"
             size="icon"
-            onClick={onToggleFeather}
-            className="text-gray-500 hover:text-red-500 hover:bg-transparent transition-colors"
+            onClick={() => toggleFeather(postId)}
+            className="flex items-center gap-1 text-gray-500 hover:text-red-500 hover:bg-transparent transition-colors"
         >
             <HeartIcon
-                className={`${isFeathered ? "text-red-500" : "text-gray-500"}`}
+                className={`${post.isFeathered ? "text-red-500 fill-red-500" : "text-gray-500"}`}
             />
             {(
-                <span className="text-sm text-gray-700">{count}</span>
+                <span className="text-sm text-gray-700">{post.featherCount}</span>
             )}
         </Button>
     );

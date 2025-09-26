@@ -10,52 +10,26 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { EllipsisVertical } from 'lucide-react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import Link from 'next/link';
+import { PostWithInteractions } from '@/src/types';
+import usePostStore from '@/src/stores/postStore';
 
-interface ChirpCardProps {
-  username: string;
-  content: string;
-  isFeathered: boolean;
-  featherCount: number;
-  isEchoed: boolean;
-  echoCount: number;
-  isSpread: boolean;
-  spreadCount: number;
-  isBookmarked: boolean;
-  onToggleFeather: () => void;
-  onToggleEcho: () => void;
-  onToggleSpread: () => void;
-  onToggleBookmark: () => void;
-}
 
-export function ChirpCard({
-  username,
-  content,
-  isFeathered,
-  featherCount,
-  isEchoed,
-  echoCount,
-  isSpread,
-  spreadCount,
-  isBookmarked,
-  onToggleFeather,
-  onToggleEcho,
-  onToggleSpread,
-  onToggleBookmark,
-}: ChirpCardProps) {
+
+export function ChirpCard({ post }: { post: PostWithInteractions }) {
   return (
     <Card className="shadow-md hover:shadow-lg transition-shadow mb-4">
       <CardHeader>
         <div className="flex justify-between">
           <div className="flex items-center">
-            <Link href={`/nest/${username}`}>
+            <Link href={`/nest/${post.user.username}`}>
               <Avatar className="h-10 w-10">
                 <AvatarImage alt="avatar" src="/placeholder.svg" />
-                <AvatarFallback>{username[0].toUpperCase()}</AvatarFallback>
+                <AvatarFallback>{post.user.username[0].toUpperCase()}</AvatarFallback>
               </Avatar>
             </Link>
             <span className="font-semibold ml-2">
-              <Link href={`/nest/${username}`}>
-                {username}
+              <Link href={`/nest/${post.user.username}`}>
+                {post.user.username}
               </Link>
             </span>
           </div>
@@ -75,31 +49,14 @@ export function ChirpCard({
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-gray-800 mb-4">{content}</p>
+        <p className="text-gray-800 mb-4">{post.content}</p>
       </CardContent>
-      {/* <CardFooter> */}
       <div className="px-4 flex justify-between">
-        <Feather
-          isFeathered={isFeathered}
-          count={featherCount}
-          onToggleFeather={onToggleFeather}
-        />
-        <Echo
-          isEchoed={isEchoed}
-          count={echoCount}
-          onToggleEcho={onToggleEcho}
-        />
-        <Spread
-          isSpread={isSpread}
-          count={spreadCount}
-          onToggleSpread={onToggleSpread}
-        />
-        <Bookmark
-          isBookmarked={isBookmarked}
-          onToggleBookmark={onToggleBookmark}
-        />
+        <Feather key={post.id} postId={post.id} />
+        <Echo key={post.id} postId={post.id} />
+        <Spread key={post.id} postId={post.id} />
+        <Bookmark key={post.id} postId={post.id} />
       </div>
-      {/* </CardFooter> */}
     </Card>
-  );
+  )
 }

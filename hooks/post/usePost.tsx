@@ -1,19 +1,32 @@
 "use client";
 
 import api from "@/lib/api";
+import { normalizePosts } from "@/lib/utils";
+import usePostStore from "@/src/stores/postStore";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { PostWithInteractions, Post } from "@/src/types";
 
 export function usePost() {
+    const setPosts = usePostStore((state) => state.setPosts);
+
     const { data: posts, isLoading: loading, isError: error } = useQuery({
         queryKey: ["posts"],
         queryFn: async () => {
             const response = await api.get("/post");
             return response.data;
         },
+        select: (data) => {
+            const normalizedPosts = normalizePosts(data);
+            setPosts(normalizedPosts);
+            return normalizedPosts as PostWithInteractions[];
+        }
     });
 
     return { posts, loading, error };
 }
+
+
+
 
 export function usePostByUserID(userID: string) {
     const { data: posts, isLoading: loading, isError: error } = useQuery({

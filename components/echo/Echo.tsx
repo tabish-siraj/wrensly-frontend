@@ -1,29 +1,29 @@
-// create a repost component that displays a Echo icon and a count of Echos
+// Echo.tsx
+"use client";
 
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { RepeatIcon } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { RepeatIcon } from "lucide-react";
+import usePostStore from "@/src/stores/postStore";
 
 interface EchoProps {
-  isEchoed: boolean;
-  count: number;
-  onToggleEcho: () => void;
+  postId: string;
 }
 
-export function Echo({ isEchoed, count, onToggleEcho }: EchoProps) {
+export function Echo({ postId }: EchoProps) {
+  const post = usePostStore((state) => state.posts.find((p) => p.id === postId));
+  const toggleEcho = usePostStore((state) => state.toggleEcho);
+
+  if (!post) return null;
+
   return (
     <Button
       variant="ghost"
       size="icon"
-      onClick={onToggleEcho}
-      className="text-gray-500 hover:text-green-500 hover:bg-transparent transition-colors"
+      onClick={() => toggleEcho(postId)}
+      className="flex items-center gap-1 text-gray-500 hover:text-green-500 hover:bg-transparent transition-colors"
     >
-      <RepeatIcon
-        className={`${isEchoed ? 'text-green-500' : 'text-gray-500'}`}
-      />
-      {(
-        <span className="text-sm text-gray-700">{count}</span>
-      )}
+      <RepeatIcon className={`${post.isEchoed ? "text-green-500" : "text-gray-500"}`} />
+      <span className="text-sm text-gray-700">{post.echoCount}</span>
     </Button>
   );
 }

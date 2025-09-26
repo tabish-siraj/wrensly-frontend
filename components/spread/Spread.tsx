@@ -1,28 +1,26 @@
-// create a Share component that displays a share icon and a count of shares
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ShareIcon } from 'lucide-react';
-
+import usePostStore from "@/src/stores/postStore";
 interface SpreadProps {
-  isSpread: boolean;
-  count: number;
-  onToggleSpread: () => void;
+  postId: string;
 }
 
-export function Spread({ isSpread, count, onToggleSpread }: SpreadProps) {
+export function Spread({ postId }: SpreadProps) {
+  const post = usePostStore((state) => state.posts.find((p) => p.id === postId));
+  const toggleSpread = usePostStore((state) => state.toggleSpread);
   return (
     <Button
       variant="ghost"
       size="icon"
-      onClick={onToggleSpread}
+      onClick={() => toggleSpread(postId)}
       className="text-gray-500 hover:text-blue-500 hover:bg-transparent transition-colors"
     >
       <ShareIcon
-        className={`${isSpread ? 'text-blue-500' : 'text-gray-500'}`}
+        className={`${post?.isSpread ? 'text-blue-500' : 'text-gray-500'}`}
       />
       {(
-        <span className="text-sm text-gray-700">{count}</span>
+        <span className="text-sm text-gray-700">{post?.spreadCount}</span>
       )}
     </Button>
   );
