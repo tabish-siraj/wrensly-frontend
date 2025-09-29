@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
-import { Feather } from '../feather/Feather';
 import { Echo } from '../echo/Echo';
 import { Spread } from '../spread/Spread';
 import { Bookmark } from '../bookmark/Bookmark';
@@ -11,11 +10,12 @@ import { EllipsisVertical } from 'lucide-react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import Link from 'next/link';
 import { PostWithInteractions } from '@/src/types';
-import usePostStore from '@/src/stores/postStore';
+import { Like } from "@/components/like/Like";
+// import usePostStore from '@/src/stores/postStore';
 
 
 
-export function ChirpCard({ post }: { post: PostWithInteractions }) {
+export function PostCard({ post }: { post: PostWithInteractions }) {
   return (
     <Card className="shadow-md hover:shadow-lg transition-shadow mb-4">
       <CardHeader>
@@ -52,7 +52,7 @@ export function ChirpCard({ post }: { post: PostWithInteractions }) {
         <p className="text-gray-800 mb-4">{post.content}</p>
       </CardContent>
       <div className="px-4 flex justify-between">
-        <Feather key={post.id} postId={post.id} />
+        <Like post={post} onSuccess={() => { }} />
         <Echo key={post.id} postId={post.id} />
         <Spread key={post.id} postId={post.id} />
         <Bookmark key={post.id} postId={post.id} />

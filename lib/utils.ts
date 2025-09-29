@@ -16,8 +16,10 @@ export const removeEmptyFields = (obj: Record<string, unknown>) => {
 export function normalizePost(post: Post): PostWithInteractions {
   return {
     ...post,
-    isFeathered: false,
-    featherCount: 0,
+    user: post.user,
+    // _count: post._count,
+    isLiked: false,
+    likeCount: 0,
     isEchoed: false,
     echoCount: 0,
     isSpread: false,
@@ -27,5 +29,9 @@ export function normalizePost(post: Post): PostWithInteractions {
 }
 
 export function normalizePosts(posts: Post[]): PostWithInteractions[] {
+  if (!Array.isArray(posts)) {
+    console.error("Expected posts to be an array:", posts);
+    return [];
+  }
   return posts.map(normalizePost);
 }

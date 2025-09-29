@@ -8,7 +8,7 @@ import { ImageIcon, Smile, Calendar, MapPin } from "lucide-react";
 import { usePostMutation } from "@/hooks/post/usePost";
 import { toast } from "sonner";
 
-interface ChirpComposerProps {
+interface PostComposerProps {
   user: {
     username: string
     avatar: string | null
@@ -17,10 +17,10 @@ interface ChirpComposerProps {
   placeholder?: string;
 }
 
-export function ChirpComposer({
+export function PostComposer({
   user,
   placeholder = "What is happening?!",
-}: ChirpComposerProps) {
+}: PostComposerProps) {
   const [content, setContent] = useState("");
   const maxLength = 500;
   const postMutation = usePostMutation();

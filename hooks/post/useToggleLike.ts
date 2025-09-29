@@ -1,45 +1,55 @@
 // hooks/post/useToggleFeather.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "@/lib/api"; // your axios instance
+import api from "@/lib/api";
+import { Post } from "@/src/types";
+
+interface ToggleLikeVariables {
+    postId: string;
+    isLiked: boolean;
+}
 
 export function useToggleLike() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ postId, isFeathered }: { postId: string; isFeathered: boolean }) => {
-            if (isFeathered) {
-                return api.delete(`/post/${postId}/feather`);
+        mutationFn: async ({ postId, isLiked }: ToggleLikeVariables) => {
+            if (isLiked) {
+                return api.delete(`/api/like/${postId}`);
             } else {
-                return api.post(`/post/${postId}/feather`);
+                return api.post('/api/like', {
+                    postId,
+                    isLiked: true
+                });
             }
         },
-        onMutate: async ({ postId, isFeathered }) => {
+        onMutate: async ({ postId, isLiked }) => {
             await queryClient.cancelQueries({ queryKey: ["posts"] });
 
-            const prevPosts = queryClient.getQueryData<any>(["posts"]);
+            const prevPosts = queryClient.getQueryData<{ data: Post[] }>(["posts"]);
 
-            queryClient.setQueryData(["posts"], (old: any) => {
+            queryClient.setQueryData(["posts"], (old: { data: Post[] } | undefined) => {
                 if (!old?.data) return old;
                 return {
                     ...old,
-                    data: old.data.map((p: any) =>
-                        p.id === postId
+                    data: old.data.map((post) =>
+                        post.id === postId
                             ? {
-                                ...p,
-                                isFeathered: !isFeathered,
-                                featherCount: p.featherCount + (isFeathered ? -1 : 1),
+                                ...post,
+                                isLiked: !isLiked,
+                                likeCount: post.likeCount + (isLiked ? -1 : 1),
                             }
-                            : p
+                            : post
                     ),
                 };
             });
 
             return { prevPosts };
         },
-        onError: (_err, _variables, context) => {
+        onError: (error, variables, context) => {
             if (context?.prevPosts) {
                 queryClient.setQueryData(["posts"], context.prevPosts);
             }
+            console.error('Error toggling like:', error);
         },
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ["posts"] });

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { usePostByUsername } from "@/hooks/post/usePost";
-import { ChirpCard } from "../card/ChirpCard";
+import { PostCard } from "../card/PostCard";
 import { Post } from "@/src/types";
 // import useUserStore from "@/src/stores/userStore";
 import { Loader2 } from "lucide-react";
@@ -53,7 +53,7 @@ export default function NestTabs() {
                             <div className="text-gray-500 py-8">No posts available.</div>
                         ) : posts && posts.data && posts.data.length > 0 ? (
                             posts.data.map((post: Post) => (
-                                <ChirpCard
+                                <PostCard
                                     key={post.id}
                                     content={post.content}
                                     username={post.id}
@@ -83,7 +83,7 @@ export default function NestTabs() {
                             <div className="text-red-500 py-8">Error loading posts: {error}</div>
                         ) : posts && posts.data && posts.data.length > 0 ? (
                             posts.data.map((post: Post) => (
-                                <ChirpCard
+                                <PostCard
                                     key={post.id}
                                     content={post.content}
                                     username={post.id}
@@ -113,7 +113,7 @@ export default function NestTabs() {
                             <div className="text-red-500 py-8">Error loading posts: {error}</div>
                         ) : posts && posts.data && posts.data.length > 0 ? (
                             posts.data.map((post: Post) => (
-                                <ChirpCard
+                                <PostCard
                                     key={post.id}
                                     content={post.content}
                                     username={post.id}
@@ -143,7 +143,7 @@ export default function NestTabs() {
                             <div className="text-red-500 py-8">Error loading posts: {error}</div>
                         ) : posts && posts.data && posts.data.length > 0 ? (
                             posts.data.map((post: Post) => (
-                                <ChirpCard
+                                <PostCard
                                     key={post.id}
                                     content={post.content}
                                     username={post.id}

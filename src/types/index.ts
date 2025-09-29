@@ -34,6 +34,13 @@ export interface Post {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+  isLiked: boolean;
+  likeCount: number;
+  isEchoed: boolean;
+  echoCount: number;
+  isSpread: boolean;
+  spreadCount: number;
+  isBookmarked: boolean;
 }
 export interface Posts {
   success: boolean;
@@ -50,8 +57,8 @@ export interface TrendingTopic {
 
 // This is what your UI components expect
 export interface PostWithInteractions extends Post {
-  isFeathered: boolean;
-  featherCount: number;
+  isLiked: boolean;
+  likeCount: number;
   isEchoed: boolean;
   echoCount: number;
   isSpread: boolean;
