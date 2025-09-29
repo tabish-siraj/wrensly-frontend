@@ -14,9 +14,9 @@ export function useToggleLike() {
     return useMutation({
         mutationFn: async ({ postId, isLiked }: ToggleLikeVariables) => {
             if (isLiked) {
-                return api.delete(`/api/like/${postId}`);
+                return api.delete(`/like/${postId}`);
             } else {
-                return api.post('/api/like', {
+                return api.post('/like', {
                     postId,
                     isLiked: true
                 });

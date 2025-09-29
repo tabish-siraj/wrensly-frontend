@@ -42,7 +42,7 @@ export function Like({ post, onSuccess }: LikeProps) {
                     } ${toggleLike.isPending ? "opacity-50" : ""}`}
             />
             <span className="text-sm text-gray-700">
-                {toggleLike.isPending ? '...' : post.likeCount}
+                {toggleLike.isPending ? '...' : post.stats.likes}
             </span>
         </Button>
     );

@@ -4,7 +4,6 @@ import api from "@/lib/api";
 import { normalizePosts } from "@/lib/utils";
 // import usePostStore from "@/src/stores/postStore";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-// import { PostWithInteractions, Post } from "@/src/types";
 
 export function usePost() {
     const { data: posts, isLoading: loading, isError: error } = useQuery({

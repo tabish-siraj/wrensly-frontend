@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { Post, PostWithInteractions } from "@/src/types";
+import { Post } from "@/src/types";
 
 
 export function cn(...inputs: ClassValue[]) {
@@ -13,22 +13,13 @@ export const removeEmptyFields = (obj: Record<string, unknown>) => {
   );
 };
 
-export function normalizePost(post: Post): PostWithInteractions {
+export function normalizePost(post: Post): Post {
   return {
-    ...post,
-    user: post.user,
-    // _count: post._count,
-    isLiked: false,
-    likeCount: 0,
-    isEchoed: false,
-    echoCount: 0,
-    isSpread: false,
-    spreadCount: 0,
-    isBookmarked: false,
+    ...post
   };
 }
 
-export function normalizePosts(posts: Post[]): PostWithInteractions[] {
+export function normalizePosts(posts: Post[]): Post[] {
   if (!Array.isArray(posts)) {
     console.error("Expected posts to be an array:", posts);
     return [];

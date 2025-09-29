@@ -26,6 +26,11 @@ export interface User {
   updatedAt: string;
   deletedAt: string;
 }
+
+export interface PostStats {
+  likes: number;
+  comments: number;
+}
 export interface Post {
   id: string;
   content: string;
@@ -35,13 +40,12 @@ export interface Post {
   updatedAt: string;
   deletedAt: string | null;
   isLiked: boolean;
-  likeCount: number;
   isEchoed: boolean;
-  echoCount: number;
   isSpread: boolean;
-  spreadCount: number;
   isBookmarked: boolean;
+  stats: PostStats;
 }
+
 export interface Posts {
   success: boolean;
   message: string;
@@ -55,13 +59,3 @@ export interface TrendingTopic {
   posts: string;
 }
 
-// This is what your UI components expect
-export interface PostWithInteractions extends Post {
-  isLiked: boolean;
-  likeCount: number;
-  isEchoed: boolean;
-  echoCount: number;
-  isSpread: boolean;
-  spreadCount: number;
-  isBookmarked: boolean;
-}

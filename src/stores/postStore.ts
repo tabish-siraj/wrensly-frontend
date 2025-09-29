@@ -2,11 +2,11 @@
 // @src/stores/postStore.ts
 
 // import { create } from "zustand";
-// import { PostWithInteractions } from "../types";
+// import { Post } from "../types";
 
 // interface PostStore {
-//     posts: PostWithInteractions[];
-//     setPosts: (posts: PostWithInteractions[]) => void;
+//     posts: Post[];
+//     setPosts: (posts: Post[]) => void;
 //     // addComment: (postId: string, comment: { userId: string; text: string }) => void;
 //     // removeComment: (postId: string, commentId: string) => void;
 //     toggleFeather: (postId: string) => void;

@@ -1,15 +1,15 @@
 "use client";
 
-import { usePost } from "@/hooks/post/usePost";
+import { useFeed } from "@/hooks/post/useFeed";
 import { PostCard } from "@/components/card/PostCard";
 import { PostComposer } from "@/components/input/PostComposer";
 import { Loader2 } from "lucide-react";
-import { PostWithInteractions } from "@/src/types";
+import { Post } from "@/src/types";
 import useUserStore from "@/src/stores/userStore";
 
 export default function FeedPage() {
   const { user } = useUserStore();
-  const { posts, loading, error } = usePost();
+  const { posts, loading, error } = useFeed();
 
   if (loading) {
     return (
@@ -43,7 +43,7 @@ export default function FeedPage() {
           avatar: user?.avatar || "/default-avatar.png"
         }}
       />
-      {posts.map((post: PostWithInteractions) => (
+      {posts.map((post: Post) => (
         <PostCard key={post.id} post={post} />
       ))}
     </div>

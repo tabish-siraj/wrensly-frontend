@@ -9,13 +9,13 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { EllipsisVertical } from 'lucide-react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import Link from 'next/link';
-import { PostWithInteractions } from '@/src/types';
+import { Post } from '@/src/types';
 import { Like } from "@/components/like/Like";
 // import usePostStore from '@/src/stores/postStore';
 
 
 
-export function PostCard({ post }: { post: PostWithInteractions }) {
+export function PostCard({ post }: { post: Post }) {
   return (
     <Card className="shadow-md hover:shadow-lg transition-shadow mb-4">
       <CardHeader>
@@ -53,9 +53,9 @@ export function PostCard({ post }: { post: PostWithInteractions }) {
       </CardContent>
       <div className="px-4 flex justify-between">
         <Like post={post} onSuccess={() => { }} />
-        <Echo key={post.id} postId={post.id} />
+        {/* <Echo key={post.id} postId={post.id} />
         <Spread key={post.id} postId={post.id} />
-        <Bookmark key={post.id} postId={post.id} />
+        <Bookmark key={post.id} postId={post.id} /> */}
       </div>
     </Card>
   )
