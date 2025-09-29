@@ -23,11 +23,11 @@ export function useToggleLike() {
             }
         },
         onMutate: async ({ postId, isLiked }) => {
-            await queryClient.cancelQueries({ queryKey: ["posts"] });
+            await queryClient.cancelQueries({ queryKey: ["feed"] });
 
-            const prevPosts = queryClient.getQueryData<{ data: Post[] }>(["posts"]);
+            const prevPosts = queryClient.getQueryData<{ data: Post[] }>(["feed"]);
 
-            queryClient.setQueryData(["posts"], (old: { data: Post[] } | undefined) => {
+            queryClient.setQueryData(["feed"], (old: { data: Post[] } | undefined) => {
                 if (!old?.data) return old;
                 return {
                     ...old,
@@ -36,7 +36,7 @@ export function useToggleLike() {
                             ? {
                                 ...post,
                                 isLiked: !isLiked,
-                                likeCount: post.likeCount + (isLiked ? -1 : 1),
+                                likeCount: post.stats.likes + (isLiked ? -1 : 1),
                             }
                             : post
                     ),
@@ -47,12 +47,12 @@ export function useToggleLike() {
         },
         onError: (error, variables, context) => {
             if (context?.prevPosts) {
-                queryClient.setQueryData(["posts"], context.prevPosts);
+                queryClient.setQueryData(["feed"], context.prevPosts);
             }
             console.error('Error toggling like:', error);
         },
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: ["posts"] });
+            queryClient.invalidateQueries({ queryKey: ["feed"] });
         },
     });
 }
