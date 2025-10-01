@@ -11,7 +11,7 @@
 //     // removeComment: (postId: string, commentId: string) => void;
 //     toggleFeather: (postId: string) => void;
 //     toggleRepost: (postId: string) => void;
-//     toggleSpread: (postId: string) => void;
+//     toggleShare: (postId: string) => void;
 //     toggleBookmark: (postId: string) => void;
 // }
 
@@ -36,12 +36,12 @@
 //             } : p
 //         ),
 //     })),
-//     toggleSpread: (postId) => set((state) => ({
+//     toggleShare: (postId) => set((state) => ({
 //         posts: state.posts.map((p) =>
 //             p.id === postId ? {
 //                 ...p,
-//                 isSpread: !p.isSpread,
-//                 spreadCount: p.spreadCount + (p.isSpread ? -1 : 1),
+//                 isShare: !p.isShare,
+//                 shareCount: p.shareCount + (p.isShare ? -1 : 1),
 //             } : p
 //         ),
 //     })),

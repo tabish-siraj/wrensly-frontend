@@ -1,17 +1,19 @@
 // create a tweet card component
 
 import React from 'react';
-import { Card, CardHeader, CardContent } from '@/components/ui/card';
-import { Repost } from '../repost/Repost';
-// import { Spread } from '../spread/Spread';
-// import { Bookmark } from '../bookmark/Bookmark';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { EllipsisVertical } from 'lucide-react';
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import Link from 'next/link';
+
+import { EllipsisVertical } from 'lucide-react';
+
 import { Post } from '@/src/types';
+
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Like } from "@/components/like/Like";
-// import usePostStore from '@/src/stores/postStore';
+import { Repost } from '@/components/repost/Repost';
+import { Share } from '@/components/share/Share';
+import { Bookmark } from '@/components/bookmark/Bookmark';
 
 interface PostCardProps {
   post: Post;
@@ -57,8 +59,8 @@ export function PostCard({ screen, post }: PostCardProps) {
       <div className="px-4 flex justify-between">
         <Like key={post.id} screen={screen} post={post} onSuccess={() => { }} />
         <Repost key={post.id} screen={screen} post={post} />
-        {/* <Spread key={post.id} postId={post.id} />
-        <Bookmark key={post.id} postId={post.id} /> */}
+        <Share key={post.id} screen={screen} post={post} />
+        <Bookmark key={post.id} screen={screen} post={post} />
       </div>
     </Card>
   )

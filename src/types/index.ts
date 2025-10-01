@@ -42,7 +42,6 @@ export interface Post {
   deletedAt: string | null;
   isLiked: boolean;
   isReposted: boolean;
-  isSpread: boolean;
   isBookmarked: boolean;
   stats: PostStats;
 }

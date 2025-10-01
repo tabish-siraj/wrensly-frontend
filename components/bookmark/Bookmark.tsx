@@ -3,21 +3,20 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { BookmarkIcon } from 'lucide-react';
-import usePostStore from '@/src/stores/postStore';
+import { Post } from '@/src/types';
 interface BookmarkProps {
-  postId: string;
+  screen: string;
+  post: Post;
+  // onSuccess?: () => void; // Uncomment if you want to handle success callbacks
 }
 
-export function Bookmark({ postId }: BookmarkProps) {
-  const post = usePostStore((state) => state.posts.find((post) => post.id === postId));
-  const toggleBookmark = usePostStore((state) => state.toggleBookmark);
-
-  if (!post) return null;
+export function Bookmark({ screen, post }: BookmarkProps) {
+  console.log(screen);
   return (
     <Button
       variant="ghost"
       size="icon"
-      onClick={() => toggleBookmark(postId)}
+      onClick={() => { }}
       className="text-gray-500 hover:text-blue-500 transition-colors"
     >
       <BookmarkIcon

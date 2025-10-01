@@ -10,7 +10,7 @@ import { SCREEN } from "@/src/constants";
 
 const TABS = [
     { key: "chirps", label: "Chirps" },
-    { key: "spreads", label: "Spreads" },
+    { key: "shares", label: "Shares" },
     { key: "media", label: "Media" },
     { key: "feathers", label: "Feathered" },
 ];
@@ -59,7 +59,7 @@ export default function NestTabs() {
                             <div className="py-8 text-gray-500">No posts available</div>
                         )}
                     </div>}
-                    {activeTab === "spreads" && <div>
+                    {activeTab === "shares" && <div>
                         {loading ? (
                             <div className="flex justify-center py-8">
                                 <Loader2 className="animate-spin w-8 h-8 text-blue-500" />
