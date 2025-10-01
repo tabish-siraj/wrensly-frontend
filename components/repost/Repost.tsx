@@ -11,7 +11,7 @@ interface RepostProps {
 }
 
 export function Repost({ screen, post }: RepostProps) {
-
+  console.log(screen);
   return (
     <Button
       variant="ghost"
