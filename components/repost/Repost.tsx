@@ -4,8 +4,6 @@
 import { Button } from "@/components/ui/button";
 import { RepeatIcon } from "lucide-react";
 import { Post } from "@/src/types";
-import { SCREEN } from "@/src/constants";
-
 interface RepostProps {
   screen: string;
   post: Post;

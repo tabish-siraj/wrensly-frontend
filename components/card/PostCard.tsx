@@ -3,8 +3,8 @@
 import React from 'react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Repost } from '../repost/Repost';
-import { Spread } from '../spread/Spread';
-import { Bookmark } from '../bookmark/Bookmark';
+// import { Spread } from '../spread/Spread';
+// import { Bookmark } from '../bookmark/Bookmark';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { EllipsisVertical } from 'lucide-react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
@@ -55,8 +55,8 @@ export function PostCard({ screen, post }: PostCardProps) {
         <p className="text-gray-800 mb-4">{post.content}</p>
       </CardContent>
       <div className="px-4 flex justify-between">
-        <Like screen={screen} post={post} onSuccess={() => { }} />
-        <Repost key={post.id} postId={post.id} />
+        <Like key={post.id} screen={screen} post={post} onSuccess={() => { }} />
+        <Repost key={post.id} screen={screen} post={post} />
         {/* <Spread key={post.id} postId={post.id} />
         <Bookmark key={post.id} postId={post.id} /> */}
       </div>
