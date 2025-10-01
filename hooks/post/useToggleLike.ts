@@ -6,13 +6,14 @@ import { Post } from "@/src/types";
 interface ToggleLikeVariables {
     postId: string;
     isLiked: boolean;
+    screen: string;
 }
 
 export function useToggleLike() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ postId, isLiked }: ToggleLikeVariables) => {
+        mutationFn: async ({ postId, isLiked, screen }: ToggleLikeVariables) => {
             if (isLiked) {
                 return api.delete(`/like/${postId}`);
             } else {
@@ -37,8 +38,7 @@ export function useToggleLike() {
                                 ...post,
                                 isLiked: !isLiked,
                                 likeCount: post.stats.likes + (isLiked ? -1 : 1),
-                            }
-                            : post
+                            } : post
                     ),
                 };
             });

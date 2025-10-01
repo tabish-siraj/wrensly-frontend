@@ -6,16 +6,18 @@ import { Post } from "@/src/types";
 import { toast } from "sonner";
 
 interface LikeProps {
+    screen: string;
     post: Post;
     onSuccess?: () => void;
 }
 
-export function Like({ post, onSuccess }: LikeProps) {
+export function Like({ screen, post, onSuccess }: LikeProps) {
     const toggleLike = useToggleLike();
 
     const handleLikeToggle = () => {
         toggleLike.mutate(
             {
+                screen: screen,
                 postId: post.id,
                 isLiked: post.isLiked
             },

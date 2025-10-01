@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
-import { Echo } from '../echo/Echo';
+import { Repost } from '../repost/Repost';
 import { Spread } from '../spread/Spread';
 import { Bookmark } from '../bookmark/Bookmark';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -13,9 +13,12 @@ import { Post } from '@/src/types';
 import { Like } from "@/components/like/Like";
 // import usePostStore from '@/src/stores/postStore';
 
+interface PostCardProps {
+  post: Post;
+  screen: string;
+}
 
-
-export function PostCard({ post }: { post: Post }) {
+export function PostCard({ screen, post }: PostCardProps) {
   return (
     <Card className="shadow-md hover:shadow-lg transition-shadow mb-4">
       <CardHeader>
@@ -52,9 +55,9 @@ export function PostCard({ post }: { post: Post }) {
         <p className="text-gray-800 mb-4">{post.content}</p>
       </CardContent>
       <div className="px-4 flex justify-between">
-        <Like post={post} onSuccess={() => { }} />
-        {/* <Echo key={post.id} postId={post.id} />
-        <Spread key={post.id} postId={post.id} />
+        <Like screen={screen} post={post} onSuccess={() => { }} />
+        <Repost key={post.id} postId={post.id} />
+        {/* <Spread key={post.id} postId={post.id} />
         <Bookmark key={post.id} postId={post.id} /> */}
       </div>
     </Card>

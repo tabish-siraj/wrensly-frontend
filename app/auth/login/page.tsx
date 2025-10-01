@@ -20,7 +20,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-white px-4">
       <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-xl border border-gray-200">
-        
+
         {/* === Branding Header === */}
         <div className="flex flex-col items-center mb-6">
           {/* ⛔ Previous Bird Icon
@@ -32,13 +32,12 @@ export default function LoginPage() {
           {/* <div className="bg-[#1d9bf0] p-3 rounded-full mb-2 shadow-md">
             <span className="text-white text-2xl font-bold">W</span>
           </div> */}
-            <Link href="/" className="mb-6 block px-2">
+          <Link href="/" className="mb-6 block px-2">
             <span className="text-4xl font-extrabold text-black tracking-wide">W</span>
           </Link>
 
           <h1 className="text-2xl font-extrabold text-gray-900">Log in to Wrensly</h1>
-          <p className="text-sm text-gray-600 mt-1">Join the flock. Echo the world</p>
-             {/* <p className="text-sm text-gray-600 mt-1">Join the flock. Echo the world 🐣</p> */}
+          <p className="text-sm text-gray-600 mt-1">Join the flock. Sp</p>
         </div>
 
         {/* === Login Form === */}

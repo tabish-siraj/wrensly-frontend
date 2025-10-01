@@ -6,6 +6,7 @@ import { PostComposer } from "@/components/input/PostComposer";
 import { Loader2 } from "lucide-react";
 import { Post } from "@/src/types";
 import useUserStore from "@/src/stores/userStore";
+import { SCREEN } from "@/src/constants";
 
 export default function FeedPage() {
   const { user } = useUserStore();
@@ -44,7 +45,7 @@ export default function FeedPage() {
         }}
       />
       {posts.map((post: Post) => (
-        <PostCard key={post.id} post={post} />
+        <PostCard screen={SCREEN.FEED} key={post.id} post={post} />
       ))}
     </div>
   );

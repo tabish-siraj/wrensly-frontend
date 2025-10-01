@@ -41,7 +41,7 @@ export default function NotificationsPage() {
             </div>
             <div>
               <p className="text-sm">
-                <span className="font-semibold text-black">@chirpy_chick</span> Echoed your Chirp.
+                <span className="font-semibold text-black">@chirpy_chick</span> Reposted your Chirp.
               </p>
               <span className="text-xs text-gray-500">Yesterday</span>
             </div>

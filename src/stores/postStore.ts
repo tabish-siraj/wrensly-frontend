@@ -10,7 +10,7 @@
 //     // addComment: (postId: string, comment: { userId: string; text: string }) => void;
 //     // removeComment: (postId: string, commentId: string) => void;
 //     toggleFeather: (postId: string) => void;
-//     toggleEcho: (postId: string) => void;
+//     toggleRepost: (postId: string) => void;
 //     toggleSpread: (postId: string) => void;
 //     toggleBookmark: (postId: string) => void;
 // }
@@ -27,12 +27,12 @@
 //             } : p
 //         ),
 //     })),
-//     toggleEcho: (postId) => set((state) => ({
+//     toggleRepost: (postId) => set((state) => ({
 //         posts: state.posts.map((p) =>
 //             p.id === postId ? {
 //                 ...p,
-//                 isEchoed: !p.isEchoed,
-//                 echoCount: p.echoCount + (p.isEchoed ? -1 : 1),
+//                 isReposted: !p.isReposted,
+//                 RepostCount: p.RepostCount + (p.isReposted ? -1 : 1),
 //             } : p
 //         ),
 //     })),

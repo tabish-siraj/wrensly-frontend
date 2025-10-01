@@ -4,9 +4,9 @@ import React from "react";
 import { usePostByUsername } from "@/hooks/post/usePost";
 import { PostCard } from "../card/PostCard";
 import { Post } from "@/src/types";
-// import useUserStore from "@/src/stores/userStore";
 import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
+import { SCREEN } from "@/src/constants";
 
 const TABS = [
     { key: "chirps", label: "Chirps" },
@@ -53,22 +53,7 @@ export default function NestTabs() {
                             <div className="text-gray-500 py-8">No posts available.</div>
                         ) : posts && posts.data && posts.data.length > 0 ? (
                             posts.data.map((post: Post) => (
-                                <PostCard
-                                    key={post.id}
-                                    content={post.content}
-                                    username={post.id}
-                                    isFeathered={true}
-                                    featherCount={0}
-                                    isEchoed={true}
-                                    echoCount={0}
-                                    isBookmarked={true}
-                                    isSpread={true}
-                                    spreadCount={0}
-                                    onToggleFeather={() => { }}
-                                    onToggleEcho={() => { }}
-                                    onToggleSpread={() => { }}
-                                    onToggleBookmark={() => { }}
-                                />
+                                <PostCard screen={SCREEN.PROFILE} key={post.id} post={post} />
                             ))
                         ) : (
                             <div className="py-8 text-gray-500">No posts available</div>
@@ -83,22 +68,7 @@ export default function NestTabs() {
                             <div className="text-red-500 py-8">Error loading posts: {error}</div>
                         ) : posts && posts.data && posts.data.length > 0 ? (
                             posts.data.map((post: Post) => (
-                                <PostCard
-                                    key={post.id}
-                                    content={post.content}
-                                    username={post.id}
-                                    isFeathered={true}
-                                    featherCount={0}
-                                    isEchoed={true}
-                                    echoCount={0}
-                                    isBookmarked={true}
-                                    isSpread={true}
-                                    spreadCount={0}
-                                    onToggleFeather={() => { }}
-                                    onToggleEcho={() => { }}
-                                    onToggleSpread={() => { }}
-                                    onToggleBookmark={() => { }}
-                                />
+                                <PostCard screen={SCREEN.PROFILE} key={post.id} post={post} />
                             ))
                         ) : (
                             <div className="py-8 text-gray-500">No posts available</div>
@@ -113,22 +83,7 @@ export default function NestTabs() {
                             <div className="text-red-500 py-8">Error loading posts: {error}</div>
                         ) : posts && posts.data && posts.data.length > 0 ? (
                             posts.data.map((post: Post) => (
-                                <PostCard
-                                    key={post.id}
-                                    content={post.content}
-                                    username={post.id}
-                                    isFeathered={true}
-                                    featherCount={0}
-                                    isEchoed={true}
-                                    echoCount={0}
-                                    isBookmarked={true}
-                                    isSpread={true}
-                                    spreadCount={0}
-                                    onToggleFeather={() => { }}
-                                    onToggleEcho={() => { }}
-                                    onToggleSpread={() => { }}
-                                    onToggleBookmark={() => { }}
-                                />
+                                <PostCard screen={SCREEN.PROFILE} key={post.id} post={post} />
                             ))
                         ) : (
                             <div className="py-8 text-gray-500">No posts available</div>
@@ -143,22 +98,7 @@ export default function NestTabs() {
                             <div className="text-red-500 py-8">Error loading posts: {error}</div>
                         ) : posts && posts.data && posts.data.length > 0 ? (
                             posts.data.map((post: Post) => (
-                                <PostCard
-                                    key={post.id}
-                                    content={post.content}
-                                    username={post.id}
-                                    isFeathered={true}
-                                    featherCount={0}
-                                    isEchoed={true}
-                                    echoCount={0}
-                                    isBookmarked={true}
-                                    isSpread={true}
-                                    spreadCount={0}
-                                    onToggleFeather={() => { }}
-                                    onToggleEcho={() => { }}
-                                    onToggleSpread={() => { }}
-                                    onToggleBookmark={() => { }}
-                                />
+                                <PostCard screen={SCREEN.PROFILE} key={post.id} post={post} />
                             ))
                         ) : (
                             <div className="py-8 text-gray-500">No posts available</div>

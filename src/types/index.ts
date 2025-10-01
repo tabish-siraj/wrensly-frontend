@@ -30,6 +30,7 @@ export interface User {
 export interface PostStats {
   likes: number;
   comments: number;
+  reposts: number;
 }
 export interface Post {
   id: string;
@@ -40,7 +41,7 @@ export interface Post {
   updatedAt: string;
   deletedAt: string | null;
   isLiked: boolean;
-  isEchoed: boolean;
+  isReposted: boolean;
   isSpread: boolean;
   isBookmarked: boolean;
   stats: PostStats;
