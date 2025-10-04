@@ -1,0 +1,6 @@
+{
+    "project_root": "d:\\Tabish\\wrensly\\wrensly-frontend",
+    "build_command": "next build",
+    "lint_command": "next lint",
+    "test_command": ""
+}

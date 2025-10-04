@@ -57,10 +57,10 @@ export function PostCard({ screen, post }: PostCardProps) {
         <p className="text-gray-800 mb-4">{post.content}</p>
       </CardContent>
       <div className="px-4 flex justify-between">
-        <Like key={post.id} screen={screen} post={post} onSuccess={() => { }} />
-        <Repost key={post.id} screen={screen} post={post} />
-        <Share key={post.id} screen={screen} post={post} />
-        <Bookmark key={post.id} screen={screen} post={post} />
+        <Like screen={screen} post={post} />
+        <Repost screen={screen} post={post} />
+        <Share screen={screen} post={post} />
+        <Bookmark screen={screen} post={post} />
       </div>
     </Card>
   )

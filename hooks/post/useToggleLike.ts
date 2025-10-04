@@ -1,4 +1,4 @@
-// hooks/post/useToggleFeather.ts
+// hooks/post/useToggleLike.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { Post } from "@/src/types";
@@ -13,7 +13,7 @@ export function useToggleLike() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ postId, isLiked, screen }: ToggleLikeVariables) => {
+        mutationFn: async ({ postId, isLiked }: ToggleLikeVariables) => {
             if (isLiked) {
                 return api.delete(`/like/${postId}`);
             } else {
@@ -23,12 +23,13 @@ export function useToggleLike() {
                 });
             }
         },
-        onMutate: async ({ postId, isLiked }) => {
-            await queryClient.cancelQueries({ queryKey: ["feed"] });
+        onMutate: async ({ postId, isLiked, screen }) => {
+            const queryKey = [screen];
+            await queryClient.cancelQueries({ queryKey });
 
-            const prevPosts = queryClient.getQueryData<{ data: Post[] }>(["feed"]);
+            const previousData = queryClient.getQueryData<{ data: Post[] }>(queryKey);
 
-            queryClient.setQueryData(["feed"], (old: { data: Post[] } | undefined) => {
+            queryClient.setQueryData(queryKey, (old: { data: Post[] } | undefined) => {
                 if (!old?.data) return old;
                 return {
                     ...old,
@@ -37,22 +38,27 @@ export function useToggleLike() {
                             ? {
                                 ...post,
                                 isLiked: !isLiked,
-                                likeCount: post.stats.likes + (isLiked ? -1 : 1),
+                                stats: {
+                                    ...post.stats,
+                                    likes: post.stats.likes + (isLiked ? -1 : 1),
+                                }
                             } : post
                     ),
                 };
             });
 
-            return { prevPosts };
+            return { previousData };
         },
         onError: (error, variables, context) => {
-            if (context?.prevPosts) {
-                queryClient.setQueryData(["feed"], context.prevPosts);
+            const queryKey = [variables.screen];
+            if (context?.previousData) {
+                queryClient.setQueryData(queryKey, context.previousData);
             }
             console.error('Error toggling like:', error);
         },
-        onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: ["feed"] });
+        onSettled: (data, error, variables) => {
+            const queryKey = [variables.screen];
+            queryClient.invalidateQueries({ queryKey });
         },
     });
 }
