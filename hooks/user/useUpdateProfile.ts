@@ -14,9 +14,7 @@ export const useUpdateProfile = () => {
 
     return useMutation({
         mutationFn: async ({ id, payload }: UpdateProfileArgs) => {
-            console.log(payload)
-            const response = await api.put(`/user/${id}`, payload);
-            console.log(JSON.stringify(response))
+            await api.put(`/user/${id}`, payload);
         },
         onSuccess: async () => {
             // onSuccess, run an api call to the user/me endpoint

@@ -2,7 +2,6 @@
 
 import api from "@/lib/api";
 import { normalizePosts } from "@/lib/utils";
-// import usePostStore from "@/src/stores/postStore";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function usePost() {
@@ -10,7 +9,7 @@ export function usePost() {
         queryKey: ["posts"],
         queryFn: async () => {
             const resp = await api.get("/post");
-            let noramalizedPost = normalizePosts(resp.data.data);
+            const noramalizedPost = normalizePosts(resp.data.data);
             return noramalizedPost;
         },
     });
