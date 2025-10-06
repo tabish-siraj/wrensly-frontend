@@ -1,4 +1,4 @@
-// Post Card Component
+// components/card/PostCard.tsx
 
 import React from 'react';
 import Link from 'next/link';
@@ -79,7 +79,7 @@ export function PostCard({ screen, post }: PostCardProps) {
               </div>
             </CardHeader>
             <CardContent className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-gray-800">{parentPost.content}</p>
+              <p className="text-gray-800 whitespace-pre-line">{parentPost.content}</p>
               <p className="text-gray-500 text-xs mt-4">Posted on {new Date(post.createdAt).toLocaleDateString()}</p>
             </CardContent>
           </div>
