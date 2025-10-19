@@ -37,6 +37,7 @@ export interface Post {
   content: string;
   user: Pick<User, "id" | "username" | "firstName" | "lastName" | "avatar">;
   parentId: string | null;
+  parent: Post | null;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;

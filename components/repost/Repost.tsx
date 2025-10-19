@@ -1,56 +1,136 @@
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Textarea } from "@/components/ui/textarea";
-import { useToggleRepost } from "@/hooks/post/useToggleRepost";
-import { Post } from "@/src/types";
-import { RepeatIcon } from "lucide-react";
+// // components/repost/Repost.tsx
+// import { Button } from "@/components/ui/button";
+// import { RepeatIcon } from "lucide-react";
+// import { Post } from "@/src/types";
+// interface RepostProps {
+//   screen: string;
+//   post: Post;
+//   // onSuccess?: () => void; // Uncomment if you want to handle success callbacks
+// }
+
+// export function Repost({ screen, post }: RepostProps) {
+//   console.log(screen);
+//   return (
+//     <Button
+//       variant="ghost"
+//       size="icon"
+//       onClick={() => { }}
+//       className="flex items-center gap-1 text-gray-500 hover:text-green-500 hover:bg-transparent transition-colors"
+//     >
+//       <RepeatIcon className={`${post.isReposted ? "text-green-500" : "text-gray-500"}`} />
+//       <span className="text-sm text-gray-700">{post.stats.reposts}</span>
+//     </Button>
+//   );
+// }
+"use client";
+
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { RepeatIcon, MessageSquare } from "lucide-react";
+import { Post } from "@/src/types";
+import { PostComposer } from "@/components/input/PostComposer";
+import { toast } from "sonner";
 
 interface RepostProps {
-    screen: string;
-    post: Post;
+  screen: string;
+  post: Post;
 }
 
 export function Repost({ screen, post }: RepostProps) {
-    const { mutate: toggleRepost } = useToggleRepost();
-    const [content, setContent] = useState("");
+  console.log(screen);
+  const [showQuoteComposer, setShowQuoteComposer] = useState(false);
 
-    const handleRepost = () => {
-        toggleRepost({ postId: post.id, isReposted: post.isReposted, screen });
-    };
+  const handleRepost = () => {
+    // 🔁 Perform direct repost mutation here (no quote)
+    toast.success("Reposted!");
+  };
 
-    const handleQuoteRepost = () => {
-        toggleRepost({ postId: post.id, isReposted: post.isReposted, screen, content });
-    };
+  const handleQuote = () => {
+    setShowQuoteComposer(true);
+  };
 
-    return (
-        <Dialog>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="flex items-center gap-1 text-gray-500 hover:text-green-500 hover:bg-transparent transition-colors"
-                    >
-                        <RepeatIcon className={`${post.isReposted ? "text-green-500" : "text-gray-500"}`} />
-                        <span className="text-sm text-gray-700">{post.stats.reposts}</span>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                    <DropdownMenuItem onClick={handleRepost}>Repost</DropdownMenuItem>
-                    <DialogTrigger asChild>
-                        <DropdownMenuItem>Quote Repost</DropdownMenuItem>
-                    </DialogTrigger>
-                </DropdownMenuContent>
-            </DropdownMenu>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Add a quote to your repost</DialogTitle>
-                </DialogHeader>
-                <Textarea value={content} onChange={(e) => setContent(e.target.value)} />
-                <Button onClick={handleQuoteRepost}>Repost</Button>
-            </DialogContent>
-        </Dialog>
-    );
+  const closeComposer = () => {
+    setShowQuoteComposer(false);
+  };
+
+  return (
+    <>
+      {/* Repost Button with Dropdown */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="flex items-center gap-1 text-gray-500 hover:text-green-500 hover:bg-transparent transition-colors"
+          >
+            <RepeatIcon
+              className={`${post.isReposted ? "text-green-500" : "text-gray-500"}`}
+            />
+            <span className="text-sm text-gray-700">{post.stats.reposts}</span>
+          </Button>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent align="start" sideOffset={4}>
+          <DropdownMenuItem onClick={handleRepost} className="flex items-center gap-2">
+            <RepeatIcon className="w-4 h-4 text-green-600" />
+            Repost
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleQuote} className="flex items-center gap-2">
+            <MessageSquare className="w-4 h-4 text-blue-600" />
+            Quote Repost
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/* Quote Composer Modal */}
+      <Dialog open={showQuoteComposer} onOpenChange={setShowQuoteComposer}>
+        <DialogContent className="max-w-2xl bg-white rounded-2xl shadow-2xl">
+          <DialogTitle className="sr-only">Quote Post Composer</DialogTitle>
+          <DialogDescription className="sr-only">
+            Compose a post with a quoted repost attached below.
+          </DialogDescription>
+          <PostComposer
+            user={{
+              username: post.user.username,
+              avatar: post.user.avatar || "/placeholder.svg",
+            }}
+            placeholder="Add a comment..."
+          />
+
+          {/* Quoted Post Box */}
+          <div className="border rounded-xl bg-gray-50 p-4 mt-3">
+            <div className="flex items-center mb-2">
+              <Avatar className="w-10 h-10">
+                <AvatarImage
+                  src={post.user.avatar || "/placeholder.svg"}
+                  alt={post.user.username}
+                />
+                <AvatarFallback>{post.user.username[0].toUpperCase()}</AvatarFallback>
+              </Avatar>
+              <span className="ml-2 font-medium">{post.user.username}</span>
+            </div>
+            <p className="text-gray-800 whitespace-pre-line">{post.content}</p>
+          </div>
+
+          <div className="mt-4 flex justify-end">
+            <Button
+              onClick={closeComposer}
+              variant="ghost"
+              className="rounded-full"
+            >
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
 }
