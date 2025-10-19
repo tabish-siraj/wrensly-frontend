@@ -43,6 +43,7 @@ export default function FeedPage() {
           username: user?.username || "anonymous",
           avatar: user?.avatar || "/default-avatar.png"
         }}
+        screen={SCREEN.FEED}
       />
       {posts.map((post: Post) => (
         <PostCard screen={SCREEN.FEED} key={post.id} post={post} />

@@ -6,19 +6,14 @@ interface ToggleRepostVariables {
     postId: string;
     isReposted: boolean;
     screen: string;
-    content?: string;
 }
 
 export function useToggleRepost() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ postId, isReposted, content }: ToggleRepostVariables) => {
-            if (isReposted) {
-                return api.delete(`/post/${postId}/repost`);
-            } else {
-                return api.post("/post", { parentId: postId, content });
-            }
+        mutationFn: async ({ postId }: ToggleRepostVariables) => {
+            return api.post("/post/repost", { postId });
         },
         onMutate: async ({ postId, isReposted, screen }) => {
             const queryKey = [screen];

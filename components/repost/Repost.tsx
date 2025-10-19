@@ -38,6 +38,8 @@ import { RepeatIcon, MessageSquare } from "lucide-react";
 import { Post } from "@/src/types";
 import { PostComposer } from "@/components/input/PostComposer";
 import { toast } from "sonner";
+import { useToggleRepost } from "@/hooks/post/useToggleRepost";
+import { useCreatePost } from "@/hooks/post/useCreatePost";
 
 interface RepostProps {
   screen: string;
@@ -45,12 +47,19 @@ interface RepostProps {
 }
 
 export function Repost({ screen, post }: RepostProps) {
-  console.log(screen);
   const [showQuoteComposer, setShowQuoteComposer] = useState(false);
+  const { mutate: toggleRepost } = useToggleRepost();
+  const { mutate: createPost } = useCreatePost({ screen });
 
   const handleRepost = () => {
-    // 🔁 Perform direct repost mutation here (no quote)
-    toast.success("Reposted!");
+    toggleRepost(
+        { postId: post.id, isReposted: post.isReposted, screen },
+        {
+            onSuccess: () => {
+                toast.success(post.isReposted ? "Repost removed" : "Repost successful");
+            }
+        }
+    );
   };
 
   const handleQuote = () => {
@@ -103,6 +112,17 @@ export function Repost({ screen, post }: RepostProps) {
               avatar: post.user.avatar || "/placeholder.svg",
             }}
             placeholder="Add a comment..."
+            onSubmit={(content) => {
+                createPost(
+                    { content, parentId: post.id },
+                    {
+                        onSuccess: () => {
+                            setShowQuoteComposer(false);
+                            toast.success("Your quote has been posted!");
+                        }
+                    }
+                );
+            }}
           />
 
           {/* Quoted Post Box */}

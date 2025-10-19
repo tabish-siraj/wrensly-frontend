@@ -5,33 +5,41 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ImageIcon, Smile, Calendar, MapPin } from "lucide-react";
-import { usePostMutation } from "@/hooks/post/usePost";
+import { useCreatePost } from "@/hooks/post/useCreatePost";
 import { toast } from "sonner";
+import { SCREEN } from "@/src/constants";
 
 interface PostComposerProps {
   user: {
-    username: string
-    avatar: string | null
+    username: string;
+    avatar: string | null;
   };
   onChirp?: (content: string) => void;
   placeholder?: string;
+  onSubmit?: (content: string) => void;
+  screen?: string;
 }
 
 export function PostComposer({
   user,
   placeholder = "What is happening?!",
+  onSubmit,
+  screen = SCREEN.FEED,
 }: PostComposerProps) {
   const [content, setContent] = useState("");
   const maxLength = 500;
-  const postMutation = usePostMutation();
+  const postMutation = useCreatePost({ screen });
 
   const handleSubmit = () => {
     if (content.trim() !== "") {
-      postMutation.mutate({
-        content: content.trim(),
-        parentId: null,
-      });
-      toast.success("Chirp posted!");
+      if (onSubmit) {
+        onSubmit(content.trim());
+      } else {
+        postMutation.mutate({
+          content: content.trim(),
+        });
+        toast.success("Chirp posted!");
+      }
       setContent("");
     }
   };
@@ -90,10 +98,11 @@ export function PostComposer({
 
             <div className="flex items-center space-x-3">
               <span
-                className={`text-sm ${content.length > maxLength * 0.9
-                  ? "text-red-500"
-                  : "text-gray-500"
-                  }`}
+                className={`text-sm ${
+                  content.length > maxLength * 0.9
+                    ? "text-red-500"
+                    : "text-gray-500"
+                }`}
               >
                 {maxLength - content.length}
               </span>
