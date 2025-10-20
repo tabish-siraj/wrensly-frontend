@@ -23,8 +23,6 @@ interface PostCardProps {
 export function PostCard({ screen, post }: PostCardProps) {
   const isReposted = post.parentId !== null && post.parentId !== "";
   const parentPost = isReposted ? post.parent : null;
-  console.log("isReposted:", isReposted);
-  console.log("parentPost:", parentPost);
   return (
     <Card className="shadow-md hover:shadow-lg transition-shadow mb-4">
       <CardHeader>

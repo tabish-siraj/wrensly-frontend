@@ -2,7 +2,7 @@
 
 import api from "@/lib/api";
 import { normalizePosts } from "@/lib/utils";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 export function useFeed() {
     const { data: posts, isLoading: loading, isError: error } = useQuery({
