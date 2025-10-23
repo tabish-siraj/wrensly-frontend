@@ -47,15 +47,15 @@ export function PostDetail({ post }: PostDetailProps) {
 
             <div className="flex items-center justify-around py-2 border-t border-b">
                 <div className="flex items-center gap-1">
-                    <span className="font-bold">{post.stats.reposts}</span>
+                    <span className="font-bold">0</span>
                     <span className="text-gray-500">Reposts</span>
                 </div>
                 <div className="flex items-center gap-1">
-                    <span className="font-bold">{post.stats.likes}</span>
+                    <span className="font-bold">0</span>
                     <span className="text-gray-500">Likes</span>
                 </div>
                 <div className="flex items-center gap-1">
-                    <span className="font-bold">{post.stats.comments}</span>
+                    <span className="font-bold">0</span>
                     <span className="text-gray-500">Bookmarks</span>
                 </div>
             </div>

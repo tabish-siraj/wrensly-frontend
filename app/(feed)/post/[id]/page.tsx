@@ -1,29 +1,31 @@
 "use client";
 
-import { PostComposer } from "@/components/input/PostComposer";
-import useUserStore from "@/src/stores/userStore";
-import { useRouter } from "next/navigation";
+import { PostDetail } from "@/components/card/PostDetail";
+import { useParams } from "next/navigation";
+import { usePostByID } from "@/hooks/post/usePost";
 
 const PostPage = () => {
-  const { user } = useUserStore();
-  const router = useRouter();
+  const { id } = useParams();
+  const { post, loading, error } = usePostByID(id as string);
+  console.log(post)
 
-  if (!user) {
-    return null;
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
-  const handlePostSubmit = () => {
-    router.push("/");
-  };
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
+  if (!post) {
+    return <div>Post not found</div>;
+  }
   return (
-    <div className="p-4">
-      <PostComposer
-        user={{ username: user.username, avatar: user.avatar }}
-        onSubmit={handlePostSubmit}
-      />
-    </div>
-  );
+    <>
+      <PostDetail post={post} />
+    </>
+  )
+
 };
 
 export default PostPage;

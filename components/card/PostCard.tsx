@@ -56,7 +56,9 @@ export function PostCard({ screen, post }: PostCardProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-gray-800 mb-4">{post.content}</p>
+        <Link href={`/post/${post.id}`}>
+          <p className="text-gray-800 mb-4">{post.content}</p>
+        </Link>
         {isReposted && parentPost && (
           <div className="border border-gray-200 rounded-lg p-2 bg-gray-50">
             <CardHeader>
@@ -92,7 +94,7 @@ export function PostCard({ screen, post }: PostCardProps) {
       <div className="px-4 flex justify-between">
         <Like screen={screen} post={post} />
         <Repost screen={screen} post={post} />
-        <Share screen={screen} post={post} />
+        <Share post={post} />
         <Bookmark screen={screen} post={post} />
       </div>
     </Card>
