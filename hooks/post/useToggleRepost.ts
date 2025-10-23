@@ -19,26 +19,23 @@ export function useToggleRepost() {
             const queryKey = [screen];
             await queryClient.cancelQueries({ queryKey });
 
-            const previousData = queryClient.getQueryData<{ pages: { data: Post[] }[] }>(queryKey);
+            const previousData = queryClient.getQueryData<{ data: Post[] }>(queryKey);
 
-            queryClient.setQueryData(queryKey, (old: { pages: { data: Post[] }[] } | undefined) => {
-                if (!old) return old;
+            queryClient.setQueryData(queryKey, (old: { data: Post[] } | undefined) => {
+                if (!old?.data) return old;
                 return {
                     ...old,
-                    pages: old.pages.map(page => ({
-                        ...page,
-                        data: page.data.map((post) =>
-                            post.id === postId
-                                ? {
-                                    ...post,
-                                    isReposted: !isReposted,
-                                    stats: {
-                                        ...post.stats,
-                                        reposts: isReposted ? post.stats.reposts - 1 : post.stats.reposts + 1,
-                                    }
-                                } : post
-                        ),
-                    })),
+                    data: old.data.map((post) =>
+                        post.id === postId
+                            ? {
+                                ...post,
+                                isReposted: !isReposted,
+                                stats: {
+                                    ...post.stats,
+                                    reposts: post.stats.reposts + (isReposted ? -1 : 1),
+                                }
+                            } : post
+                    ),
                 };
             });
 

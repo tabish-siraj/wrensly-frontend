@@ -1,27 +1,3 @@
-// // components/repost/Repost.tsx
-// import { Button } from "@/components/ui/button";
-// import { RepeatIcon } from "lucide-react";
-// import { Post } from "@/src/types";
-// interface RepostProps {
-//   screen: string;
-//   post: Post;
-//   // onSuccess?: () => void; // Uncomment if you want to handle success callbacks
-// }
-
-// export function Repost({ screen, post }: RepostProps) {
-//   console.log(screen);
-//   return (
-//     <Button
-//       variant="ghost"
-//       size="icon"
-//       onClick={() => { }}
-//       className="flex items-center gap-1 text-gray-500 hover:text-green-500 hover:bg-transparent transition-colors"
-//     >
-//       <RepeatIcon className={`${post.isReposted ? "text-green-500" : "text-gray-500"}`} />
-//       <span className="text-sm text-gray-700">{post.stats.reposts}</span>
-//     </Button>
-//   );
-// }
 "use client";
 
 import { useState } from "react";
@@ -53,12 +29,12 @@ export function Repost({ screen, post }: RepostProps) {
 
   const handleRepost = () => {
     toggleRepost(
-        { postId: post.id, isReposted: post.isReposted, screen },
-        {
-            onSuccess: () => {
-                toast.success(post.isReposted ? "Repost removed" : "Repost successful");
-            }
+      { postId: post.id, isReposted: post.isReposted, screen },
+      {
+        onSuccess: () => {
+          toast.success(post.isReposted ? "Unreposted" : "Reposted");
         }
+      }
     );
   };
 
@@ -90,7 +66,7 @@ export function Repost({ screen, post }: RepostProps) {
         <DropdownMenuContent align="start" sideOffset={4}>
           <DropdownMenuItem onClick={handleRepost} className="flex items-center gap-2">
             <RepeatIcon className="w-4 h-4 text-green-600" />
-            Repost
+            {post.isReposted ? 'Undo Repost' : 'Repost'}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleQuote} className="flex items-center gap-2">
             <MessageSquare className="w-4 h-4 text-blue-600" />
@@ -113,15 +89,15 @@ export function Repost({ screen, post }: RepostProps) {
             }}
             placeholder="Add a comment..."
             onSubmit={(content) => {
-                createPost(
-                    { content, parentId: post.id },
-                    {
-                        onSuccess: () => {
-                            setShowQuoteComposer(false);
-                            toast.success("Your quote has been posted!");
-                        }
-                    }
-                );
+              createPost(
+                { content, parentId: post.id },
+                {
+                  onSuccess: () => {
+                    setShowQuoteComposer(false);
+                    toast.success("Your quote has been posted!");
+                  }
+                }
+              );
             }}
           />
 
