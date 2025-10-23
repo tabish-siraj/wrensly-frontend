@@ -91,7 +91,7 @@ export function PostCard({ screen, post }: PostCardProps) {
         )}
         <p className="text-gray-500 text-xs mt-2">Posted on {new Date(post.createdAt).toLocaleDateString()}</p>
       </CardContent>
-      <div className="px-4 flex justify-between">
+      <div className="px-4 flex justify-around mt-2">
         <Like screen={screen} post={post} />
         <Repost screen={screen} post={post} />
         <Share post={post} />
