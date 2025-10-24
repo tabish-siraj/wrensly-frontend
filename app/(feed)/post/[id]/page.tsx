@@ -3,6 +3,7 @@
 import { PostDetail } from "@/components/card/PostDetail";
 import { useParams } from "next/navigation";
 import { usePostByID } from "@/hooks/post/usePost";
+import { SCREEN } from "@/src/constants";
 
 const PostPage = () => {
   const { id } = useParams();
@@ -22,7 +23,7 @@ const PostPage = () => {
   }
   return (
     <>
-      <PostDetail post={post} />
+      <PostDetail screen={SCREEN.POST} post={post} />
     </>
   )
 
