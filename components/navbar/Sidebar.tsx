@@ -26,7 +26,7 @@ const Sidebar = () => {
     { name: "Notifications", icon: <Bell />, href: "/notifications" },
     { name: "Messages", icon: <Mail />, href: "/messages" },
     { name: "Grok", icon: <Users />, href: "/grok" },
-    { name: "Profile", icon: <User />, href: "/nest/farah_shab26124" },
+    { name: "Profile", icon: <User />, href: "/profile/farah_shab26124" },
     { name: "More", icon: <MoreHorizontal />, href: "/more" },
   ];
 
@@ -35,8 +35,8 @@ const Sidebar = () => {
       <div>
         {/* <div className="mb-6 text-3xl font-bold px-2">🕊️</div> */}
         <Link href="/" className="mb-6 block px-2">
-  <span className="text-4xl font-extrabold text-black tracking-wide">W</span>
-</Link>
+          <span className="text-4xl font-extrabold text-black tracking-wide">W</span>
+        </Link>
 
         <nav className="space-y-3">
           {navItems.map((item) => (

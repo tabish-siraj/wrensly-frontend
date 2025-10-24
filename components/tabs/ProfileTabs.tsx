@@ -15,7 +15,7 @@ const TABS = [
     { key: "feathers", label: "Feathered" },
 ];
 
-export default function NestTabs() {
+export default function ProfileTabs() {
     const params = useParams();
     // const { user } = useUserStore()
     const [activeTab, setActiveTab] = React.useState("chirps");

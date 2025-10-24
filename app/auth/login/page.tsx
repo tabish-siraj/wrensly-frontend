@@ -74,7 +74,7 @@ export default function LoginPage() {
             type="submit"
             className="w-full bg-black hover:bg-neutral-800 text-white font-bold py-2 rounded-full transition-all"
           >
-            Enter Your Nest
+            Enter Your Profile
           </Button>
         </form>
 
@@ -86,7 +86,7 @@ export default function LoginPage() {
         </div>
 
         <div className="mt-4 text-center text-sm text-gray-500">
-          Don’t have a Nest yet?{" "}
+          Don’t have a Profile yet?{" "}
           <Link href="/auth/signup" className="font-semibold text-black hover:underline">
             Hatch your account
           </Link>

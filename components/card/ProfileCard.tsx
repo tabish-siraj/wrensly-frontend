@@ -13,7 +13,7 @@ import { useUserByUsername } from "@/hooks/user/useGetUser";
 import { toast } from "sonner";
 import FollowListModal from "@/components/modals/FollowersModal";
 
-export default function NestCard() {
+export default function ProfileCard() {
   const { user } = useUserStore();
   const params = useParams();
   const { followers, loading: followersLoading, error: followersError } = useGetFollowers(params.username as string)
@@ -67,7 +67,7 @@ export default function NestCard() {
               className="mt-4 px-6 py-2 text-white rounded-full font-semibold shadow transition"
               onClick={
                 isCurrentUser
-                  ? () => (window.location.href = `/nest/${params.username}/edit`)
+                  ? () => (window.location.href = `/profile/${params.username}/edit`)
                   : handleFollowUnfollow
               }
             >

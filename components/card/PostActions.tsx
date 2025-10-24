@@ -13,7 +13,7 @@ interface PostActionsProps {
 
 export function PostActions({ screen, post }: PostActionsProps) {
     return (
-        <div className="px-4 py-2 flex justify-around mt-2 border-t border-b">
+        <div className="py-2 flex justify-around border-t border-b">
             <Like screen={screen} post={post} />
             <Repost screen={screen} post={post} />
             <Share post={post} />

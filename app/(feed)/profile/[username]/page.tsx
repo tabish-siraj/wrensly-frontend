@@ -1,13 +1,13 @@
 import React from "react";
-import NestCard from "@/components/card/NestCard";
-import NestTabs from "@/components/tabs/NestTabs";
+import ProfileCard from "@/components/card/ProfileCard";
+import ProfileTabs from "@/components/tabs/ProfileTabs";
 
 
-export default function NestPage() {
+export default function ProfilePage() {
   return (
     <>
-      <NestCard />
-      <NestTabs />
+      <ProfileCard />
+      <ProfileTabs />
     </>
   )
 }

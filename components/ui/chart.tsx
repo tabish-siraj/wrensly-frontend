@@ -86,13 +86,13 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
             ([theme, prefix]) => `
 ${prefix} [data-chart=${id}] {
 ${colorConfig
-  .map(([key, itemConfig]) => {
-    const color =
-      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
-      itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
-  })
-  .join("\n")}
+                .map(([key, itemConfig]) => {
+                  const color =
+                    itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
+                    itemConfig.color
+                  return color ? `  --color-${key}: ${color};` : null
+                })
+                .join("\n")}
 }
 `
           )
@@ -168,7 +168,7 @@ function ChartTooltipContent({
     return null
   }
 
-  const nestLabel = payload.length === 1 && indicator !== "dot"
+  const profileLabel = payload.length === 1 && indicator !== "dot"
 
   return (
     <div
@@ -177,7 +177,7 @@ function ChartTooltipContent({
         className
       )}
     >
-      {!nestLabel ? tooltipLabel : null}
+      {!profileLabel ? tooltipLabel : null}
       <div className="grid gap-1.5">
         {payload.map((item, index) => {
           const key = `${nameKey || item.name || item.dataKey || "value"}`
@@ -208,7 +208,7 @@ function ChartTooltipContent({
                             "w-1": indicator === "line",
                             "w-0 border-[1.5px] border-dashed bg-transparent":
                               indicator === "dashed",
-                            "my-0.5": nestLabel && indicator === "dashed",
+                            "my-0.5": profileLabel && indicator === "dashed",
                           }
                         )}
                         style={
@@ -223,11 +223,11 @@ function ChartTooltipContent({
                   <div
                     className={cn(
                       "flex flex-1 justify-between leading-none",
-                      nestLabel ? "items-end" : "items-center"
+                      profileLabel ? "items-end" : "items-center"
                     )}
                   >
                     <div className="grid gap-1.5">
-                      {nestLabel ? tooltipLabel : null}
+                      {profileLabel ? tooltipLabel : null}
                       <span className="text-muted-foreground">
                         {itemConfig?.label || item.name}
                       </span>
@@ -316,8 +316,8 @@ function getPayloadConfigFromPayload(
 
   const payloadPayload =
     "payload" in payload &&
-    typeof payload.payload === "object" &&
-    payload.payload !== null
+      typeof payload.payload === "object" &&
+      payload.payload !== null
       ? payload.payload
       : undefined
 

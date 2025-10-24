@@ -146,7 +146,7 @@ export default function SignupPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       signupMutation.mutate(values);
-      toast.success("Nest created successfully! Redirecting to log in...");
+      toast.success("Profile created successfully! Redirecting to log in...");
       router.push("/auth/login");
     } catch (error) {
       toast.error("Failed to hatch your account. Please try again.");
@@ -164,7 +164,7 @@ export default function SignupPage() {
           {/* <div className="bg-[#1d9bf0] p-3 rounded-full mb-2 shadow-md">
             <Bird className="h-8 w-8 text-white" />
           </div> */}
-          <h1 className="text-2xl font-extrabold text-gray-900">Hatch Your Nest</h1>
+          <h1 className="text-2xl font-extrabold text-gray-900">Hatch Your Profile</h1>
           <p className="text-sm text-gray-600 mt-1">Join the flock and start chirping</p>
           {/* <p className="text-sm text-gray-600 mt-1">Join the flock and start chirping 🐦</p> */}
         </div>
@@ -189,7 +189,7 @@ export default function SignupPage() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="you@nestmail.com" type="email" {...field} />
+                    <Input placeholder="you@email.com" type="email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -212,7 +212,7 @@ export default function SignupPage() {
               type="submit"
               className="w-full bg-black hover:bg-gray-900 text-white font-bold py-2 rounded-full"
             >
-              Create Nest
+              Create Profile
             </Button>
           </form>
         </Form>
@@ -220,7 +220,7 @@ export default function SignupPage() {
         <div className="mt-6 text-center text-sm text-gray-600">
           Already in the flock?{" "}
           <Link href="/auth/login" className="font-semibold text-black hover:underline">
-            Return to your Nest
+            Return to your Profile
           </Link>
         </div>
       </div>

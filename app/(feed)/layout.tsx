@@ -12,7 +12,7 @@ function Layout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     if (!user) return null;
 
-    const isNestPage = pathname.startsWith("/nest");
+    const isProfilePage = pathname.startsWith("/profile");
 
     return (
         <>
@@ -33,22 +33,21 @@ function Layout({ children }: { children: React.ReactNode }) {
                     </aside>
 
                     {/* Main feed */}
-                    {/* <div className={isNestPage ? "w-full" : "w-full md:w-1/2"}> */}
+                    {/* <div className={isProfilePage ? "w-full" : "w-full md:w-1/2"}> */}
                     <section
-                        className={`${
-                            isNestPage ? "w-full" : "w-full md:w-[600px]"
-                        } mx-auto transition-all animate-fade-in-slow`}
+                        className={`${isProfilePage ? "w-full" : "w-full md:w-[600px]"
+                            } mx-auto transition-all animate-fade-in-slow`}
                     >
                         {children}
                     </section>
 
                     {/* Trending */}
-                    {/* {!isNestPage && (
+                    {/* {!isProfilePage && (
                         <div className="w-full md:w-1/4">
                             trending
                         </div>
                     )} */}
-                    {!isNestPage && (
+                    {!isProfilePage && (
                         <aside className="hidden xl:block xl:w-1/4">
                             <div className="bg-[#f7f9f9] dark:bg-[#16181c] rounded-2xl shadow border border-gray-100 p-4 sticky top-16">
                                 <h3 className="text-xl font-bold mb-4">What’s happening</h3>

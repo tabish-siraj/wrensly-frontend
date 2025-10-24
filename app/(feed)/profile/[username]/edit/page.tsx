@@ -7,7 +7,7 @@ import FormInput from "@/components/form-input/FormInput";
 import useUserStore from "@/src/stores/userStore";
 import { useUpdateProfile } from "@/hooks/user/useUpdateProfile";
 import { removeEmptyFields } from "@/lib/utils";
-// import NestCard from "@/components/card/NestCard";
+// import ProfileCard from "@/components/card/ProfileCard";
 
 
 export default function EditPage() {
@@ -54,7 +54,7 @@ export default function EditPage() {
 
     return (
         <>
-            {/* <NestCard /> */}
+            {/* <ProfileCard /> */}
             <FormProvider {...form}>
                 <h1 className="text-2xl font-bold text-center my-6">Edit Profile</h1>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 block">

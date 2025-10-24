@@ -36,7 +36,7 @@ export default function UserDropdown({ username, avatar }: UserDropdownProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem><Link href={`/nest/${username}`}>Profile</Link></DropdownMenuItem>
+        <DropdownMenuItem><Link href={`/profile/${username}`}>Profile</Link></DropdownMenuItem>
         <DropdownMenuItem>Settings</DropdownMenuItem>
         <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
       </DropdownMenuContent>
