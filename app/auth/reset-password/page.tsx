@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -16,13 +15,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { useResetPassword } from "@/hooks/user/useResetPassword";
 import { useParams } from "next/navigation";
-import Router from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function ResetPasswordPage() {
     const [password, setPassword] = useState("");
     const [retypePassword, setRetypePassword] = useState("");
     const params = useParams();
-    const router = Router;
+    const router = useRouter();
     const { mutate: resetPassword } = useResetPassword();
 
     const token = params.token as string;
@@ -65,7 +64,7 @@ export default function ResetPasswordPage() {
                         <Label htmlFor="retypePassword">Retype Password</Label>
                         <Input
                             id="retypePassword"
-                            type="retypePassword"
+                            type="password"
                             placeholder="••••••••"
                             required
                             value={retypePassword}
