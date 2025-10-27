@@ -14,17 +14,17 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useState } from "react";
 import { useResetPassword } from "@/hooks/user/useResetPassword";
-import { useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 export default function ResetPasswordPage() {
     const [password, setPassword] = useState("");
     const [retypePassword, setRetypePassword] = useState("");
-    const params = useParams();
+    const searchParams = useSearchParams();
     const router = useRouter();
     const { mutate: resetPassword } = useResetPassword();
 
-    const token = params.token as string;
+    const token = searchParams.get("token") as string;
     if (!token) {
         router.replace("/auth/forgot-password");
     }
