@@ -16,6 +16,7 @@ import { useState } from "react";
 import { useResetPassword } from "@/hooks/user/useResetPassword";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { Suspense } from "react";
 
 export default function ResetPasswordPage() {
     const [password, setPassword] = useState("");
@@ -40,48 +41,49 @@ export default function ResetPasswordPage() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen">
-            <Card className="w-full max-w-md">
-                <CardHeader>
-                    <CardTitle className="text-2xl">Reset Password</CardTitle>
-                    <CardDescription>
-                        Please enter password.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="grid gap-4">
-                    <div className="grid gap-2">
-                        <Label htmlFor="password">Password</Label>
-                        <Input
-                            id="password"
-                            type="password"
-                            placeholder="••••••••"
-                            required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
-                    <div className="grid gap-2">
-                        <Label htmlFor="retypePassword">Retype Password</Label>
-                        <Input
-                            id="retypePassword"
-                            type="password"
-                            placeholder="••••••••"
-                            required
-                            value={retypePassword}
-                            onChange={(e) => setRetypePassword(e.target.value)}
-                        />
-                    </div>
-                </CardContent>
-                <CardFooter className="flex flex-col gap-4">
-                    <Button className="w-full" onClick={handleSubmit}>Reset Password</Button>
-                    <p className="text-sm text-center text-gray-500">
-                        Remember your password?{" "}
-                        <Link href="/auth/login" className="text-blue-500 hover:underline">
-                            Login
-                        </Link>
-                    </p>
-                </CardFooter>
-            </Card>
-        </div>
-    );
+        <Suspense fallback={<div>Loading...</div>}>
+            <div className="flex items-center justify-center min-h-screen">
+                <Card className="w-full max-w-md">
+                    <CardHeader>
+                        <CardTitle className="text-2xl">Reset Password</CardTitle>
+                        <CardDescription>
+                            Please enter password.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="grid gap-4">
+                        <div className="grid gap-2">
+                            <Label htmlFor="password">Password</Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                placeholder="••••••••"
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="retypePassword">Retype Password</Label>
+                            <Input
+                                id="retypePassword"
+                                type="password"
+                                placeholder="••••••••"
+                                required
+                                value={retypePassword}
+                                onChange={(e) => setRetypePassword(e.target.value)}
+                            />
+                        </div>
+                    </CardContent>
+                    <CardFooter className="flex flex-col gap-4">
+                        <Button className="w-full" onClick={handleSubmit}>Reset Password</Button>
+                        <p className="text-sm text-center text-gray-500">
+                            Remember your password?{" "}
+                            <Link href="/auth/login" className="text-blue-500 hover:underline">
+                                Login
+                            </Link>
+                        </p>
+                    </CardFooter>
+                </Card>
+            </div>
+        </Suspense>);
 }
