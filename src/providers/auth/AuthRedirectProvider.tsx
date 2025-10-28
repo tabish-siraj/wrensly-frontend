@@ -9,7 +9,9 @@ export function AuthRedirectProvider({ children }: { children: React.ReactNode }
     const token = localStorage.getItem("token");
 
     // If not logged in, redirect to /auth/login
-    if (!token && window.location.pathname !== "/auth/login") {
+        const allowedPaths = ["/auth/login", "/auth/reset-password", "/auth/forgot-password", "/auth/signup"];
+
+    if (!token && !allowedPaths.includes(window.location.pathname)) {
       router.replace("/auth/login");
     }
 
