@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useVerifyEmail } from "@/hooks/user/useVerifyEmail";
 import Link from "next/link";
@@ -34,7 +34,7 @@ function VerifyEmailComponent() {
         {verifyEmailMutation.isSuccess && (
           <div>
             <p className="text-green-600">Email verified successfully!</p>
-            <p className="text-gray-600">Redirecting you to the homepage...</p>
+            <Link href="/">Click Here</Link> to go to the homepage.
           </div>
         )}
 
@@ -54,7 +54,7 @@ function VerifyEmailComponent() {
             <p className="text-gray-600">
               No verification token found. Please check the link in your email.
             </p>
-             <Button asChild className="mt-4 bg-black hover:bg-neutral-800 text-white font-bold py-2 rounded-full transition-all">
+            <Button asChild className="mt-4 bg-black hover:bg-neutral-800 text-white font-bold py-2 rounded-full transition-all">
               <Link href="/">Go to Homepage</Link>
             </Button>
           </div>
@@ -65,9 +65,9 @@ function VerifyEmailComponent() {
 }
 
 export default function VerifyEmailPage() {
-    return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <VerifyEmailComponent />
-        </Suspense>
-    )
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailComponent />
+    </Suspense>
+  )
 }

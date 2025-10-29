@@ -8,14 +8,3 @@ export const useForgotPassword = () => {
         },
     });
 };
-
-export const useResetPassword = () => {
-    return useMutation({
-        mutationFn: async (payload: { token: string; password: string }) => {
-            return await api.post("/auth/reset-password", payload);
-        },
-        onSuccess: () => {
-            window.location.href = "/auth/login";
-        },
-    });
-};

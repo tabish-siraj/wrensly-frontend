@@ -5,6 +5,7 @@ export interface User {
   password: string;
   isActive: boolean;
   isVerified: boolean;
+  isEmailVerified: boolean;
   isAdmin: boolean;
   isBanned: boolean;
   userId: string;

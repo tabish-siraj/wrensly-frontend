@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 import Sidebar from "@/components/navbar/Sidebar";
 import useUserStore from "@/src/stores/userStore";
 import { usePathname } from "next/navigation";
+import { TopBar } from '@/components/navigation/TopBar';
 
 function Layout({ children }: { children: React.ReactNode }) {
     const { user } = useUserStore();
@@ -16,24 +17,18 @@ function Layout({ children }: { children: React.ReactNode }) {
 
     return (
         <>
-            {/* Sticky top header for X-like feel */}
+            <TopBar />
             <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
                 <Header username={user.username} avatar={user?.avatar} />
             </header>
 
-            {/* Page content layout */}
-            {/* <div className="flex flex-col md:flex-row gap-4 p-4 pt-0 container mx-auto"> */}
             <main className="container mx-auto px-2 sm:px-6 md:px-8 lg:px-16 xl:px-24 py-4">
                 <div className="flex justify-between gap-4 lg:gap-10">
 
-                    {/* Left Sidebar */}
-                    {/* <div className="w-full md:w-1/4 border-r"> */}
                     <aside className="hidden lg:block lg:w-1/4 px-2 sticky top-16 h-[calc(100vh-4rem)]">
                         <Sidebar />
                     </aside>
 
-                    {/* Main feed */}
-                    {/* <div className={isProfilePage ? "w-full" : "w-full md:w-1/2"}> */}
                     <section
                         className={`${isProfilePage ? "w-full" : "w-full md:w-[600px]"
                             } mx-auto transition-all animate-fade-in-slow`}
@@ -41,12 +36,6 @@ function Layout({ children }: { children: React.ReactNode }) {
                         {children}
                     </section>
 
-                    {/* Trending */}
-                    {/* {!isProfilePage && (
-                        <div className="w-full md:w-1/4">
-                            trending
-                        </div>
-                    )} */}
                     {!isProfilePage && (
                         <aside className="hidden xl:block xl:w-1/4">
                             <div className="bg-[#f7f9f9] dark:bg-[#16181c] rounded-2xl shadow border border-gray-100 p-4 sticky top-16">
@@ -74,7 +63,6 @@ function Layout({ children }: { children: React.ReactNode }) {
                 </div>
             </main>
 
-            {/* Notification Toaster */}
             <Toaster position="bottom-center" richColors closeButton />
         </>
     );
