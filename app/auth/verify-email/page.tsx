@@ -9,13 +9,18 @@ import { Button } from "@/components/ui/button";
 function VerifyEmailComponent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
-  const verifyEmailMutation = useVerifyEmail();
+  const {
+    mutate: verifyEmail,
+    isPending,
+    isSuccess,
+    isError,
+  } = useVerifyEmail();
 
   useEffect(() => {
     if (token) {
-      verifyEmailMutation.mutate({ token });
+      verifyEmail({ token });
     }
-  }, [token, verifyEmailMutation]);
+  }, [token, verifyEmail]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-white px-4">
@@ -27,18 +32,18 @@ function VerifyEmailComponent() {
           <h1 className="text-2xl font-extrabold text-gray-900">Verify Your Email</h1>
         </div>
 
-        {verifyEmailMutation.isPending && (
+        {isPending && (
           <p className="text-gray-600">Verifying your email, please wait...</p>
         )}
 
-        {verifyEmailMutation.isSuccess && (
+        {isSuccess && (
           <div>
             <p className="text-green-600">Email verified successfully!</p>
             <Link href="/">Click Here</Link> to go to the homepage.
           </div>
         )}
 
-        {verifyEmailMutation.isError && (
+        {isError && (
           <div>
             <p className="text-red-600">
               Failed to verify email. The token might be invalid or expired.
@@ -49,7 +54,7 @@ function VerifyEmailComponent() {
           </div>
         )}
 
-        {!token && !verifyEmailMutation.isPending && (
+        {!token && !isPending && (
           <div>
             <p className="text-gray-600">
               No verification token found. Please check the link in your email.
