@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ImageIcon, Smile, Calendar, MapPin } from "lucide-react";
 import { useCreatePost } from "@/hooks/post/useCreatePost";
 import { toast } from "sonner";
-import { SCREEN } from "@/src/constants";
+import { SCREEN, POST_TYPE } from "@/src/constants";
 
 interface PostComposerProps {
   user: {
@@ -22,7 +22,7 @@ interface PostComposerProps {
 
 export function PostComposer({
   user,
-  placeholder = "What is happening?!",
+  placeholder = "What's on your mind?",
   onSubmit,
   screen = SCREEN.FEED,
 }: PostComposerProps) {
@@ -36,6 +36,7 @@ export function PostComposer({
         onSubmit(content.trim());
       } else {
         postMutation.mutate({
+          type: POST_TYPE.POST,
           content: content.trim(),
         });
         toast.success("Chirp posted!");
@@ -98,11 +99,10 @@ export function PostComposer({
 
             <div className="flex items-center space-x-3">
               <span
-                className={`text-sm ${
-                  content.length > maxLength * 0.9
-                    ? "text-red-500"
-                    : "text-gray-500"
-                }`}
+                className={`text-sm ${content.length > maxLength * 0.9
+                  ? "text-red-500"
+                  : "text-gray-500"
+                  }`}
               >
                 {maxLength - content.length}
               </span>

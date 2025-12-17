@@ -6,3 +6,10 @@ export const SCREEN = {
     NOTIFICATIONS: "notifications",
     EXPLORE: "explore"
 }
+
+export const POST_TYPE = {
+    POST: "POST",
+    REPOST: "REPOST",
+    QUOTE: "QUOTE",
+    COMMENT: "COMMENT"
+}

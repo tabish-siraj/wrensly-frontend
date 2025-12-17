@@ -3,15 +3,16 @@ import api from "@/lib/api";
 
 interface CreatePostVariables {
     content: string;
-    parentId?: string; // For quoted reposts
+    type: string;
+    parentId?: string;
 }
 
 export function useCreatePost({ screen }: { screen: string }) {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ content, parentId }: CreatePostVariables) => {
-            return api.post("/post", { content, parentId });
+        mutationFn: async ({ content, type, parentId }: CreatePostVariables) => {
+            return api.post("/post", { content, type, parentId });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [screen] });

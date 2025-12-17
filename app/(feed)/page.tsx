@@ -13,7 +13,8 @@ export default function FeedPage() {
   const { posts, loading, error } = useFeed();
 
   if (loading) {
-    return (<div className="w-full max-w-2xl mx-auto space-y-4">
+    return (
+    <div className="w-full max-w-2xl mx-auto space-y-4">
       <PostComposer
         user={{
           username: user?.username || "anonymous",
