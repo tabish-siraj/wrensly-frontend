@@ -8,7 +8,7 @@ import { CommentComposer } from "@/components/input/CommentComposer";
 import useUserStore from "@/src/stores/userStore";
 import { useCreatePost } from "@/hooks/post/useCreatePost";
 import { toast } from "sonner";
-import { SCREEN } from "@/src/constants";
+import { SCREEN, POST_TYPE } from "@/src/constants";
 
 interface PostDetailProps {
     post: Post;
@@ -31,6 +31,7 @@ export function PostDetail({ screen, post }: PostDetailProps) {
         }
         postMutation.mutate(
             {
+                type: POST_TYPE.COMMENT,
                 content: content.trim(),
                 parentId: post.id,
             },

@@ -16,6 +16,7 @@ import { PostComposer } from "@/components/input/PostComposer";
 import { toast } from "sonner";
 import { useToggleRepost } from "@/hooks/post/useToggleRepost";
 import { useCreatePost } from "@/hooks/post/useCreatePost";
+import { POST_TYPE } from "@/src/constants";
 
 interface RepostProps {
   screen: string;
@@ -90,7 +91,7 @@ export function Repost({ screen, post }: RepostProps) {
             placeholder="Add a comment..."
             onSubmit={(content) => {
               createPost(
-                { content, parentId: post.id },
+                { content, type: POST_TYPE.QUOTE, parentId: post.id },
                 {
                   onSuccess: () => {
                     setShowQuoteComposer(false);

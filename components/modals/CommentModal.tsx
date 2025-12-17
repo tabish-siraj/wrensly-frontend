@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { PostComposer } from "@/components/input/PostComposer";
 import { useCreatePost } from "@/hooks/post/useCreatePost";
 import { toast } from "sonner";
-import { SCREEN } from "@/src/constants";
+import { POST_TYPE, SCREEN } from "@/src/constants";
 import useUserStore from "@/src/stores/userStore";
 
 interface CommentModalProps {
@@ -20,6 +20,7 @@ export function CommentModal({ post, isOpen, onClose }: CommentModalProps) {
 
     const handleSubmit = (content: string) => {
         postMutation.mutate({
+            type: POST_TYPE.COMMENT,
             content: content.trim(),
             parentId: post.id,
         }, {

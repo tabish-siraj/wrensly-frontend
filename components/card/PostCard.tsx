@@ -12,7 +12,7 @@ import { CommentComposer } from "@/components/input/CommentComposer";
 import useUserStore from "@/src/stores/userStore";
 import { useCreatePost } from "@/hooks/post/useCreatePost";
 import { toast } from "sonner";
-import { SCREEN } from "@/src/constants";
+import { SCREEN, POST_TYPE } from "@/src/constants";
 
 interface PostCardProps {
   post: Post;
@@ -36,6 +36,7 @@ export function PostCard({ screen, post }: PostCardProps) {
     postMutation.mutate(
       {
         content: content.trim(),
+        type: POST_TYPE.COMMENT,
         parentId: post.id,
       },
       {
