@@ -46,7 +46,7 @@ export function usePostByUsername(username: string) {
     const { data: posts, isLoading: loading, isError: error } = useQuery({
         queryKey: ["posts", username],
         queryFn: async () => {
-            const response = await api.get(`/post/username/${username}`);
+            const response = await api.get(`/post`);
             return response.data;
         },
     });

@@ -9,16 +9,16 @@ import { useParams } from "next/navigation";
 import { SCREEN } from "@/src/constants";
 
 const TABS = [
-    { key: "chirps", label: "Chirps" },
-    { key: "shares", label: "Shares" },
+    { key: "posts", label: "Posts" },
+    // { key: "shares", label: "Shares" },
     { key: "media", label: "Media" },
-    { key: "feathers", label: "Feathered" },
+    { key: "liked", label: "Liked" },
 ];
 
 export default function ProfileTabs() {
     const params = useParams();
     // const { user } = useUserStore()
-    const [activeTab, setActiveTab] = React.useState("chirps");
+    const [activeTab, setActiveTab] = React.useState("posts");
     const { posts, loading, error } = usePostByUsername(params.username as string);
 
     return (
@@ -44,7 +44,7 @@ export default function ProfileTabs() {
 
                 {/* Tab Content */}
                 <div className="p-6">
-                    {activeTab === "chirps" && <div>
+                    {activeTab === "posts" && <div>
                         {loading ? (
                             <div className="flex justify-center py-8">
                                 <Loader2 className="animate-spin w-8 h-8 text-blue-500" />
@@ -59,7 +59,7 @@ export default function ProfileTabs() {
                             <div className="py-8 text-gray-500">No posts available</div>
                         )}
                     </div>}
-                    {activeTab === "shares" && <div>
+                    {/* {activeTab === "shares" && <div>
                         {loading ? (
                             <div className="flex justify-center py-8">
                                 <Loader2 className="animate-spin w-8 h-8 text-blue-500" />
@@ -73,7 +73,7 @@ export default function ProfileTabs() {
                         ) : (
                             <div className="py-8 text-gray-500">No posts available</div>
                         )}
-                    </div>}
+                    </div>} */}
                     {activeTab === "media" && <div>
                         {loading ? (
                             <div className="flex justify-center py-8">
@@ -89,7 +89,7 @@ export default function ProfileTabs() {
                             <div className="py-8 text-gray-500">No posts available</div>
                         )}
                     </div>}
-                    {activeTab === "feathers" && <div>
+                    {activeTab === "liked" && <div>
                         {loading ? (
                             <div className="flex justify-center py-8">
                                 <Loader2 className="animate-spin w-8 h-8 text-blue-500" />
