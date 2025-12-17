@@ -14,8 +14,8 @@ import { RepeatIcon, MessageSquare } from "lucide-react";
 import { Post } from "@/src/types";
 import { PostComposer } from "@/components/input/PostComposer";
 import { toast } from "sonner";
-import { useToggleRepost } from "@/hooks/post/useToggleRepost";
-import { useCreatePost } from "@/hooks/post/useCreatePost";
+// import { useToggleRepost } from "@/hooks/post/useToggleRepost";
+import { useCreatePost, useDeletePost } from "@/hooks/post/useCreatePost";
 import { POST_TYPE } from "@/src/constants";
 
 interface RepostProps {
@@ -25,19 +25,21 @@ interface RepostProps {
 
 export function Repost({ screen, post }: RepostProps) {
   const [showQuoteComposer, setShowQuoteComposer] = useState(false);
-  const { mutate: toggleRepost } = useToggleRepost();
+  // const { mutate: toggleRepost } = useToggleRepost();
   const { mutate: createPost } = useCreatePost({ screen });
+  const { mutate: deletePost } = useDeletePost();
 
-  const handleRepost = () => {
-    toggleRepost(
-      { postId: post.id, isReposted: post.isReposted, screen },
-      {
-        onSuccess: () => {
-          toast.success(post.isReposted ? "Unreposted" : "Reposted");
-        }
-      }
-    );
-  };
+
+  // const handleRepost = () => {
+  //   toggleRepost(
+  //     { postId: post.id, isReposted: post.isReposted, screen },
+  //     {
+  //       onSuccess: () => {
+  //         toast.success(post.isReposted ? "Unreposted" : "Reposted");
+  //       }
+  //     }
+  //   );
+  // };
 
   const handleQuote = () => {
     setShowQuoteComposer(true);
@@ -65,7 +67,30 @@ export function Repost({ screen, post }: RepostProps) {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="start" sideOffset={4}>
-          <DropdownMenuItem onClick={handleRepost} className="flex items-center gap-2">
+          <DropdownMenuItem onClick={post.isReposted ?
+            () => {
+              // Undo Repost
+              deletePost(
+                { postId: post.id },
+                {
+                  onSuccess: () => {
+                    toast.success("Unreposted!");
+                  }
+                }
+              );
+            }
+            :
+            () => {
+              createPost(
+                { type: POST_TYPE.REPOST, parentId: post.id },
+                {
+                  onSuccess: () => {
+                    setShowQuoteComposer(false);
+                    toast.success("Reposted!");
+                  }
+                }
+              );
+            }} className="flex items-center gap-2">
             <RepeatIcon className="w-4 h-4 text-green-600" />
             {post.isReposted ? 'Undo Repost' : 'Repost'}
           </DropdownMenuItem>

@@ -2,8 +2,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 
 interface CreatePostVariables {
-    content: string;
-    type: string;
+    content?: string;
+    type?: string;
     parentId?: string;
 }
 
@@ -19,6 +19,22 @@ export function useCreatePost({ screen }: { screen: string }) {
         },
         onError: (error) => {
             console.error('Error creating post:', error);
+        },
+    });
+}
+
+export function useDeletePost() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ postId }: { postId: string }) => {
+            return api.delete(`/post/${postId}`);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries();
+        },
+        onError: (error) => {
+            console.error('Error deleting post:', error);
         },
     });
 }
