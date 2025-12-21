@@ -27,22 +27,9 @@ interface RepostProps {
 
 export function Repost({ screen, post }: RepostProps) {
   const [showQuoteComposer, setShowQuoteComposer] = useState(false);
-  // const { mutate: toggleRepost } = useToggleRepost();
   const { mutate: createRepost } = useCreateRepost({ screen });
   const { mutate: createQuote } = useCreateQuote({ screen });
   const { mutate: deletePost } = useDeletePost();
-
-
-  // const handleRepost = () => {
-  //   toggleRepost(
-  //     { post_id: post.id, is_reposted: post.is_reposted, screen },
-  //     {
-  //       onSuccess: () => {
-  //         toast.success(post.is_reposted ? "Unreposted" : "Reposted");
-  //       }
-  //     }
-  //   );
-  // };
 
   const handleQuote = () => {
     setShowQuoteComposer(true);
@@ -54,7 +41,6 @@ export function Repost({ screen, post }: RepostProps) {
 
   return (
     <>
-      {/* Repost Button with Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -72,7 +58,6 @@ export function Repost({ screen, post }: RepostProps) {
         <DropdownMenuContent align="start" sideOffset={4}>
           <DropdownMenuItem onClick={post.is_reposted ?
             () => {
-              // Undo Repost
               deletePost(
                 { post_id: post.id },
                 {
@@ -104,7 +89,6 @@ export function Repost({ screen, post }: RepostProps) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Quote Composer Modal */}
       <Dialog open={showQuoteComposer} onOpenChange={setShowQuoteComposer}>
         <DialogContent className="max-w-2xl bg-white rounded-2xl shadow-2xl">
           <DialogTitle className="sr-only">Quote Post Composer</DialogTitle>
@@ -130,7 +114,6 @@ export function Repost({ screen, post }: RepostProps) {
             }}
           />
 
-          {/* Quoted Post Box */}
           <div className="border rounded-xl bg-gray-50 p-4 mt-3">
             <div className="flex items-center mb-2">
               <Avatar className="w-10 h-10">

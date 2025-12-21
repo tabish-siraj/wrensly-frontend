@@ -52,6 +52,7 @@ export function PostCard({ screen, post }: PostCardProps) {
   };
   const is_reposted = post.parent_id !== null && post.parent_id !== "";
   const parentPost = is_reposted ? post.parent : null;
+  const is_repost_only = is_reposted && (!post.content || post.content.trim() === "");
   const postDate = new Date(post.created_at).toLocaleDateString('en-US', {
     year: 'numeric', month: 'long', day: 'numeric'
   });
@@ -64,9 +65,14 @@ export function PostCard({ screen, post }: PostCardProps) {
         <PostHeader user={post.user} />
       </CardHeader>
       <CardContent>
-        <Link href={`/post/${post.id}`}>
-          <p className="text-gray-800 mb-4">{post.content}</p>
-        </Link>
+        {is_repost_only && (
+          <div className="text-xs text-gray-500 mb-2">Reposted by <Link href={`/profile/${post.user.username}`} className="font-medium text-gray-600">@{post.user.username}</Link></div>
+        )}
+        {!is_repost_only && (
+          <Link href={`/post/${post.id}`}>
+            <p className="text-gray-800 mb-4">{post.content}</p>
+          </Link>
+        )}
         {is_reposted && parentPost && (
           <ParentPostCard post={parentPost} />
         )}
