@@ -122,8 +122,8 @@ export default function ProfileCard() {
             </span>
             <span className="flex items-center">
               <Cake className="size-4 mr-1" />{" "}
-              {user_data?.dateOfBirth &&
-                new Date(user_data.dateOfBirth).toLocaleDateString(undefined, {
+              {user_data?.date_of_birth &&
+                new Date(user_data.date_of_birth).toLocaleDateString(undefined, {
                   month: "long",
                   day: "numeric",
                 })}

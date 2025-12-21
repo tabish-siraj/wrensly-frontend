@@ -22,7 +22,7 @@ export const TopBar = () => {
         });
     };
 
-    if (!user || user.isEmailVerified) {
+    if (!user || user.is_email_verified) {
         return null;
     }
 

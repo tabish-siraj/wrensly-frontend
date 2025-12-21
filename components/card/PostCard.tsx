@@ -80,7 +80,7 @@ export function PostCard({ screen, post }: PostCardProps) {
           user={user}
           placeholder={`Replying to @${post.user.username}`}
           onSubmit={handleSubmitComment}
-          screen={SCREEN.POST}
+          screen={screen}
           post={post}
         />
       )}

@@ -13,14 +13,14 @@ import { removeEmptyFields } from "@/lib/utils";
 export default function EditPage() {
     const { user } = useUserStore();
     const updateProfile = useUpdateProfile();
-    const dateOfBirth = user?.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split("T")[0] : "";
+    const date_of_birth = user?.date_of_birth ? new Date(user.date_of_birth).toISOString().split("T")[0] : "";
     const form = useForm<User>({
         resolver: zodResolver(UserSchema),
         defaultValues: {
             username: user?.username || "",
             first_name: user?.first_name || "",
             last_name: user?.last_name || "",
-            dateOfBirth: dateOfBirth || "",
+            date_of_birth: date_of_birth || "",
             gender: user?.gender || "",
             bio: user?.bio || "",
             avatar: user?.avatar || "",
@@ -35,7 +35,7 @@ export default function EditPage() {
     const fields = [
         { name: "first_name", label: "First Name", placeholder: "Enter your first name", required: true },
         { name: "last_name", label: "Last Name", placeholder: "Enter your last name", required: true },
-        { name: "dateOfBirth", label: "Date of Birth", placeholder: "Enter your date of birth", required: false, type: "date" },
+        { name: "date_of_birth", label: "Date of Birth", placeholder: "Enter your date of birth", required: false, type: "date" },
         { name: "gender", label: "Gender", placeholder: "Enter your gender", required: false },
         { name: "bio", label: "Bio", placeholder: "Enter your bio", required: false },
         // { name: "avatar", label: "Avatar", placeholder: "Enter your avatar", required: false },

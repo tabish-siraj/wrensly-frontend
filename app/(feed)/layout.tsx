@@ -17,7 +17,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 
     return (
         <>
-            {!user.isEmailVerified && <TopBar />}
+            {!user.is_email_verified && <TopBar />}
 
             <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
                 <Header username={user.username} avatar={user?.avatar} />
