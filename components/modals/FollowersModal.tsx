@@ -8,8 +8,8 @@ import { CheckCircle2 } from "lucide-react";
 
 interface User {
   id: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   username: string;
   avatar?: string | null;
 }
@@ -63,7 +63,7 @@ const FollowListModal = ({
                   </Avatar>
                   <div>
                     <div className="flex items-center gap-1">
-                      <p className="text-sm font-semibold">{user.firstName} {user.lastName}</p>
+                      <p className="text-sm font-semibold">{user.first_name} {user.last_name}</p>
                       {/* {user.verified && ( */}
                       <CheckCircle2 className="w-4 h-4 text-blue-500" />
                       {/* )} */}

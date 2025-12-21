@@ -21,7 +21,7 @@ export function Bookmark({ screen, post }: BookmarkProps) {
       {
         screen: screen,
         postId: post.id,
-        isBookmarked: post.isBookmarked,
+        is_bookmarked: post.is_bookmarked,
       },
       {
         onError: (error) => {
@@ -43,7 +43,7 @@ export function Bookmark({ screen, post }: BookmarkProps) {
       className="text-gray-500 hover:text-blue-500 transition-colors"
     >
       <BookmarkIcon
-        className={`${post.isBookmarked ? "text-blue-500 fill-blue-500" : "text-gray-500"
+        className={`${post.is_bookmarked ? "text-blue-500 fill-blue-500" : "text-gray-500"
           } ${toggleBookmark.isPending ? "opacity-50" : ""}`}
       />
     </Button>

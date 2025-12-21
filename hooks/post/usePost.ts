@@ -57,7 +57,7 @@ export function usePostMutation() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async (post: { content: string | null, parentId: string | null }) => {
+        mutationFn: async (post: { content: string | null, parent_id: string | null }) => {
             const response = await api.post("/post", post);
             return response.data;
         },

@@ -4,15 +4,15 @@ import api from "@/lib/api";
 interface CreatePostVariables {
     content?: string;
     type?: string;
-    parentId?: string;
+    parent_id?: string;
 }
 
 export function useCreatePost({ screen }: { screen: string }) {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ content, type, parentId }: CreatePostVariables) => {
-            return api.post("/post", { content, type, parentId });
+        mutationFn: async ({ content, parent_id, type }: CreatePostVariables) => {
+            return api.post("/post", { content, parent_id, type });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [screen] });
@@ -27,8 +27,8 @@ export function useDeletePost() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ postId }: { postId: string }) => {
-            return api.delete(`/post/${postId}`);
+        mutationFn: async ({ post_id }: { post_id: string }) => {
+            return api.delete(`/post/${post_id}`);
         },
         onSuccess: () => {
             queryClient.invalidateQueries();

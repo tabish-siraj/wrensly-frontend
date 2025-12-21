@@ -6,9 +6,8 @@ import { PostActions } from "./PostActions";
 import { CommentList } from "./CommentList";
 import { CommentComposer } from "@/components/input/CommentComposer";
 import useUserStore from "@/src/stores/userStore";
-import { useCreatePost } from "@/hooks/post/useCreatePost";
+import { useCreateComment } from "@/hooks/comment/useCreateComment";
 import { toast } from "sonner";
-import { SCREEN, POST_TYPE } from "@/src/constants";
 
 interface PostDetailProps {
     post: Post;
@@ -18,7 +17,7 @@ interface PostDetailProps {
 export function PostDetail({ screen, post }: PostDetailProps) {
     const [isCommenting, setIsCommenting] = useState(false);
     const { user } = useUserStore();
-    const postMutation = useCreatePost({ screen });
+    const postMutation = useCreateComment({ screen });
 
     const handleCommentClick = () => {
         setIsCommenting(!isCommenting);
@@ -31,9 +30,9 @@ export function PostDetail({ screen, post }: PostDetailProps) {
         }
         postMutation.mutate(
             {
-                type: POST_TYPE.COMMENT,
                 content: content.trim(),
-                parentId: post.id,
+                post_id: post.id,
+                parent_id: post.id,
             },
             {
                 onSuccess: () => {
@@ -47,10 +46,10 @@ export function PostDetail({ screen, post }: PostDetailProps) {
             }
         );
     };
-    const postDate = new Date(post.createdAt).toLocaleDateString('en-US', {
+    const postDate = new Date(post.created_at).toLocaleDateString('en-US', {
         year: 'numeric', month: 'long', day: 'numeric'
     });
-    const postTime = new Date(post.createdAt).toLocaleTimeString('en-US', {
+    const postTime = new Date(post.created_at).toLocaleTimeString('en-US', {
         hour: '2-digit', minute: '2-digit'
     });
 

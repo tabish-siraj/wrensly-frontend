@@ -31,8 +31,8 @@
 //         posts: state.posts.map((p) =>
 //             p.id === postId ? {
 //                 ...p,
-//                 isReposted: !p.isReposted,
-//                 RepostCount: p.RepostCount + (p.isReposted ? -1 : 1),
+//                 is_reposted: !p.is_reposted,
+//                 RepostCount: p.RepostCount + (p.is_reposted ? -1 : 1),
 //             } : p
 //         ),
 //     })),
@@ -49,7 +49,7 @@
 //         posts: state.posts.map((p) =>
 //             p.id === postId ? {
 //                 ...p,
-//                 isBookmarked: !p.isBookmarked,
+//                 is_bookmarked: !p.is_bookmarked,
 //             } : p
 //         ),
 //     })),

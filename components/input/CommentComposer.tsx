@@ -39,8 +39,8 @@ export function CommentComposer({
             } else {
                 postMutation.mutate({
                     content: content.trim(),
-                    postId: post.id,
-                    parentId: ""
+                    post_id: post.id,
+                    parent_id: post.id,
                 });
                 toast.success("Comment posted!");
             }

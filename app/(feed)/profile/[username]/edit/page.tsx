@@ -18,8 +18,8 @@ export default function EditPage() {
         resolver: zodResolver(UserSchema),
         defaultValues: {
             username: user?.username || "",
-            firstName: user?.firstName || "",
-            lastName: user?.lastName || "",
+            first_name: user?.first_name || "",
+            last_name: user?.last_name || "",
             dateOfBirth: dateOfBirth || "",
             gender: user?.gender || "",
             bio: user?.bio || "",
@@ -33,8 +33,8 @@ export default function EditPage() {
         }
     });
     const fields = [
-        { name: "firstName", label: "First Name", placeholder: "Enter your first name", required: true },
-        { name: "lastName", label: "Last Name", placeholder: "Enter your last name", required: true },
+        { name: "first_name", label: "First Name", placeholder: "Enter your first name", required: true },
+        { name: "last_name", label: "Last Name", placeholder: "Enter your last name", required: true },
         { name: "dateOfBirth", label: "Date of Birth", placeholder: "Enter your date of birth", required: false, type: "date" },
         { name: "gender", label: "Gender", placeholder: "Enter your gender", required: false },
         { name: "bio", label: "Bio", placeholder: "Enter your bio", required: false },

@@ -6,8 +6,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 interface PostHeaderProps {
     user: {
         username: string;
-        firstName: string;
-        lastName: string;
+        first_name: string;
+        last_name: string;
         avatar: string | null;
     };
 }
@@ -23,7 +23,7 @@ export function PostHeader({ user }: PostHeaderProps) {
             </Link>
             <div className="ml-3">
                 <span className="font-bold text-lg">
-                    <Link href={`/profile/${user.username}`}>{user.firstName} {user.lastName}</Link>
+                    <Link href={`/profile/${user.username}`}>{user.first_name} {user.last_name}</Link>
                 </span>
                 <p className="text-sm text-gray-500">@{user.username}</p>
             </div>

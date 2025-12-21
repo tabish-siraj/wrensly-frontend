@@ -4,7 +4,7 @@
 
 // interface ToggleRepostVariables {
 //     postId: string;
-//     isReposted: boolean;
+//     is_reposted: boolean;
 //     screen: string;
 // }
 
@@ -15,7 +15,7 @@
 //         mutationFn: async ({ postId }: ToggleRepostVariables) => {
 //             return api.post("/post/repost", { postId });
 //         },
-//         onMutate: async ({ postId, isReposted, screen }) => {
+//         onMutate: async ({ postId, is_reposted, screen }) => {
 //             const queryKey = [screen];
 //             await queryClient.cancelQueries({ queryKey });
 
@@ -29,10 +29,10 @@
 //                         post.id === postId
 //                             ? {
 //                                 ...post,
-//                                 isReposted: !isReposted,
+//                                 is_reposted: !is_reposted,
 //                                 stats: {
 //                                     ...post.stats,
-//                                     reposts: post.stats.reposts + (isReposted ? -1 : 1),
+//                                     reposts: post.stats.reposts + (is_reposted ? -1 : 1),
 //                                 }
 //                             } : post
 //                     ),

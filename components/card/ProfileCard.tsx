@@ -79,7 +79,7 @@ export default function ProfileCard() {
         {/* Profile Info */}
         <div className="px-4">
           <div className="pt-5">
-            <h1 className="text-xl font-bold">{user_data?.firstName} {user_data?.lastName}</h1>
+            <h1 className="text-xl font-bold">{user_data?.first_name} {user_data?.last_name}</h1>
             <p className="text-gray-500">@{user_data?.username}</p>
 
             {/* Followers / Following buttons */}
@@ -130,8 +130,8 @@ export default function ProfileCard() {
             </span>
             <span className="flex items-center">
               <Calendar className="size-4 mr-1" /> Joined{" "}
-              {user_data?.createdAt &&
-                new Date(user_data.createdAt).toLocaleDateString(undefined, {
+              {user_data?.created_at &&
+                new Date(user_data.created_at).toLocaleDateString(undefined, {
                   year: "numeric",
                   month: "long",
                   day: "numeric",

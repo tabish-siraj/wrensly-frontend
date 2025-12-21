@@ -10,9 +10,8 @@ import { ParentPostCard } from "./ParentPostCard";
 import { PostActions } from "./PostActions";
 import { CommentComposer } from "@/components/input/CommentComposer";
 import useUserStore from "@/src/stores/userStore";
-import { useCreatePost } from "@/hooks/post/useCreatePost";
+import { useCreateComment } from "@/hooks/comment/useCreateComment";
 import { toast } from "sonner";
-import { SCREEN, POST_TYPE } from "@/src/constants";
 
 interface PostCardProps {
   post: Post;
@@ -22,7 +21,7 @@ interface PostCardProps {
 export function PostCard({ screen, post }: PostCardProps) {
   const [isCommenting, setIsCommenting] = useState(false);
   const { user } = useUserStore();
-  const postMutation = useCreatePost({ screen });
+  const postMutation = useCreateComment({ screen });
 
   const handleCommentClick = () => {
     setIsCommenting(!isCommenting);
@@ -36,8 +35,8 @@ export function PostCard({ screen, post }: PostCardProps) {
     postMutation.mutate(
       {
         content: content.trim(),
-        type: POST_TYPE.COMMENT,
-        parentId: post.id,
+        post_id: post.id,
+        parent_id: post.id,
       },
       {
         onSuccess: () => {
@@ -51,12 +50,12 @@ export function PostCard({ screen, post }: PostCardProps) {
       }
     );
   };
-  const isReposted = post.parentId !== null && post.parentId !== "";
-  const parentPost = isReposted ? post.parent : null;
-  const postDate = new Date(post.createdAt).toLocaleDateString('en-US', {
+  const is_reposted = post.parent_id !== null && post.parent_id !== "";
+  const parentPost = is_reposted ? post.parent : null;
+  const postDate = new Date(post.created_at).toLocaleDateString('en-US', {
     year: 'numeric', month: 'long', day: 'numeric'
   });
-  const postTime = new Date(post.createdAt).toLocaleTimeString('en-US', {
+  const postTime = new Date(post.created_at).toLocaleTimeString('en-US', {
     hour: '2-digit', minute: '2-digit'
   });
   return (
@@ -68,7 +67,7 @@ export function PostCard({ screen, post }: PostCardProps) {
         <Link href={`/post/${post.id}`}>
           <p className="text-gray-800 mb-4">{post.content}</p>
         </Link>
-        {isReposted && parentPost && (
+        {is_reposted && parentPost && (
           <ParentPostCard post={parentPost} />
         )}
         <div className="text-sm text-gray-500">

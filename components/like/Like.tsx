@@ -21,7 +21,7 @@ export function Like({ screen, post }: LikeProps) {
             {
                 screen: screen,
                 postId: post.id,
-                isLiked: post.isLiked,
+                is_liked: post.is_liked,
             },
             {
                 onError: (error) => {
@@ -41,11 +41,11 @@ export function Like({ screen, post }: LikeProps) {
             className="flex items-center gap-1 text-gray-500 hover:text-red-500 hover:bg-transparent transition-colors"
         >
             <motion.div
-                animate={{ scale: post.isLiked ? [1, 1.2, 1] : 1 }}
+                animate={{ scale: post.is_liked ? [1, 1.2, 1] : 1 }}
                 transition={{ duration: 0.3 }}
             >
                 <HeartIcon
-                    className={`${post.isLiked ? "text-red-500 fill-red-500" : "text-gray-500"
+                    className={`${post.is_liked ? "text-red-500 fill-red-500" : "text-gray-500"
                         } ${toggleLike.isPending ? "opacity-50" : ""}`}
                 />
             </motion.div>
@@ -54,9 +54,9 @@ export function Like({ screen, post }: LikeProps) {
                 <AnimatePresence mode="popLayout">
                     <motion.span
                         key={post.stats.likes}
-                        initial={{ y: post.isLiked ? -20 : 20, opacity: 0 }}
+                        initial={{ y: post.is_liked ? -20 : 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: post.isLiked ? 20 : -20, opacity: 0 }}
+                        exit={{ y: post.is_liked ? 20 : -20, opacity: 0 }}
                         transition={{ duration: 0.2 }}
                         className="absolute inset-0"
                     >

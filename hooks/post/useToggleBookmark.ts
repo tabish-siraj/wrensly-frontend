@@ -5,7 +5,7 @@ import { Post } from "@/src/types";
 
 interface ToggleBookmarkVariables {
     postId: string;
-    isBookmarked: boolean;
+    is_bookmarked: boolean;
     screen: string;
 }
 
@@ -13,17 +13,17 @@ export function useToggleBookmark() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ postId, isBookmarked }: ToggleBookmarkVariables) => {
-            if (isBookmarked) {
+        mutationFn: async ({ postId, is_bookmarked }: ToggleBookmarkVariables) => {
+            if (is_bookmarked) {
                 return api.delete(`/bookmark/${postId}`);
             } else {
                 return api.post('/bookmark', {
                     postId,
-                    isBookmarked: true
+                    is_bookmarked: true
                 });
             }
         },
-        onMutate: async ({ postId, isBookmarked, screen }) => {
+        onMutate: async ({ postId, is_bookmarked, screen }) => {
             const queryKey = [screen];
             await queryClient.cancelQueries({ queryKey });
 
@@ -37,7 +37,7 @@ export function useToggleBookmark() {
                         post.id === postId
                             ? {
                                 ...post,
-                                isBookmarked: !isBookmarked,
+                                is_bookmarked: !is_bookmarked,
                             } : post
                     ),
                 };

@@ -3,15 +3,15 @@ export interface User {
   username: string;
   email: string;
   password: string;
-  isActive: boolean;
-  isVerified: boolean;
-  isEmailVerified: boolean;
-  isAdmin: boolean;
-  isBanned: boolean;
-  userId: string;
-  firstName: string;
-  lastName: string;
-  dateOfBirth: Date;
+  is_active: boolean;
+  is_verified: boolean;
+  is_email_verified: boolean;
+  is_admin: boolean;
+  is_banned: boolean;
+  user_id: string;
+  first_name: string;
+  last_name: string;
+  date_of_birth: Date;
   gender: string;
   bio: string;
   avatar: string;
@@ -21,11 +21,11 @@ export interface User {
   country: string;
   phone: string;
   website: string;
-  followersCount: number;
-  followingCount: number;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string;
+  followers_count: number;
+  following_count: number;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string;
 }
 
 export interface PostStats {
@@ -36,15 +36,15 @@ export interface PostStats {
 export interface Post {
   id: string;
   content: string;
-  user: Pick<User, "id" | "username" | "firstName" | "lastName" | "avatar">;
-  parentId: string | null;
+  user: Pick<User, "id" | "username" | "first_name" | "last_name" | "avatar">;
+  parent_id: string | null;
   parent: Post | null;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  isLiked: boolean;
-  isReposted: boolean;
-  isBookmarked: boolean;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  is_liked: boolean;
+  is_reposted: boolean;
+  is_bookmarked: boolean;
   stats: PostStats;
 }
 
@@ -60,4 +60,3 @@ export interface TrendingTopic {
   category: string;
   posts: string;
 }
-

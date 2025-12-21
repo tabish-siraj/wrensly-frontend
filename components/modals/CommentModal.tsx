@@ -3,9 +3,9 @@
 import { Post } from "@/src/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { PostComposer } from "@/components/input/PostComposer";
-import { useCreatePost } from "@/hooks/post/useCreatePost";
+import { useCreateComment } from "@/hooks/comment/useCreateComment";
 import { toast } from "sonner";
-import { POST_TYPE, SCREEN } from "@/src/constants";
+import { SCREEN } from "@/src/constants";
 import useUserStore from "@/src/stores/userStore";
 
 interface CommentModalProps {
@@ -16,13 +16,13 @@ interface CommentModalProps {
 
 export function CommentModal({ post, isOpen, onClose }: CommentModalProps) {
     const { user } = useUserStore();
-    const postMutation = useCreatePost({ screen: SCREEN.POST });
+    const postMutation = useCreateComment({ screen: SCREEN.POST });
 
     const handleSubmit = (content: string) => {
         postMutation.mutate({
-            type: POST_TYPE.COMMENT,
             content: content.trim(),
-            parentId: post.id,
+            post_id: post.id,
+            parent_id: post.id,
         }, {
             onSuccess: () => {
                 toast.success("Your comment has been posted.");

@@ -3,8 +3,8 @@ import { z } from 'zod';
 export const UserSchema = z.object({
     username: z.string().optional(),
     email: z.string().email().nullable().optional(),
-    firstName: z.string().min(1).max(50).nullable().optional(),
-    lastName: z.string().min(1).max(50).nullable().optional(),
+    first_name: z.string().min(1).max(50).nullable().optional(),
+    last_name: z.string().min(1).max(50).nullable().optional(),
     dateOfBirth: z.string().nullable().optional(),
     gender: z.string().nullable().optional(),
     bio: z.string().nullable().optional(),

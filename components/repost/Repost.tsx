@@ -15,8 +15,10 @@ import { Post } from "@/src/types";
 import { PostComposer } from "@/components/input/PostComposer";
 import { toast } from "sonner";
 // import { useToggleRepost } from "@/hooks/post/useToggleRepost";
-import { useCreatePost, useDeletePost } from "@/hooks/post/useCreatePost";
-import { POST_TYPE } from "@/src/constants";
+import { useDeletePost } from "@/hooks/post/useCreatePost";
+import { useCreateRepost } from "@/hooks/repost/useCreateRepost";
+import { useCreateQuote } from "@/hooks/quote/useCreateQuote";
+
 
 interface RepostProps {
   screen: string;
@@ -26,16 +28,17 @@ interface RepostProps {
 export function Repost({ screen, post }: RepostProps) {
   const [showQuoteComposer, setShowQuoteComposer] = useState(false);
   // const { mutate: toggleRepost } = useToggleRepost();
-  const { mutate: createPost } = useCreatePost({ screen });
+  const { mutate: createRepost } = useCreateRepost({ screen });
+  const { mutate: createQuote } = useCreateQuote({ screen });
   const { mutate: deletePost } = useDeletePost();
 
 
   // const handleRepost = () => {
   //   toggleRepost(
-  //     { postId: post.id, isReposted: post.isReposted, screen },
+  //     { post_id: post.id, is_reposted: post.is_reposted, screen },
   //     {
   //       onSuccess: () => {
-  //         toast.success(post.isReposted ? "Unreposted" : "Reposted");
+  //         toast.success(post.is_reposted ? "Unreposted" : "Reposted");
   //       }
   //     }
   //   );
@@ -60,18 +63,18 @@ export function Repost({ screen, post }: RepostProps) {
             className="flex items-center gap-1 text-gray-500 hover:text-green-500 hover:bg-transparent transition-colors"
           >
             <RepeatIcon
-              className={`${post.isReposted ? "text-green-500" : "text-gray-500"}`}
+              className={`${post.is_reposted ? "text-green-500" : "text-gray-500"}`}
             />
             <span className="text-sm text-gray-700">{post.stats.reposts}</span>
           </Button>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="start" sideOffset={4}>
-          <DropdownMenuItem onClick={post.isReposted ?
+          <DropdownMenuItem onClick={post.is_reposted ?
             () => {
               // Undo Repost
               deletePost(
-                { postId: post.id },
+                { post_id: post.id },
                 {
                   onSuccess: () => {
                     toast.success("Unreposted!");
@@ -81,8 +84,8 @@ export function Repost({ screen, post }: RepostProps) {
             }
             :
             () => {
-              createPost(
-                { type: POST_TYPE.REPOST, parentId: post.id },
+              createRepost(
+                { parent_id: post.id },
                 {
                   onSuccess: () => {
                     setShowQuoteComposer(false);
@@ -92,7 +95,7 @@ export function Repost({ screen, post }: RepostProps) {
               );
             }} className="flex items-center gap-2">
             <RepeatIcon className="w-4 h-4 text-green-600" />
-            {post.isReposted ? 'Undo Repost' : 'Repost'}
+            {post.is_reposted ? 'Undo Repost' : 'Repost'}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleQuote} className="flex items-center gap-2">
             <MessageSquare className="w-4 h-4 text-blue-600" />
@@ -115,8 +118,8 @@ export function Repost({ screen, post }: RepostProps) {
             }}
             placeholder="Add a comment..."
             onSubmit={(content) => {
-              createPost(
-                { content, type: POST_TYPE.QUOTE, parentId: post.id },
+              createQuote(
+                { content, parent_id: post.id },
                 {
                   onSuccess: () => {
                     setShowQuoteComposer(false);
