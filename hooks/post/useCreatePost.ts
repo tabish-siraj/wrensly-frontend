@@ -18,7 +18,9 @@ export function useCreatePost({ screen }: { screen: string }) {
             queryClient.invalidateQueries({ queryKey: [screen] });
         },
         onError: (error) => {
-            console.error('Error creating post:', error);
+            if (process.env.NODE_ENV === 'development') {
+                console.error('Error creating post:', error);
+            }
         },
     });
 }
@@ -34,7 +36,9 @@ export function useDeletePost() {
             queryClient.invalidateQueries();
         },
         onError: (error) => {
-            console.error('Error deleting post:', error);
+            if (process.env.NODE_ENV === 'development') {
+                console.error('Error deleting post:', error);
+            }
         },
     });
 }

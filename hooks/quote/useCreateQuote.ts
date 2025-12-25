@@ -2,6 +2,7 @@
 
 import api from "@/lib/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { POST_TYPE } from "@/src/constants";
 
 interface CreatePostVariables {
     content: string;
@@ -13,13 +14,19 @@ export function useCreateQuote({ screen }: { screen: string }) {
 
     return useMutation({
         mutationFn: async ({ content, parent_id }: CreatePostVariables) => {
-            return api.post(`/post/${parent_id}/quote`, { content, parent_id });
+            return api.post("/post", {
+                content,
+                parent_id,
+                type: POST_TYPE.QUOTE
+            });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [screen] });
         },
         onError: (error) => {
-            console.error('Error creating quote:', error);
+            if (process.env.NODE_ENV === 'development') {
+                console.error('Error creating quote:', error);
+            }
         },
     });
 }

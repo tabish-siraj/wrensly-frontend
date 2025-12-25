@@ -41,7 +41,9 @@ export function PostDetail({ screen, post }: PostDetailProps) {
                 },
                 onError: (error) => {
                     toast.error("Failed to post your comment.");
-                    console.error(error);
+                    if (process.env.NODE_ENV === 'development') {
+                        console.error(error);
+                    }
                 },
             }
         );

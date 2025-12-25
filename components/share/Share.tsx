@@ -32,7 +32,9 @@ export function Share({ post }: ShareProps) {
         toast.success("Link copied to clipboard!");
       })
       .catch(err => {
-        console.error("Failed to copy link: ", err);
+        if (process.env.NODE_ENV === 'development') {
+          console.error("Failed to copy link: ", err);
+        }
         toast.error("Failed to copy link.");
       });
   };

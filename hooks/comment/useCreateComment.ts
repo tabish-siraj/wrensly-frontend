@@ -18,7 +18,9 @@ export function useCreateComment({ screen }: { screen: string }) {
             queryClient.invalidateQueries({ queryKey: [screen] });
         },
         onError: (error) => {
-            console.error('Error creating comment:', error);
+            if (process.env.NODE_ENV === 'development') {
+                console.error('Error creating comment:', error);
+            }
         },
     });
 }

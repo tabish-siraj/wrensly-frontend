@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -7,10 +9,13 @@ export function AuthRedirectProvider({ children }: { children: React.ReactNode }
   const pathname = usePathname();
 
   useEffect(() => {
+    // Ensure we're on the client side before accessing localStorage
+    if (typeof window === 'undefined') return;
+
     const token = localStorage.getItem("token");
 
     // If not logged in, redirect to /auth/login
-        const allowedPaths = ["/auth/login", "/auth/reset-password", "/auth/forgot-password", "/auth/signup", "/auth/verify-email"];
+    const allowedPaths = ["/auth/login", "/auth/reset-password", "/auth/forgot-password", "/auth/signup", "/auth/verify-email"];
 
     if (!token && !allowedPaths.includes(pathname)) {
       router.replace("/auth/login");

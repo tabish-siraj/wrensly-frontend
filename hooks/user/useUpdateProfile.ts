@@ -1,6 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
-import { useRouter } from "next/navigation"; // useRouter from next/navigation for app directory
+import { useRouter } from "next/navigation";
 import { User } from "@/src/schema";
 import useUserStore from "@/src/stores/userStore";
 
@@ -11,16 +11,35 @@ type UpdateProfileArgs = {
 
 export const useUpdateProfile = () => {
     const router = useRouter();
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: async ({ id, payload }: UpdateProfileArgs) => {
-            await api.put(`/user/${id}`, payload);
+            const response = await api.put(`/user/${id}`, payload);
+            return response.data;
         },
-        onSuccess: async () => {
-            // onSuccess, run an api call to the user/me endpoint
-            const user = await api.get("/user/me");
-            useUserStore.getState().setUser(user.data.data); // use the store's setUser action
-            router.refresh();
+        onSuccess: async (data) => {
+            try {
+                // Refresh user data from server
+                const userResponse = await api.get("/user/me");
+                useUserStore.getState().setUser(userResponse.data.data);
+
+                // Invalidate relevant queries
+                queryClient.invalidateQueries({ queryKey: ["user"] });
+                queryClient.invalidateQueries({ queryKey: ["profile"] });
+
+                // Refresh the page data
+                router.refresh();
+            } catch (error) {
+                if (process.env.NODE_ENV === 'development') {
+                    console.error('Error refreshing user data:', error);
+                }
+            }
         },
+        onError: (error) => {
+            if (process.env.NODE_ENV === 'development') {
+                console.error('Error updating profile:', error);
+            }
+        }
     });
 };

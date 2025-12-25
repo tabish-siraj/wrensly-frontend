@@ -7,7 +7,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import useUserStore from "@/src/stores/userStore";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useFollowUnfollow, useGetFollowers, useGetFollowings } from "@/hooks/follow/useFollow";
 import { useUserByUsername } from "@/hooks/user/useGetUser";
 import { toast } from "sonner";
@@ -16,6 +16,7 @@ import FollowListModal from "@/components/modals/FollowersModal";
 export default function ProfileCard() {
   const { user } = useUserStore();
   const params = useParams();
+  const router = useRouter();
   const { followers, loading: followersLoading, error: followersError } = useGetFollowers(params.username as string)
   const { following, loading: followingLoading, error: followingError } = useGetFollowings(params.username as string)
 
@@ -29,13 +30,25 @@ export default function ProfileCard() {
 
   const handleFollowUnfollow = () => {
     if (isCurrentUser || !user_data) return;
+
+    const wasFollowing = user_data.isFollowing;
     followUnfollow({
       following: user_data.id,
-      operation: user_data.isFollowing ? "unfollow" : "follow",
+      operation: wasFollowing ? "unfollow" : "follow",
+    }, {
+      onSuccess: () => {
+        toast.success(`${wasFollowing ? "Unfollowed" : "Followed"} ${user_data.username}`);
+        // Optimistically update the UI
+        user_data.isFollowing = !wasFollowing;
+        user_data.followers_count += wasFollowing ? -1 : 1;
+      },
+      onError: (error) => {
+        toast.error(`Failed to ${wasFollowing ? "unfollow" : "follow"} user`);
+        if (process.env.NODE_ENV === 'development') {
+          console.error(error);
+        }
+      }
     });
-    toast.success(`${user_data.isFollowing ? "Unfollowed" : "Followed"} ${user_data.username}`);
-    user_data.isFollowing = !user_data.isFollowing;
-    user_data.followersCount += user_data.isFollowing ? 1 : -1;
   };
 
   return (
@@ -46,7 +59,7 @@ export default function ProfileCard() {
           <div className="relative w-full h-[200px] bg-gray-200">
             <Image
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQp8_W4z4PTHC0ogzdUY3UO9t35bbtSzvxFiA&s"
-              alt="Cover"
+              alt={`${user_data?.username || 'User'}'s cover photo`}
               fill
               className="object-cover"
             />
@@ -57,9 +70,9 @@ export default function ProfileCard() {
                 <Avatar className="w-32 h-32 border-4 border-white">
                   <AvatarImage
                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlHPCQDGxzqlFNGeeP1WPx_5tLK03EMXLwpA&s"
-                    alt={user?.username}
+                    alt={`${user_data?.username || 'User'}'s profile picture`}
                   />
-                  <AvatarFallback>{user_data?.username[0].toUpperCase()}</AvatarFallback>
+                  <AvatarFallback>{user_data?.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
                 </Avatar>
               </div>
             </div>
@@ -67,11 +80,11 @@ export default function ProfileCard() {
               className="mt-4 px-6 py-2 text-white rounded-full font-semibold shadow transition"
               onClick={
                 isCurrentUser
-                  ? () => (window.location.href = `/profile/${params.username}/edit`)
+                  ? () => router.push(`/profile/${params.username}/edit`)
                   : handleFollowUnfollow
               }
             >
-              {isCurrentUser ? "Edit Profile" : user_data?.isFollowing ? "Unfollow" : "Follow"}
+              {isCurrentUser ? "Edit Profile" : user_data?.isFollowing ? "Following" : "Follow"}
             </Button>
           </div>
         </div>
@@ -92,7 +105,7 @@ export default function ProfileCard() {
                   setShowFollowersModal(true);
                 }}
               >
-                {user_data?.followersCount} Flock
+                {user_data?.followers_count || 0} Followers
               </Button>
 
               <Button
@@ -103,7 +116,7 @@ export default function ProfileCard() {
                   setShowFollowersModal(true);
                 }}
               >
-                {user_data?.followingCount} Following
+                {user_data?.following_count || 0} Following
               </Button>
             </div>
           </div>

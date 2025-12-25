@@ -26,7 +26,9 @@ export function Bookmark({ screen, post }: BookmarkProps) {
       {
         onError: (error) => {
           toast.error("Failed to bookmark.");
-          console.error(error);
+          if (process.env.NODE_ENV === 'development') {
+            console.error(error);
+          }
         },
         onSuccess: () => {
           toast.success("Post bookmarked.");

@@ -10,22 +10,94 @@ import { SCREEN } from "@/src/constants";
 
 const TABS = [
     { key: "posts", label: "Posts" },
-    // { key: "shares", label: "Shares" },
+    { key: "reposts", label: "Reposts" },
     { key: "media", label: "Media" },
-    { key: "liked", label: "Liked" },
+    { key: "likes", label: "Likes" },
 ];
 
 export default function ProfileTabs() {
     const params = useParams();
-    // const { user } = useUserStore()
     const [activeTab, setActiveTab] = React.useState("posts");
-    const { posts, loading, error } = usePostByUsername(params.username as string);
+
+    // Safely handle username parameter
+    const username = Array.isArray(params.username) ? params.username[0] : params.username;
+    const { posts, loading, error } = usePostByUsername(username || "");
+
+    if (!username) {
+        return (
+            <div className="text-center p-8">
+                <p className="text-gray-500">Invalid username</p>
+            </div>
+        );
+    }
+
+    // Filter posts based on active tab
+    const getFilteredPosts = () => {
+        if (!posts?.data) return [];
+
+        switch (activeTab) {
+            case "posts":
+                return posts.data.filter((post: Post) => post.type === "POST");
+            case "reposts":
+                return posts.data.filter((post: Post) => post.type === "REPOST" || post.type === "QUOTE");
+            case "media":
+                // For now, return all posts - you can add media filtering logic later
+                return posts.data.filter((post: Post) => post.content?.includes("http") || post.content?.includes("image"));
+            case "likes":
+                return posts.data.filter((post: Post) => post.is_liked);
+            default:
+                return posts.data;
+        }
+    };
+
+    const filteredPosts = getFilteredPosts();
+
+    const renderTabContent = () => {
+        if (loading) {
+            return (
+                <div className="flex justify-center py-8">
+                    <Loader2 className="animate-spin w-8 h-8 text-blue-500" />
+                </div>
+            );
+        }
+
+        if (error) {
+            return (
+                <div className="text-center py-8">
+                    <p className="text-gray-500">Error loading content</p>
+                </div>
+            );
+        }
+
+        if (filteredPosts.length === 0) {
+            const emptyMessages = {
+                posts: "No posts yet",
+                reposts: "No reposts yet",
+                media: "No media posts yet",
+                likes: "No liked posts yet"
+            };
+
+            return (
+                <div className="text-center py-8">
+                    <p className="text-gray-500">{emptyMessages[activeTab as keyof typeof emptyMessages]}</p>
+                </div>
+            );
+        }
+
+        return (
+            <div className="space-y-4">
+                {filteredPosts.map((post: Post) => (
+                    <PostCard screen={SCREEN.PROFILE} key={post.id} post={post} />
+                ))}
+            </div>
+        );
+    };
 
     return (
         <div className="w-full mt-4">
             <div className="w-full">
                 {/* Tab Menu */}
-                <div className="flex border-gray-200">
+                <div className="flex border-b border-gray-200">
                     {TABS.map((tab) => (
                         <button
                             key={tab.key}
@@ -44,66 +116,7 @@ export default function ProfileTabs() {
 
                 {/* Tab Content */}
                 <div className="p-6">
-                    {activeTab === "posts" && <div>
-                        {loading ? (
-                            <div className="flex justify-center py-8">
-                                <Loader2 className="animate-spin w-8 h-8 text-blue-500" />
-                            </div>
-                        ) : error ? (
-                            <div className="text-gray-500 py-8">No posts available.</div>
-                        ) : posts && posts.data && posts.data.length > 0 ? (
-                            posts.data.map((post: Post) => (
-                                <PostCard screen={SCREEN.PROFILE} key={post.id} post={post} />
-                            ))
-                        ) : (
-                            <div className="py-8 text-gray-500">No posts available</div>
-                        )}
-                    </div>}
-                    {/* {activeTab === "shares" && <div>
-                        {loading ? (
-                            <div className="flex justify-center py-8">
-                                <Loader2 className="animate-spin w-8 h-8 text-blue-500" />
-                            </div>
-                        ) : error ? (
-                            <div className="text-red-500 py-8">Error loading posts: {error}</div>
-                        ) : posts && posts.data && posts.data.length > 0 ? (
-                            posts.data.map((post: Post) => (
-                                <PostCard screen={SCREEN.PROFILE} key={post.id} post={post} />
-                            ))
-                        ) : (
-                            <div className="py-8 text-gray-500">No posts available</div>
-                        )}
-                    </div>} */}
-                    {activeTab === "media" && <div>
-                        {loading ? (
-                            <div className="flex justify-center py-8">
-                                <Loader2 className="animate-spin w-8 h-8 text-blue-500" />
-                            </div>
-                        ) : error ? (
-                            <div className="text-red-500 py-8">Error loading posts: {error}</div>
-                        ) : posts && posts.data && posts.data.length > 0 ? (
-                            posts.data.map((post: Post) => (
-                                <PostCard screen={SCREEN.PROFILE} key={post.id} post={post} />
-                            ))
-                        ) : (
-                            <div className="py-8 text-gray-500">No posts available</div>
-                        )}
-                    </div>}
-                    {activeTab === "liked" && <div>
-                        {loading ? (
-                            <div className="flex justify-center py-8">
-                                <Loader2 className="animate-spin w-8 h-8 text-blue-500" />
-                            </div>
-                        ) : error ? (
-                            <div className="text-red-500 py-8">Error loading posts: {error}</div>
-                        ) : posts && posts.data && posts.data.length > 0 ? (
-                            posts.data.map((post: Post) => (
-                                <PostCard screen={SCREEN.PROFILE} key={post.id} post={post} />
-                            ))
-                        ) : (
-                            <div className="py-8 text-gray-500">No posts available</div>
-                        )}
-                    </div>}
+                    {renderTabContent()}
                 </div>
             </div>
         </div>

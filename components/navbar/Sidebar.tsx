@@ -12,13 +12,10 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import useUserStore from "@/src/stores/userStore";
 
 const Sidebar = () => {
-  const user = {
-    name: "Farah Shabir",
-    username: "farah_shab26124",
-    avatar: "/avatar-placeholder.png", // Replace or use default
-  };
+  const { user } = useUserStore();
 
   const navItems = [
     { name: "Home", icon: <Home />, href: "/" },
@@ -26,51 +23,61 @@ const Sidebar = () => {
     { name: "Notifications", icon: <Bell />, href: "/notifications" },
     { name: "Messages", icon: <Mail />, href: "/messages" },
     { name: "Grok", icon: <Users />, href: "/grok" },
-    { name: "Profile", icon: <User />, href: "/profile/farah_shab26124" },
+    { name: "Profile", icon: <User />, href: `/profile/${user?.username || ''}` },
     { name: "More", icon: <MoreHorizontal />, href: "/more" },
   ];
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <aside className="w-[250px] p-4 border-r min-h-screen flex flex-col justify-between">
       <div>
-        {/* <div className="mb-6 text-3xl font-bold px-2">🕊️</div> */}
         <Link href="/" className="mb-6 block px-2">
           <span className="text-4xl font-extrabold text-black tracking-wide">W</span>
         </Link>
 
-        <nav className="space-y-3">
+        <nav className="space-y-3" role="navigation" aria-label="Main navigation">
           {navItems.map((item) => (
             <Link
               key={item.name}
               href={item.href}
               className="flex items-center gap-4 px-3 py-2 rounded-full hover:bg-gray-100 transition"
+              aria-label={`Navigate to ${item.name}`}
             >
-              <span className="text-xl">{item.icon}</span>
+              <span className="text-xl" aria-hidden="true">{item.icon}</span>
               <span className="text-lg font-medium">{item.name}</span>
             </Link>
           ))}
         </nav>
 
-        <button className="mt-6 w-full bg-black text-white py-3 rounded-full font-semibold flex justify-center items-center gap-2">
-          <Pencil size={18} />
+        <button
+          className="mt-6 w-full bg-black text-white py-3 rounded-full font-semibold flex justify-center items-center gap-2 hover:bg-gray-800 transition-colors"
+          aria-label="Create new post"
+        >
+          <Pencil size={18} aria-hidden="true" />
           Post
         </button>
       </div>
 
-      {/* Footer */}
       <div className="flex items-center gap-3 mt-6 px-3 py-2 hover:bg-gray-100 rounded-full transition">
         <Image
-          src={user.avatar}
-          alt="avatar"
+          src={user.avatar || '/default-avatar.png'}
+          alt={`${user.first_name || user.username}'s profile picture`}
           width={40}
           height={40}
           className="rounded-full"
         />
         <div>
-          <p className="font-semibold text-sm">{user.name}</p>
+          <p className="font-semibold text-sm">
+            {user.first_name && user.last_name
+              ? `${user.first_name} ${user.last_name}`
+              : user.username}
+          </p>
           <p className="text-xs text-gray-500">@{user.username}</p>
         </div>
-        <MoreHorizontal className="ml-auto" />
+        <MoreHorizontal className="ml-auto" aria-hidden="true" />
       </div>
     </aside>
   );

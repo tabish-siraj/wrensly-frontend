@@ -2,6 +2,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { Post } from "@/src/types";
+import { toast } from "sonner";
 
 interface ToggleLikeVariables {
     postId: string;
@@ -24,12 +25,16 @@ export function useToggleLike() {
             }
         },
         onMutate: async ({ postId, is_liked, screen }) => {
-            const queryKey = [screen];
-            await queryClient.cancelQueries({ queryKey });
+            // Cancel any outgoing refetches
+            await queryClient.cancelQueries({ queryKey: [screen] });
+            await queryClient.cancelQueries({ queryKey: ["infinite-feed"] });
 
-            const previousData = queryClient.getQueryData<{ data: Post[] }>(queryKey);
+            // Snapshot the previous values
+            const previousFeedData = queryClient.getQueryData([screen]);
+            const previousInfiniteFeedData = queryClient.getQueryData(["infinite-feed"]);
 
-            queryClient.setQueryData(queryKey, (old: { data: Post[] } | undefined) => {
+            // Optimistically update regular feed
+            queryClient.setQueryData([screen], (old: { data: Post[] } | undefined) => {
                 if (!old?.data) return old;
                 return {
                     ...old,
@@ -47,18 +52,49 @@ export function useToggleLike() {
                 };
             });
 
-            return { previousData };
+            // Optimistically update infinite feed
+            queryClient.setQueryData(["infinite-feed"], (old: any) => {
+                if (!old?.pages) return old;
+                return {
+                    ...old,
+                    pages: old.pages.map((page: any) => ({
+                        ...page,
+                        data: page.data.map((post: Post) =>
+                            post.id === postId
+                                ? {
+                                    ...post,
+                                    is_liked: !is_liked,
+                                    stats: {
+                                        ...post.stats,
+                                        likes: post.stats.likes + (is_liked ? -1 : 1),
+                                    }
+                                } : post
+                        )
+                    }))
+                };
+            });
+
+            return { previousFeedData, previousInfiniteFeedData };
         },
         onError: (error, variables, context) => {
-            const queryKey = [variables.screen];
-            if (context?.previousData) {
-                queryClient.setQueryData(queryKey, context.previousData);
+            // Rollback optimistic updates on error
+            if (context?.previousFeedData) {
+                queryClient.setQueryData([variables.screen], context.previousFeedData);
             }
-            console.error('Error toggling like:', error);
+            if (context?.previousInfiniteFeedData) {
+                queryClient.setQueryData(["infinite-feed"], context.previousInfiniteFeedData);
+            }
+
+            toast.error("Failed to update like. Please try again.");
+
+            if (process.env.NODE_ENV === 'development') {
+                console.error('Error toggling like:', error);
+            }
         },
         onSettled: (data, error, variables) => {
-            const queryKey = [variables.screen];
-            queryClient.invalidateQueries({ queryKey });
+            // Always refetch after error or success to ensure consistency
+            queryClient.invalidateQueries({ queryKey: [variables.screen] });
+            queryClient.invalidateQueries({ queryKey: ["infinite-feed"] });
         },
     });
 }

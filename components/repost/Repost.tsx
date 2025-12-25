@@ -9,16 +9,14 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RepeatIcon, MessageSquare } from "lucide-react";
 import { Post } from "@/src/types";
 import { PostComposer } from "@/components/input/PostComposer";
+import { ParentPostCard } from "@/components/card/ParentPostCard";
 import { toast } from "sonner";
-// import { useToggleRepost } from "@/hooks/post/useToggleRepost";
-import { useDeletePost } from "@/hooks/post/useCreatePost";
 import { useCreateRepost } from "@/hooks/repost/useCreateRepost";
 import { useCreateQuote } from "@/hooks/quote/useCreateQuote";
-
+import useUserStore from "@/src/stores/userStore";
 
 interface RepostProps {
   screen: string;
@@ -29,14 +27,24 @@ export function Repost({ screen, post }: RepostProps) {
   const [showQuoteComposer, setShowQuoteComposer] = useState(false);
   const { mutate: createRepost } = useCreateRepost({ screen });
   const { mutate: createQuote } = useCreateQuote({ screen });
-  const { mutate: deletePost } = useDeletePost();
+  const { user } = useUserStore();
 
   const handleQuote = () => {
     setShowQuoteComposer(true);
   };
 
-  const closeComposer = () => {
-    setShowQuoteComposer(false);
+  const handleRepost = () => {
+    createRepost(
+      { parent_id: post.id },
+      {
+        onSuccess: () => {
+          toast.success("Reposted!");
+        },
+        onError: () => {
+          toast.error("Failed to repost.");
+        }
+      }
+    );
   };
 
   return (
@@ -45,46 +53,24 @@ export function Repost({ screen, post }: RepostProps) {
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            size="icon"
-            className="flex items-center gap-1 text-gray-500 hover:text-green-500 hover:bg-transparent transition-colors"
+            size="sm"
+            className="flex items-center gap-1 text-gray-500 hover:text-green-600 hover:bg-green-50 transition-colors"
           >
             <RepeatIcon
-              className={`${post.is_reposted ? "text-green-500" : "text-gray-500"}`}
+              className={`w-4 h-4 ${post.is_reposted ? "text-green-500" : "text-gray-500"}`}
             />
             <span className="text-sm text-gray-700">{post.stats.reposts}</span>
           </Button>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="start" sideOffset={4}>
-          <DropdownMenuItem onClick={post.is_reposted ?
-            () => {
-              deletePost(
-                { post_id: post.id },
-                {
-                  onSuccess: () => {
-                    toast.success("Unreposted!");
-                  }
-                }
-              );
-            }
-            :
-            () => {
-              createRepost(
-                { parent_id: post.id },
-                {
-                  onSuccess: () => {
-                    setShowQuoteComposer(false);
-                    toast.success("Reposted!");
-                  }
-                }
-              );
-            }} className="flex items-center gap-2">
+          <DropdownMenuItem onClick={handleRepost} className="flex items-center gap-2">
             <RepeatIcon className="w-4 h-4 text-green-600" />
-            {post.is_reposted ? 'Undo Repost' : 'Repost'}
+            Repost
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleQuote} className="flex items-center gap-2">
             <MessageSquare className="w-4 h-4 text-blue-600" />
-            Quote Repost
+            Quote
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -93,13 +79,13 @@ export function Repost({ screen, post }: RepostProps) {
         <DialogContent className="max-w-2xl bg-white rounded-2xl shadow-2xl">
           <DialogTitle className="sr-only">Quote Post Composer</DialogTitle>
           <DialogDescription className="sr-only">
-            Compose a post with a quoted repost attached below.
+            Compose a post with a quoted post attached below.
           </DialogDescription>
+
           <PostComposer
-            user={{
-              username: post.user.username,
-              avatar: post.user.avatar || "/placeholder.svg",
-            }}
+            user={user}
+            screen={screen}
+            parent_id={post.id}
             placeholder="Add a comment..."
             onSubmit={(content) => {
               createQuote(
@@ -108,34 +94,18 @@ export function Repost({ screen, post }: RepostProps) {
                   onSuccess: () => {
                     setShowQuoteComposer(false);
                     toast.success("Your quote has been posted!");
+                  },
+                  onError: () => {
+                    toast.error("Failed to post quote.");
                   }
                 }
               );
             }}
           />
 
-          <div className="border rounded-xl bg-gray-50 p-4 mt-3">
-            <div className="flex items-center mb-2">
-              <Avatar className="w-10 h-10">
-                <AvatarImage
-                  src={post.user.avatar || "/placeholder.svg"}
-                  alt={post.user.username}
-                />
-                <AvatarFallback>{post.user.username[0].toUpperCase()}</AvatarFallback>
-              </Avatar>
-              <span className="ml-2 font-medium">{post.user.username}</span>
-            </div>
-            <p className="text-gray-800 whitespace-pre-line">{post.content}</p>
-          </div>
-
-          <div className="mt-4 flex justify-end">
-            <Button
-              onClick={closeComposer}
-              variant="ghost"
-              className="rounded-full"
-            >
-              Close
-            </Button>
+          {/* Preview of the post being quoted */}
+          <div className="mt-4">
+            <ParentPostCard post={post} />
           </div>
         </DialogContent>
       </Dialog>

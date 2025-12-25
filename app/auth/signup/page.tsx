@@ -36,14 +36,18 @@ export default function SignupPage() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      signupMutation.mutate(values);
-      toast.success("Profile created successfully! Redirecting to log in...");
-      router.push("/auth/login");
-    } catch (error) {
-      toast.error("Failed to hatch your account. Please try again.");
-      console.error("Signup error:", error);
-    }
+    signupMutation.mutate(values, {
+      onSuccess: () => {
+        toast.success("Account created successfully! Redirecting to log in...");
+        router.push("/auth/login");
+      },
+      onError: (error) => {
+        toast.error("Failed to create your account. Please try again.");
+        if (process.env.NODE_ENV === 'development') {
+          console.error("Signup error:", error);
+        }
+      }
+    });
   }
 
   return (
@@ -53,8 +57,8 @@ export default function SignupPage() {
           <Link href="/" className="mb-6 block px-2">
             <span className="text-4xl font-extrabold text-black tracking-wide">W</span>
           </Link>
-          <h1 className="text-2xl font-extrabold text-gray-900">Hatch Your Profile</h1>
-          <p className="text-sm text-gray-600 mt-1">Join the flock and start chirping</p>
+          <h1 className="text-2xl font-extrabold text-gray-900">Create Your Account</h1>
+          <p className="text-sm text-gray-600 mt-1">Join Wrensly and start sharing</p>
         </div>
 
         <Form {...form}>
@@ -100,15 +104,15 @@ export default function SignupPage() {
               type="submit"
               className="w-full bg-black hover:bg-gray-900 text-white font-bold py-2 rounded-full"
             >
-              Create Profile
+              Create Account
             </Button>
           </form>
         </Form>
 
         <div className="mt-6 text-center text-sm text-gray-600">
-          Already in the flock?{" "}
+          Already have an account?{" "}
           <Link href="/auth/login" className="font-semibold text-black hover:underline">
-            Return to your Profile
+            Sign in here
           </Link>
         </div>
       </div>
