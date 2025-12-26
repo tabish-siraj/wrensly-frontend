@@ -24,12 +24,14 @@ export interface UserState {
   user: User | null;
   isAuthenticated: boolean;
   preferences: UserPreferences;
+  _hasHydrated: boolean;
 
   // Actions
   setUser: (user: User) => void;
   clearUser: (redirectCallback?: () => void) => void;
   updatePreferences: (prefs: Partial<UserPreferences>) => void;
   toggleNotificationSetting: (key: keyof UserPreferences['notifications']) => void;
+  setHasHydrated: (hasHydrated: boolean) => void;
 }
 
 const defaultPreferences: UserPreferences = {
@@ -56,6 +58,7 @@ const useUserStore = create<UserState>()(
       user: null,
       isAuthenticated: false,
       preferences: defaultPreferences,
+      _hasHydrated: false,
 
       setUser: (user) => set({ user, isAuthenticated: true }),
 
@@ -91,6 +94,8 @@ const useUserStore = create<UserState>()(
           }
         }
       })),
+
+      setHasHydrated: (hasHydrated) => set({ _hasHydrated: hasHydrated }),
     }),
     {
       name: "user-storage", // localStorage key
@@ -99,6 +104,9 @@ const useUserStore = create<UserState>()(
         isAuthenticated: state.isAuthenticated,
         preferences: state.preferences,
       }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     }
   )
 );

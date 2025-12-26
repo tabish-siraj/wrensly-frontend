@@ -7,10 +7,23 @@ import { Loader2 } from "lucide-react";
 import { Post } from "@/src/types";
 import useUserStore from "@/src/stores/userStore";
 import { SCREEN } from "@/src/constants";
+import { useStoreHydration } from "@/hooks/useHydration";
 
 export default function FeedPage() {
-  const { user } = useUserStore();
+  const { user, _hasHydrated } = useUserStore();
+  const isHydrated = useStoreHydration(_hasHydrated);
   const { posts, loading, error } = useFeed();
+
+  // Show loading until hydration is complete
+  if (!isHydrated) {
+    return (
+      <div className="w-full max-w-2xl mx-auto space-y-4">
+        <div className="flex justify-center items-center min-h-[200px]">
+          <Loader2 className="animate-spin w-8 h-8 text-primary" />
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -72,8 +85,13 @@ export default function FeedPage() {
         }}
         screen={SCREEN.FEED}
       />
-      {posts.map((post: Post) => (
-        <PostCard screen={SCREEN.FEED} key={post.id} post={post} />
+      <div className="text-green-500 p-4 text-center">
+        Posts loaded successfully: {posts.length} posts
+      </div>
+      {posts.slice(0, 1).map((post: Post) => (
+        <div key={post.id} className="p-4 border rounded">
+          <pre className="text-xs">{JSON.stringify(post, null, 2)}</pre>
+        </div>
       ))}
     </div>
   );
