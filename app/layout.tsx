@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import QueryProvider from "@/src/providers/query/QueryProvider";
 import { AuthRedirectProvider } from "@/src/providers/auth/AuthRedirectProvider";
@@ -9,7 +9,11 @@ import { Toaster } from "sonner";
 export const metadata: Metadata = {
   title: "Wrensly - Connect and Share",
   description: "Join the flock and start chirping with Wrensly, a modern social platform.",
-  viewport: "width=device-width, initial-scale=1",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {

@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ImageIcon, Smile, Calendar, MapPin } from "lucide-react";
 import { useCreatePost } from "@/hooks/post/useCreatePost";
 import { toast } from "sonner";
-import { SCREEN, POST_TYPE } from "@/src/constants";
+import { SCREEN } from "@/src/constants";
 
 interface PostComposerProps {
   user: {
@@ -36,7 +36,6 @@ export function PostComposer({
         onSubmit(content.trim());
       } else {
         postMutation.mutate({
-          type: POST_TYPE.POST,
           content: content.trim(),
         });
         toast.success("Chirp posted!");
@@ -53,7 +52,7 @@ export function PostComposer({
             src={user.avatar || "/placeholder.svg"}
             alt={user.username}
           />
-          <AvatarFallback>{user.username[0].toUpperCase()}</AvatarFallback>
+          <AvatarFallback>{user?.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
         </Avatar>
 
         <div className="flex-1">

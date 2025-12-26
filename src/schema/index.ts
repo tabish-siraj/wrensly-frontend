@@ -25,6 +25,22 @@ export const UserSchema = z.object({
     updated_at: z.string(),
 });
 
+export const EditProfileSchema = z.object({
+    username: z.string().min(1).optional(),
+    first_name: z.string().min(1).max(50).nullable().optional(),
+    last_name: z.string().min(1).max(50).nullable().optional(),
+    date_of_birth: z.string().nullable().optional(),
+    gender: z.string().nullable().optional(),
+    bio: z.string().nullable().optional(),
+    avatar: z.string().nullable().optional(),
+    cover: z.string().nullable().optional(),
+    city: z.string().nullable().optional(),
+    state: z.string().nullable().optional(),
+    country: z.string().nullable().optional(),
+    phone: z.string().nullable().optional(),
+    website: z.string().url().nullable().optional(),
+});
+
 export const PostStatsSchema = z.object({
     likes: z.number().default(0),
     comments: z.number().default(0),
@@ -37,7 +53,7 @@ export const PostSchema = z.object({
     type: z.string().default("POST"), // POST, REPOST, QUOTE, COMMENT
     user: UserSchema.pick({ id: true, username: true, first_name: true, last_name: true, avatar: true }),
     parent_id: z.string().nullable(),
-    parent: z.lazy(() => PostSchema.nullable()),
+    parent: z.any().nullable().optional(), // Using any to avoid circular reference
     created_at: z.string(),
     updated_at: z.string(),
     deleted_at: z.string().nullable(),
@@ -48,5 +64,6 @@ export const PostSchema = z.object({
 });
 
 export type User = z.infer<typeof UserSchema>;
+export type EditProfile = z.infer<typeof EditProfileSchema>;
 export type PostStats = z.infer<typeof PostStatsSchema>;
 export type Post = z.infer<typeof PostSchema>;

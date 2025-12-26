@@ -83,9 +83,8 @@ export function Repost({ screen, post }: RepostProps) {
           </DialogDescription>
 
           <PostComposer
-            user={user}
+            user={user ? { username: user.username, avatar: user.avatar } : { username: 'Unknown', avatar: null }}
             screen={screen}
-            parent_id={post.id}
             placeholder="Add a comment..."
             onSubmit={(content) => {
               createQuote(

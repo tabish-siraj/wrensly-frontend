@@ -22,7 +22,6 @@ export function CommentModal({ post, isOpen, onClose }: CommentModalProps) {
         postMutation.mutate({
             content: content.trim(),
             post_id: post.id,
-            parent_id: post.id,
         }, {
             onSuccess: () => {
                 toast.success("Your comment has been posted.");

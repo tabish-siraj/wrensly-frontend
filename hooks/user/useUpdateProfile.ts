@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { useRouter } from "next/navigation";
-import { User } from "@/src/schema";
+import { EditProfile } from "@/src/schema";
 import useUserStore from "@/src/stores/userStore";
 
 type UpdateProfileArgs = {
     id: string;
-    payload: User;
+    payload: Partial<EditProfile>;
 };
 
 export const useUpdateProfile = () => {

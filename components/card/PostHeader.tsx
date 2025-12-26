@@ -18,7 +18,7 @@ export function PostHeader({ user }: PostHeaderProps) {
             <Link href={`/profile/${user.username}`}>
                 <Avatar className="h-12 w-12">
                     <AvatarImage alt={user.username} src={user.avatar || '/placeholder.svg'} />
-                    <AvatarFallback>{user.username[0].toUpperCase()}</AvatarFallback>
+                    <AvatarFallback>{user?.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
                 </Avatar>
             </Link>
             <div className="ml-3">

@@ -2,12 +2,13 @@
 
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UserSchema, User } from "@/src/schema";
+import { EditProfileSchema, EditProfile } from "@/src/schema";
 import FormInput from "@/components/form-input/FormInput";
 import useUserStore from "@/src/stores/userStore";
 import { useUpdateProfile } from "@/hooks/user/useUpdateProfile";
 import { removeEmptyFields } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import { ArrowLeft, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -19,8 +20,8 @@ export default function EditProfilePage() {
 
     const date_of_birth = user?.date_of_birth ? new Date(user.date_of_birth).toISOString().split("T")[0] : "";
 
-    const form = useForm<User>({
-        resolver: zodResolver(UserSchema),
+    const form = useForm<EditProfile>({
+        resolver: zodResolver(EditProfileSchema),
         defaultValues: {
             username: user?.username || "",
             first_name: user?.first_name || "",
@@ -52,7 +53,7 @@ export default function EditProfilePage() {
         { name: "website", label: "Website", placeholder: "https://yourwebsite.com", required: false, type: "url" },
     ];
 
-    const onSubmit = (data: User) => {
+    const onSubmit = (data: EditProfile) => {
         const parsedPayload = removeEmptyFields(data);
         updateProfile.mutate(
             { id: user?.id || "", payload: parsedPayload },
@@ -92,9 +93,11 @@ export default function EditProfilePage() {
                         <div className="flex items-center gap-4">
                             <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center">
                                 {user?.avatar ? (
-                                    <img
+                                    <Image
                                         src={user.avatar}
                                         alt="Profile"
+                                        width={80}
+                                        height={80}
                                         className="w-full h-full rounded-full object-cover"
                                     />
                                 ) : (

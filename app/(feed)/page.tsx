@@ -14,18 +14,18 @@ export default function FeedPage() {
 
   if (loading) {
     return (
-    <div className="w-full max-w-2xl mx-auto space-y-4">
-      <PostComposer
-        user={{
-          username: user?.username || "anonymous",
-          avatar: user?.avatar || "/default-avatar.png"
-        }}
-        screen={SCREEN.FEED}
-      />
-      <div className="flex justify-center items-center min-h-[200px]">
-        <Loader2 className="animate-spin w-8 h-8 text-primary" />
+      <div className="w-full max-w-2xl mx-auto space-y-4">
+        <PostComposer
+          user={{
+            username: user?.username || "anonymous",
+            avatar: user?.avatar || "/default-avatar.png"
+          }}
+          screen={SCREEN.FEED}
+        />
+        <div className="flex justify-center items-center min-h-[200px]">
+          <Loader2 className="animate-spin w-8 h-8 text-primary" />
+        </div>
       </div>
-    </div>
     );
   }
 
@@ -40,7 +40,7 @@ export default function FeedPage() {
           screen={SCREEN.FEED}
         />
         <div className="text-red-500 p-4 text-center">
-          Error loading posts: {error}
+          Error loading posts: {error?.message || 'Unknown error'}
         </div>
       </div>
     );

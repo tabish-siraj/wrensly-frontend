@@ -22,7 +22,7 @@ interface FeedResponse {
 export function useInfiniteFeed() {
     return useInfiniteQuery({
         queryKey: ["infinite-feed"],
-        queryFn: async ({ pageParam }) => {
+        queryFn: async ({ pageParam }: { pageParam?: string }) => {
             const url = pageParam
                 ? `/feed?cursor=${pageParam}&limit=10`
                 : `/feed?limit=10`;
@@ -45,7 +45,7 @@ export function useInfiniteFeed() {
                 ? lastPage.meta.pagination.cursor
                 : undefined;
         },
-        initialPageParam: undefined,
+        initialPageParam: undefined as string | undefined,
         retry: 3,
         staleTime: 2 * 60 * 1000, // 2 minutes
     });
@@ -54,7 +54,7 @@ export function useInfiniteFeed() {
 export function useInfiniteUserPosts(userId: string) {
     return useInfiniteQuery({
         queryKey: ["infinite-user-posts", userId],
-        queryFn: async ({ pageParam }) => {
+        queryFn: async ({ pageParam }: { pageParam?: string }) => {
             const url = pageParam
                 ? `/post/user/${userId}?cursor=${pageParam}&limit=10`
                 : `/post/user/${userId}?limit=10`;
@@ -77,7 +77,7 @@ export function useInfiniteUserPosts(userId: string) {
                 ? lastPage.meta.pagination.cursor
                 : undefined;
         },
-        initialPageParam: undefined,
+        initialPageParam: undefined as string | undefined,
         enabled: !!userId,
         retry: 3,
         staleTime: 2 * 60 * 1000,

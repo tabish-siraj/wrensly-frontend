@@ -40,7 +40,6 @@ export function CommentComposer({
                 postMutation.mutate({
                     content: content.trim(),
                     post_id: post.id,
-                    parent_id: post.id,
                 });
                 toast.success("Comment posted!");
             }
@@ -56,7 +55,7 @@ export function CommentComposer({
                         src={user.avatar || "/placeholder.svg"}
                         alt={user.username}
                     />
-                    <AvatarFallback>{user.username[0].toUpperCase()}</AvatarFallback>
+                    <AvatarFallback>{user?.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
                 </Avatar>
 
                 <div className="flex-1">

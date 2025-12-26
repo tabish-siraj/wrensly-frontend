@@ -7,6 +7,7 @@ import { useInfiniteFeed } from '@/hooks/post/useInfiniteFeed';
 import { PostSkeleton } from '@/components/PostSkeleton';
 import { AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Post } from '@/src/types';
 
 export const InfiniteFeed: React.FC = () => {
     const {
@@ -49,7 +50,7 @@ export const InfiniteFeed: React.FC = () => {
     }
 
     // Get all posts from all pages
-    const allPosts = data?.pages.flatMap(page => page.data) ?? [];
+    const allPosts = data?.pages.flatMap((page: { data: Post[] }) => page.data) ?? [];
 
     // Empty state
     if (allPosts.length === 0) {

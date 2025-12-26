@@ -52,12 +52,15 @@ export function usePerformanceMonitoring() {
         const observeFID = () => {
             const observer = new PerformanceObserver((list) => {
                 for (const entry of list.getEntries()) {
-                    const fid = entry.processingStart - entry.startTime;
-                    reportMetric({
-                        name: 'FID',
-                        value: fid,
-                        rating: fid < 100 ? 'good' : fid < 300 ? 'needs-improvement' : 'poor'
-                    });
+                    // Type guard for PerformanceEventTiming
+                    if ('processingStart' in entry && 'startTime' in entry) {
+                        const fid = (entry as any).processingStart - entry.startTime;
+                        reportMetric({
+                            name: 'FID',
+                            value: fid,
+                            rating: fid < 100 ? 'good' : fid < 300 ? 'needs-improvement' : 'poor'
+                        });
+                    }
                 }
             });
 
@@ -69,13 +72,15 @@ export function usePerformanceMonitoring() {
             const observer = new PerformanceObserver((list) => {
                 const entries = list.getEntries();
                 const lastEntry = entries[entries.length - 1];
-                const lcp = lastEntry.startTime;
+                if (lastEntry) {
+                    const lcp = lastEntry.startTime;
 
-                reportMetric({
-                    name: 'LCP',
-                    value: lcp,
-                    rating: lcp < 2500 ? 'good' : lcp < 4000 ? 'needs-improvement' : 'poor'
-                });
+                    reportMetric({
+                        name: 'LCP',
+                        value: lcp,
+                        rating: lcp < 2500 ? 'good' : lcp < 4000 ? 'needs-improvement' : 'poor'
+                    });
+                }
             });
 
             observer.observe({ type: 'largest-contentful-paint', buffered: true });

@@ -52,7 +52,7 @@ const defaultPreferences: UserPreferences = {
 
 const useUserStore = create<UserState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       user: null,
       isAuthenticated: false,
       preferences: defaultPreferences,

@@ -31,7 +31,7 @@ export default function UserDropdown({ username, avatar }: UserDropdownProps) {
               src={avatar || "/globe.svg"}
               alt={username}
             />
-            <AvatarFallback>{username[0].toUpperCase()}</AvatarFallback>
+            <AvatarFallback>{username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>

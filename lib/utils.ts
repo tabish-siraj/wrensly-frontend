@@ -7,10 +7,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const removeEmptyFields = (obj: Record<string, unknown>) => {
+export const removeEmptyFields = <T extends Record<string, unknown>>(obj: T): Partial<T> => {
   return Object.fromEntries(
     Object.entries(obj).filter(([, value]) => value !== null && value !== "" && value !== undefined)
-  );
+  ) as Partial<T>;
 };
 
 export function normalizePost(post: Post): Post {

@@ -38,7 +38,6 @@ export function PostCard({ screen, post }: PostCardProps) {
       {
         content: content.trim(),
         post_id: post.id,
-        parent_id: post.id,
       },
       {
         onSuccess: () => {
