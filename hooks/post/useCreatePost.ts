@@ -19,9 +19,7 @@ export function useCreatePost({ screen }: { screen: string }) {
             queryClient.invalidateQueries({ queryKey: ["infinite-feed"] });
         },
         onError: (error) => {
-            if (process.env.NODE_ENV === 'development') {
-                console.error('Error creating post:', error);
-            }
+            console.error('Error creating post:', error);
         },
     });
 }
@@ -43,9 +41,7 @@ export function useDeletePost() {
             queryClient.invalidateQueries();
         },
         onError: (error) => {
-            if (process.env.NODE_ENV === 'development') {
-                console.error('Error deleting post:', error);
-            }
+            console.error('Error deleting post:', error);
         },
     });
 }

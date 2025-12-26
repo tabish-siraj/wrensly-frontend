@@ -55,9 +55,7 @@ export function useToggleBookmark() {
             if (context?.previousData) {
                 queryClient.setQueryData(queryKey, context.previousData);
             }
-            if (process.env.NODE_ENV === 'development') {
-                console.error('Error toggling bookmark:', error);
-            }
+            console.error('Error toggling bookmark:', error);
         },
         onSettled: (data, error, variables) => {
             const queryKey = [variables.screen];

@@ -46,10 +46,8 @@ export function PostCard({ screen, post }: PostCardProps) {
         },
         onError: (error) => {
           toast.error("Failed to post your comment.");
-          // Log error for debugging in development only
-          if (process.env.NODE_ENV === 'development') {
-            console.error(error);
-          }
+          // Log error for debugging
+          console.error(error);
         },
       }
     );

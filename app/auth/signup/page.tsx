@@ -43,9 +43,7 @@ export default function SignupPage() {
       },
       onError: (error) => {
         toast.error("Failed to create your account. Please try again.");
-        if (process.env.NODE_ENV === 'development') {
-          console.error("Signup error:", error);
-        }
+        console.error("Signup error:", error);
       }
     });
   }

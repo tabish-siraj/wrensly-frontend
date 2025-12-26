@@ -41,15 +41,11 @@ export const useUpdateProfile = () => {
                 // Refresh the page data
                 router.refresh();
             } catch (error) {
-                if (process.env.NODE_ENV === 'development') {
-                    console.error('Error refreshing user data:', error);
-                }
+                console.error('Error refreshing user data:', error);
             }
         },
         onError: (error) => {
-            if (process.env.NODE_ENV === 'development') {
-                console.error('Error updating profile:', error);
-            }
+            console.error('Error updating profile:', error);
         }
     });
 };

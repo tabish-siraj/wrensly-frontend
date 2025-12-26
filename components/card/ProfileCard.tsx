@@ -44,9 +44,7 @@ export default function ProfileCard() {
       },
       onError: (error) => {
         toast.error(`Failed to ${wasFollowing ? "unfollow" : "follow"} user`);
-        if (process.env.NODE_ENV === 'development') {
-          console.error(error);
-        }
+        console.error(error);
       }
     });
   };

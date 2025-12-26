@@ -92,9 +92,7 @@ export function useToggleLike() {
 
             toast.error("Failed to update like. Please try again.");
 
-            if (process.env.NODE_ENV === 'development') {
-                console.error('Error toggling like:', error);
-            }
+            console.error('Error toggling like:', error);
         },
         onSettled: (data, error, variables) => {
             // Always refetch after error or success to ensure consistency

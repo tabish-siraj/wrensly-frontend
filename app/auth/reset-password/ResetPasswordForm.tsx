@@ -60,9 +60,7 @@ export default function ResetPasswordForm() {
             },
             onError: (error) => {
                 toast.error("Failed to reset password. Please try again.");
-                if (process.env.NODE_ENV === 'development') {
-                    console.error(error);
-                }
+                console.error(error);
             }
         });
     };

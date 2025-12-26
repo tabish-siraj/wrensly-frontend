@@ -21,9 +21,7 @@ export function normalizePost(post: Post): Post {
 
 export function normalizePosts(posts: Post[]): Post[] {
   if (!Array.isArray(posts)) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error("Expected posts to be an array:", posts);
-    }
+    console.error("Expected posts to be an array:", posts);
     return [];
   }
   return posts.map(normalizePost);

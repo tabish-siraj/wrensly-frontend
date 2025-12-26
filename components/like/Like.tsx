@@ -26,9 +26,7 @@ export function Like({ screen, post }: LikeProps) {
             {
                 onError: (error) => {
                     toast.error("Failed to like the post.");
-                    if (process.env.NODE_ENV === 'development') {
-                        console.error(error);
-                    }
+                    console.error(error);
                 },
             }
         );

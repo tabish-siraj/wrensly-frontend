@@ -19,9 +19,7 @@ export function useCreateComment({ screen }: { screen: string }) {
             queryClient.invalidateQueries({ queryKey: ["infinite-feed"] });
         },
         onError: (error) => {
-            if (process.env.NODE_ENV === 'development') {
-                console.error('Error creating comment:', error);
-            }
+            console.error('Error creating comment:', error);
         },
     });
 }
