@@ -1,21 +1,22 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 
-interface CreatePostVariables {
-    content?: string;
-    type?: string;
-    parent_id?: string;
-}
-
 export function useCreatePost({ screen }: { screen: string }) {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ content, parent_id, type }: CreatePostVariables) => {
-            return api.post("/post", { content, parent_id, type });
+        mutationFn: async ({ content }: { content: string }) => {
+            const response = await api.post("/post", { content });
+
+            if (!response.data.success) {
+                throw new Error(response.data.message || "Failed to create post");
+            }
+
+            return response.data;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [screen] });
+            queryClient.invalidateQueries({ queryKey: ["infinite-feed"] });
         },
         onError: (error) => {
             if (process.env.NODE_ENV === 'development') {
@@ -30,7 +31,13 @@ export function useDeletePost() {
 
     return useMutation({
         mutationFn: async ({ post_id }: { post_id: string }) => {
-            return api.delete(`/post/${post_id}`);
+            const response = await api.delete(`/post/${post_id}`);
+
+            if (!response.data.success) {
+                throw new Error(response.data.message || "Failed to delete post");
+            }
+
+            return response.data;
         },
         onSuccess: () => {
             queryClient.invalidateQueries();

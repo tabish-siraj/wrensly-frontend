@@ -16,12 +16,22 @@ export const useUpdateProfile = () => {
     return useMutation({
         mutationFn: async ({ id, payload }: UpdateProfileArgs) => {
             const response = await api.put(`/user/${id}`, payload);
+
+            if (!response.data.success) {
+                throw new Error(response.data.message || "Failed to update profile");
+            }
+
             return response.data;
         },
         onSuccess: async (data) => {
             try {
                 // Refresh user data from server
                 const userResponse = await api.get("/user/me");
+
+                if (!userResponse.data.success) {
+                    throw new Error(userResponse.data.message || "Failed to fetch updated user data");
+                }
+
                 useUserStore.getState().setUser(userResponse.data.data);
 
                 // Invalidate relevant queries

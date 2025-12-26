@@ -50,12 +50,14 @@ api.interceptors.response.use(
                     token: refreshToken,
                 });
 
-                if (response.status === 200) {
+                if (response.status === 200 && response.data.success) {
                     const { token, refreshToken: newRefreshToken } = response.data.data;
                     localStorage.setItem("token", token);
                     localStorage.setItem("refreshToken", newRefreshToken);
                     originalRequest.headers.Authorization = `Bearer ${token}`;
                     return api(originalRequest);
+                } else {
+                    throw new Error(response.data.message || "Token refresh failed");
                 }
             } catch (refreshError) {
                 if (typeof window !== 'undefined') {

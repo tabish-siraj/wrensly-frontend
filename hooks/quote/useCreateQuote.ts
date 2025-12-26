@@ -14,14 +14,17 @@ export function useCreateQuote({ screen }: { screen: string }) {
 
     return useMutation({
         mutationFn: async ({ content, parent_id }: CreatePostVariables) => {
-            return api.post("/post", {
-                content,
-                parent_id,
-                type: POST_TYPE.QUOTE
-            });
+            const response = await api.post(`/post/${parent_id}/quote`, { content });
+
+            if (!response.data.success) {
+                throw new Error(response.data.message || "Failed to create quote");
+            }
+
+            return response.data;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [screen] });
+            queryClient.invalidateQueries({ queryKey: ["infinite-feed"] });
         },
         onError: (error) => {
             if (process.env.NODE_ENV === 'development') {

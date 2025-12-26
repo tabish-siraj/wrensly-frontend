@@ -15,12 +15,17 @@ export function useToggleBookmark() {
     return useMutation({
         mutationFn: async ({ postId, is_bookmarked }: ToggleBookmarkVariables) => {
             if (is_bookmarked) {
-                return api.delete(`/bookmark/${postId}`);
+                const response = await api.delete(`/bookmark/${postId}`);
+                if (!response.data.success) {
+                    throw new Error(response.data.message || "Failed to remove bookmark");
+                }
+                return response.data;
             } else {
-                return api.post('/bookmark', {
-                    postId,
-                    is_bookmarked: true
-                });
+                const response = await api.post('/bookmark', { post_id: postId });
+                if (!response.data.success) {
+                    throw new Error(response.data.message || "Failed to bookmark post");
+                }
+                return response.data;
             }
         },
         onMutate: async ({ postId, is_bookmarked, screen }) => {

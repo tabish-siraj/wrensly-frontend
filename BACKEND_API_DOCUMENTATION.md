@@ -1,596 +1,1113 @@
-# Wrensly Frontend - Backend API Documentation
+# Wrensly Backend API Documentation
 
 ## Overview
 
-This document provides comprehensive documentation for all backend interactions in the Wrensly frontend application, including expected payloads, responses, and usage patterns.
+This document provides comprehensive API documentation for the Wrensly backend with all required payloads, responses, and examples for production deployment.
 
-## Base Configuration
+**Base URL**: `https://your-domain.com/api`
 
-### API Client Setup
-- **Base URL**: `https://wrensly-backend.onrender.com/api` (configurable via `API_BASE_URL` env var)
-- **Content Type**: `application/json`
-- **Authentication**: Bearer token in Authorization header
-- **Auto Token Refresh**: Handles 401/403 responses with refresh token
+## Response Format
 
-### Authentication Flow
-- Access tokens stored in `localStorage.getItem("token")`
-- Refresh tokens stored in `localStorage.getItem("refreshToken")`
-- Auto-redirect to `/auth/login` on auth failure
+All API responses follow a standardized format:
 
----
-
-## 🔐 Authentication & User Management
-
-### 1. User Registration
-**Hook**: `useSignup()`  
-**Endpoint**: `POST /user`
-
-**Payload**:
-```typescript
+### Success Response
+```json
 {
-  username: string;
-  email: string;
-  password: string;
-}
-```
-
-**Response**: Standard success response
-**On Success**: Redirects to `/auth/login`
-
----
-
-### 2. User Login
-**Hook**: `useLogin()`  
-**Endpoints**: 
-- `POST /auth/login`
-- `GET /user/me` (after login)
-
-**Payload**:
-```typescript
-{
-  email: string;
-  password: string;
-}
-```
-
-**Response**:
-```typescript
-{
-  data: {
-    token: string;
-    refreshToken: string;
+  "success": true,
+  "message": "Request successful",
+  "data": {...},
+  "meta": {
+    "pagination": {
+      "cursor": "eyJpZCI6IjEyMyJ9",
+      "has_next_page": true,
+      "has_previous_page": false
+    },
+    "timestamp": "2024-12-25T10:30:00Z"
   }
 }
 ```
 
-**Additional Actions**:
-- Stores tokens in localStorage
-- Fetches user profile via `/user/me`
-- Updates user store
-- Redirects to home page
-
----
-
-### 3. Token Refresh
-**Endpoint**: `POST /auth/token/refresh`
-
-**Payload**:
-```typescript
+### Error Response
+```json
 {
-  token: string; // refresh token
+  "success": false,
+  "message": "Error message",
+  "data": null,
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
 }
 ```
 
-**Response**:
-```typescript
+## Authentication
+
+Protected endpoints require a Bearer token in the Authorization header:
+```
+Authorization: Bearer <your-jwt-token>
+```
+
+---
+
+## 🔐 Authentication Endpoints
+
+### POST /api/auth/login
+**Rate Limit**: 5 requests per 15 minutes  
+**Description**: Login user and get access tokens
+
+**Request Body**:
+```json
 {
-  data: {
-    token: string;
-    refreshToken: string;
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+**Validation Rules**:
+- `email`: Valid email format (required)
+- `password`: Minimum 6 characters (required)
+
+**Success Response (200)**:
+```json
+{
+  "success": true,
+  "message": "Login successful",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+      "id": "clx1234567890",
+      "username": "johndoe",
+      "email": "john@example.com",
+      "firstName": "John",
+      "lastName": "Doe",
+      "avatar": "https://example.com/avatar.jpg"
+    }
+  },
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+**Error Response (401)**:
+```json
+{
+  "success": false,
+  "message": "Invalid email or password",
+  "data": null,
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+### POST /api/auth/token/refresh
+**Rate Limit**: 5 requests per 15 minutes  
+**Description**: Refresh access token using refresh token
+
+**Request Body**:
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**Success Response (200)**:
+```json
+{
+  "success": true,
+  "message": "Token refreshed successfully",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  },
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+### POST /api/auth/forgot-password
+**Rate Limit**: 5 requests per 15 minutes  
+**Description**: Request password reset email
+
+**Request Body**:
+```json
+{
+  "email": "user@example.com"
+}
+```
+
+**Success Response (200)**:
+```json
+{
+  "success": true,
+  "message": "Password reset email sent successfully",
+  "data": null,
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+### POST /api/auth/reset-password
+**Rate Limit**: 5 requests per 15 minutes  
+**Description**: Reset password using token from email
+
+**Request Body**:
+```json
+{
+  "token": "reset-token-from-email",
+  "password": "newpassword123"
+}
+```
+
+**Success Response (200)**:
+```json
+{
+  "success": true,
+  "message": "Password reset successfully",
+  "data": null,
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
   }
 }
 ```
 
 ---
 
-### 4. Forgot Password
-**Hook**: `useForgotPassword()`  
-**Endpoint**: `POST /auth/forgot-password`
+## 👤 User Endpoints
 
-**Payload**:
-```typescript
+### POST /api/user
+**Description**: Register new user account
+
+**Request Body**:
+```json
 {
-  email: string;
+  "username": "johndoe",
+  "email": "john@example.com",
+  "password": "password123"
 }
 ```
 
----
+**Validation Rules**:
+- `username`: String (optional)
+- `email`: Valid email format (required)
+- `password`: String (required)
 
-### 5. Reset Password
-**Hook**: `useResetPassword()`  
-**Endpoint**: `POST /auth/reset-password`
-
-**Payload**:
-```typescript
+**Success Response (201)**:
+```json
 {
-  token: string;
-  password: string;
+  "success": true,
+  "message": "User created successfully",
+  "data": {
+    "id": "clx1234567890",
+    "username": "johndoe",
+    "email": "john@example.com",
+    "isEmailVerified": false,
+    "createdAt": "2024-12-25T10:30:00Z"
+  },
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
 }
 ```
 
----
+### GET /api/user/me
+**Authentication**: Required  
+**Description**: Get current user profile
 
-### 6. Email Verification
-**Hook**: `useVerifyEmail()`  
-**Endpoint**: `POST /user/verify-email?token={token}`
-
-**Payload**:
-```typescript
+**Success Response (200)**:
+```json
 {
-  token: string;
+  "success": true,
+  "message": "User retrieved successfully",
+  "data": {
+    "id": "clx1234567890",
+    "username": "johndoe",
+    "email": "john@example.com",
+    "is_email_verified": true,
+    "first_name": "John",
+    "last_name": "Doe",
+    "date_of_birth": "1990-01-01T00:00:00Z",
+    "gender": "male",
+    "bio": "Software developer passionate about technology",
+    "avatar": "https://example.com/avatar.jpg",
+    "city": "New York",
+    "state": "NY",
+    "country": "USA",
+    "phone": "+1234567890",
+    "website": "https://johndoe.com",
+    "followers_count": 150,
+    "following_count": 75,
+    "created_at": "2024-01-01T10:30:00Z",
+    "updated_at": "2024-12-25T10:30:00Z"
+  },
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
 }
 ```
 
----
+### GET /api/user/username/{username}
+**Authentication**: Required  
+**Description**: Get user profile by username
 
-### 7. Resend Verification Email
-**Hook**: `useResendVerifyEmail()`  
-**Endpoint**: `POST /user/resend-verify-email`
-
-**Payload**:
-```typescript
+**Success Response (200)**:
+```json
 {
-  username: string;
-  email: string;
+  "success": true,
+  "message": "User retrieved successfully",
+  "data": {
+    "id": "clx1234567890",
+    "username": "johndoe",
+    "first_name": "John",
+    "last_name": "Doe",
+    "bio": "Software developer",
+    "avatar": "https://example.com/avatar.jpg",
+    "followers_count": 150,
+    "following_count": 75,
+    "is_following": false,
+    "created_at": "2024-01-01T10:30:00Z"
+  },
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
 }
 ```
 
----
+### PUT /api/user/{id}
+**Authentication**: Required  
+**Description**: Update user profile
 
-## 👤 User Profile Management
-
-### 8. Get Current User
-**Endpoint**: `GET /user/me`
-
-**Response**:
-```typescript
+**Request Body**:
+```json
 {
-  data: User; // Full user object
+  "username": "johndoe_updated",
+  "first_name": "John",
+  "last_name": "Doe",
+  "date_of_birth": "1990-01-01T00:00:00Z",
+  "gender": "male",
+  "bio": "Updated bio text",
+  "avatar": "https://example.com/new-avatar.jpg",
+  "city": "San Francisco",
+  "state": "CA",
+  "country": "USA",
+  "phone": "+1987654321",
+  "website": "https://johndoe-updated.com"
 }
 ```
 
----
-
-### 9. Get User by Username
-**Hook**: `useUserByUsername(username)`  
-**Endpoint**: `GET /user/username/{username}`
-
-**Response**:
-```typescript
+**Success Response (200)**:
+```json
 {
-  data: User & {
-    isFollowing?: boolean;
-    followers_count: number;
-    following_count: number;
+  "success": true,
+  "message": "User updated successfully",
+  "data": {
+    "id": "clx1234567890",
+    "username": "johndoe_updated",
+    "first_name": "John",
+    "last_name": "Doe",
+    "bio": "Updated bio text",
+    "updated_at": "2024-12-25T10:30:00Z"
+  },
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+### POST /api/user/verify-email
+**Description**: Verify email address using token
+
+**Request Body**:
+```json
+{
+  "token": "verification-token-from-email"
+}
+```
+
+**Success Response (200)**:
+```json
+{
+  "success": true,
+  "message": "Email verified successfully",
+  "data": null,
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+### POST /api/user/resend-verify-email
+**Description**: Resend email verification
+
+**Request Body**:
+```json
+{
+  "username": "johndoe",
+  "email": "john@example.com"
+}
+```
+
+**Success Response (200)**:
+```json
+{
+  "success": true,
+  "message": "Verification email resent successfully",
+  "data": null,
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
   }
 }
 ```
 
 ---
 
-### 10. Get User by Email
-**Hook**: `useUserByEmail(email)`  
-**Endpoint**: `GET /user/email/{email}`
+## 📝 Post Endpoints
 
-**Response**: Same as above
+### GET /api/post
+**Authentication**: Required  
+**Description**: Get all posts with cursor-based pagination
 
----
+**Query Parameters**:
+- `cursor` (optional): Cursor for pagination
+- `limit` (optional): Number of items per page (max 50, default 10)
 
-### 11. Get User by ID
-**Hook**: `useUserByid(id)`  
-**Endpoint**: `GET /user/{id}`
+**Example**: `/api/post?cursor=clx1234567890&limit=20`
 
-**Response**: Same as above
-
----
-
-### 12. Update User Profile
-**Hook**: `useUpdateProfile()`  
-**Endpoints**:
-- `PUT /user/{id}`
-- `GET /user/me` (refresh after update)
-
-**Payload**:
-```typescript
+**Success Response (200)**:
+```json
 {
-  id: string;
-  payload: Partial<User>; // Any user fields to update
-}
-```
-
-**User Object Structure**:
-```typescript
-interface User {
-  id: string;
-  username: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  date_of_birth: string; // ISO date string
-  gender: string;
-  bio: string;
-  avatar: string;
-  cover: string;
-  city: string;
-  state: string;
-  country: string;
-  phone: string;
-  website: string; // Must be valid URL
-  is_active: boolean;
-  is_verified: boolean;
-  is_email_verified: boolean;
-  followers_count: number;
-  following_count: number;
-  created_at: string;
-  updated_at: string;
-}
-```
-
----
-
-## 📝 Post Management
-
-### 13. Create Post
-**Hook**: `useCreatePost({ screen })`  
-**Endpoint**: `POST /post`
-
-**Payload**:
-```typescript
-{
-  content?: string;
-  parent_id?: string;
-  type?: "POST" | "REPOST" | "QUOTE" | "COMMENT";
-}
-```
-
-**Post Types**:
-- `POST`: Regular post
-- `REPOST`: Pure repost (empty content)
-- `QUOTE`: Quote post (with user comment)
-- `COMMENT`: Reply to a post
-
----
-
-### 14. Delete Post
-**Hook**: `useDeletePost()`  
-**Endpoint**: `DELETE /post/{post_id}`
-
-**Payload**:
-```typescript
-{
-  post_id: string;
-}
-```
-
----
-
-### 15. Get All Posts
-**Hook**: `usePost()`  
-**Endpoint**: `GET /post`
-
-**Response**:
-```typescript
-{
-  data: Post[];
-}
-```
-
----
-
-### 16. Get Post by ID
-**Hook**: `usePostByID(postId)`  
-**Endpoint**: `GET /post/{postId}`
-
-**Response**:
-```typescript
-{
-  data: Post;
-}
-```
-
----
-
-### 17. Get Posts by User ID
-**Hook**: `usePostByUserID(userId)`  
-**Endpoint**: `GET /post/user/{userId}`
-
-**Response**:
-```typescript
-{
-  data: Post[];
-}
-```
-
----
-
-### 18. Get User Feed
-**Hook**: `useFeed()`  
-**Endpoint**: `GET /feed`
-
-**Response**:
-```typescript
-{
-  data: Post[];
-}
-```
-
-**Post Object Structure**:
-```typescript
-interface Post {
-  id: string;
-  content: string;
-  type: "POST" | "REPOST" | "QUOTE" | "COMMENT";
-  user: {
-    id: string;
-    username: string;
-    first_name: string;
-    last_name: string;
-    avatar: string;
-  };
-  parent_id: string | null;
-  parent: Post | null; // For quotes and reposts
-  created_at: string;
-  updated_at: string;
-  deleted_at: string | null;
-  is_liked: boolean;
-  is_reposted: boolean;
-  is_bookmarked: boolean;
-  stats: {
-    likes: number;
-    comments: number;
-    reposts: number;
-  };
-}
-```
-
----
-
-## 🔄 Post Interactions
-
-### 19. Create Repost
-**Hook**: `useCreateRepost({ screen })`  
-**Endpoint**: `POST /post`
-
-**Payload**:
-```typescript
-{
-  parent_id: string;
-  type: "REPOST";
-  content: ""; // Empty for pure reposts
-}
-```
-
----
-
-### 20. Create Quote Post
-**Hook**: `useCreateQuote({ screen })`  
-**Endpoint**: `POST /post`
-
-**Payload**:
-```typescript
-{
-  content: string; // User's comment
-  parent_id: string;
-  type: "QUOTE";
-}
-```
-
----
-
-### 21. Toggle Like
-**Hook**: `useToggleLike()`  
-**Endpoints**:
-- `POST /like` (to like)
-- `DELETE /like/{postId}` (to unlike)
-
-**Like Payload**:
-```typescript
-{
-  postId: string;
-  is_liked: true;
-}
-```
-
-**Unlike**: No payload, just DELETE to `/like/{postId}`
-
----
-
-### 22. Toggle Bookmark
-**Hook**: `useToggleBookmark()`  
-**Endpoints**:
-- `POST /bookmark` (to bookmark)
-- `DELETE /bookmark/{postId}` (to unbookmark)
-
-**Bookmark Payload**:
-```typescript
-{
-  postId: string;
-  is_bookmarked: true;
-}
-```
-
-**Unbookmark**: No payload, just DELETE to `/bookmark/{postId}`
-
----
-
-## 💬 Comments
-
-### 23. Create Comment
-**Hook**: `useCreateComment({ screen })`  
-**Endpoint**: `POST /post/{post_id}/comment`
-
-**Payload**:
-```typescript
-{
-  content: string;
-  parent_id?: string; // For nested replies
-}
-```
-
----
-
-### 24. Get Post Comments
-**Hook**: `usePostComments(postId)`  
-**Endpoint**: `GET /post/{postId}/comments`
-
-**Response**:
-```typescript
-{
-  data: Post[]; // Comments are treated as posts
-}
-```
-
----
-
-## 👥 Follow System
-
-### 25. Follow/Unfollow User
-**Hook**: `useFollowUnfollow()`  
-**Endpoint**: `POST /follow`
-
-**Payload**:
-```typescript
-{
-  following: string; // User ID to follow/unfollow
-  operation: "follow" | "unfollow";
-}
-```
-
----
-
-### 26. Get User Followers
-**Hook**: `useGetFollowers(username)`  
-**Endpoint**: `GET /follow/followers/{username}`
-
-**Response**:
-```typescript
-{
-  data: User[];
-}
-```
-
----
-
-### 27. Get User Following
-**Hook**: `useGetFollowings(username)`  
-**Endpoint**: `GET /follow/following/{username}`
-
-**Response**:
-```typescript
-{
-  data: User[];
-}
-```
-
----
-
-## 🔧 Utility Functions
-
-### Data Normalization
-The frontend uses utility functions to normalize API responses:
-
-- `normalizePosts(posts)`: Ensures posts array is valid
-- `normalizePost(post)`: Normalizes single post object
-- `removeEmptyFields(data)`: Removes null/undefined fields before API calls
-
-### Query Invalidation
-Most mutations invalidate relevant React Query caches:
-
-- Post operations: Invalidate `[screen]` queries
-- User operations: Invalidate `["user"]` and `["profile"]` queries
-- Follow operations: Trigger router refresh
-
----
-
-## 📊 Response Patterns
-
-### Standard Success Response
-```typescript
-{
-  success: boolean;
-  message: string;
-  data: any;
-  status: number;
-}
-```
-
-### Standard Error Response
-```typescript
-{
-  success: false;
-  message: string;
-  error?: any;
-  status: number;
-}
-```
-
----
-
-## 🚀 Usage Examples
-
-### Creating a Post
-```typescript
-const createPost = useCreatePost({ screen: "feed" });
-
-createPost.mutate({
-  content: "Hello, Wrensly!",
-  type: "POST"
-});
-```
-
-### Following a User
-```typescript
-const followUser = useFollowUnfollow();
-
-followUser.mutate({
-  following: "user123",
-  operation: "follow"
-});
-```
-
-### Updating Profile
-```typescript
-const updateProfile = useUpdateProfile();
-
-updateProfile.mutate({
-  id: "user123",
-  payload: {
-    first_name: "John",
-    bio: "Updated bio"
+  "success": true,
+  "message": "Posts retrieved successfully",
+  "data": [
+    {
+      "id": "clx1234567890",
+      "content": "Hello world! This is my first post.",
+      "type": "POST",
+      "created_at": "2024-12-25T10:30:00Z",
+      "user": {
+        "id": "clx0987654321",
+        "username": "johndoe",
+        "first_name": "John",
+        "last_name": "Doe",
+        "avatar": "https://example.com/avatar.jpg"
+      },
+      "parent": null,
+      "stats": {
+        "likes": 25,
+        "comments": 5,
+        "reposts": 3
+      },
+      "is_liked": false,
+      "is_bookmarked": true,
+      "is_reposted": false
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "cursor": "clx1234567891",
+      "has_next_page": true,
+      "has_previous_page": false
+    },
+    "timestamp": "2024-12-25T10:30:00Z"
   }
-});
+}
+```
+
+### POST /api/post
+**Authentication**: Required  
+**Rate Limit**: 10 posts per 15 minutes  
+**Description**: Create a new regular post
+
+**Request Body**:
+```json
+{
+  "content": "Hello world! This is my new post."
+}
+```
+
+**Validation Rules**:
+- `content`: 1-280 characters (required)
+
+**Success Response (201)**:
+```json
+{
+  "success": true,
+  "message": "Post created successfully",
+  "data": {
+    "id": "clx1234567890",
+    "content": "Hello world! This is my new post.",
+    "type": "POST",
+    "created_at": "2024-12-25T10:30:00Z",
+    "user_id": "clx0987654321",
+    "parent_id": null,
+    "root_id": null
+  },
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+### GET /api/post/{id}
+**Authentication**: Required  
+**Description**: Get single post by ID
+
+**Success Response (200)**:
+```json
+{
+  "success": true,
+  "message": "Post retrieved successfully",
+  "data": {
+    "id": "clx1234567890",
+    "content": "Hello world!",
+    "type": "POST",
+    "created_at": "2024-12-25T10:30:00Z",
+    "user": {
+      "id": "clx0987654321",
+      "username": "johndoe",
+      "first_name": "John",
+      "last_name": "Doe",
+      "avatar": "https://example.com/avatar.jpg"
+    },
+    "stats": {
+      "likes": 25,
+      "comments": 5,
+      "reposts": 3
+    },
+    "is_liked": true,
+    "is_bookmarked": false,
+    "is_reposted": false
+  },
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+### GET /api/post/user/{userId}
+**Authentication**: Required  
+**Description**: Get posts by specific user with pagination
+
+**Query Parameters**:
+- `cursor` (optional): Cursor for pagination
+- `limit` (optional): Number of items per page (max 50, default 10)
+
+**Success Response (200)**:
+```json
+{
+  "success": true,
+  "message": "Posts retrieved successfully",
+  "data": [
+    {
+      "id": "clx1234567890",
+      "content": "User's post content",
+      "type": "POST",
+      "created_at": "2024-12-25T10:30:00Z",
+      "user": {
+        "id": "clx0987654321",
+        "username": "johndoe",
+        "first_name": "John",
+        "last_name": "Doe",
+        "avatar": "https://example.com/avatar.jpg"
+      },
+      "stats": {
+        "likes": 10,
+        "comments": 2,
+        "reposts": 1
+      },
+      "is_liked": false,
+      "is_bookmarked": false,
+      "is_reposted": false
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "cursor": "clx1234567891",
+      "has_next_page": true,
+      "has_previous_page": false
+    },
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+### POST /api/post/{id}/comment
+**Authentication**: Required  
+**Rate Limit**: 10 posts per 15 minutes  
+**Description**: Create a comment on a post
+
+**Request Body**:
+```json
+{
+  "content": "Great post! Thanks for sharing."
+}
+```
+
+**Success Response (201)**:
+```json
+{
+  "success": true,
+  "message": "Comment created successfully",
+  "data": {
+    "id": "clx1234567891",
+    "content": "Great post! Thanks for sharing.",
+    "type": "COMMENT",
+    "created_at": "2024-12-25T10:30:00Z",
+    "user_id": "clx0987654321",
+    "parent_id": "clx1234567890",
+    "root_id": "clx1234567890"
+  },
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+### POST /api/post/{id}/quote
+**Authentication**: Required  
+**Rate Limit**: 10 posts per 15 minutes  
+**Description**: Create a quote post with additional content
+
+**Request Body**:
+```json
+{
+  "content": "Adding my thoughts to this great post..."
+}
+```
+
+**Success Response (201)**:
+```json
+{
+  "success": true,
+  "message": "Quote created successfully",
+  "data": {
+    "id": "clx1234567892",
+    "content": "Adding my thoughts to this great post...",
+    "type": "QUOTE",
+    "created_at": "2024-12-25T10:30:00Z",
+    "user_id": "clx0987654321",
+    "parent_id": "clx1234567890",
+    "root_id": "clx1234567890"
+  },
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+### POST /api/post/{id}/repost
+**Authentication**: Required  
+**Rate Limit**: 10 posts per 15 minutes  
+**Description**: Repost a post (no additional content)
+
+**Request Body**: Empty `{}`
+
+**Success Response (201)**:
+```json
+{
+  "success": true,
+  "message": "Repost created successfully",
+  "data": {
+    "id": "clx1234567893",
+    "content": "",
+    "type": "REPOST",
+    "created_at": "2024-12-25T10:30:00Z",
+    "user_id": "clx0987654321",
+    "parent_id": "clx1234567890",
+    "root_id": "clx1234567890"
+  },
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+### DELETE /api/post/{id}
+**Authentication**: Required  
+**Description**: Delete a post (only post owner can delete)
+
+**Success Response (200)**:
+```json
+{
+  "success": true,
+  "message": "Post deleted successfully",
+  "data": null,
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
 ```
 
 ---
 
-## 🔒 Security Notes
+## 📰 Feed Endpoint
 
-1. **Authentication**: All protected endpoints require Bearer token
-2. **Token Refresh**: Automatic refresh on 401/403 responses
-3. **Client-Side Storage**: Tokens stored in localStorage
-4. **HTTPS Only**: All API calls use HTTPS
-5. **Input Validation**: Zod schemas validate all user inputs
+### GET /api/feed
+**Authentication**: Required  
+**Description**: Get personalized feed with posts from followed users
+
+**Query Parameters**:
+- `cursor` (optional): Cursor for pagination
+- `limit` (optional): Number of items per page (max 50, default 10)
+
+**Success Response (200)**:
+```json
+{
+  "success": true,
+  "message": "Feed retrieved successfully",
+  "data": [
+    {
+      "id": "clx1234567890",
+      "content": "Post from followed user",
+      "type": "POST",
+      "created_at": "2024-12-25T10:30:00Z",
+      "user": {
+        "id": "clx0987654321",
+        "username": "followeduser",
+        "first_name": "Followed",
+        "last_name": "User",
+        "avatar": "https://example.com/avatar.jpg"
+      },
+      "stats": {
+        "likes": 15,
+        "comments": 3,
+        "reposts": 2
+      },
+      "is_liked": false,
+      "is_bookmarked": true,
+      "is_reposted": false
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "cursor": "clx1234567891",
+      "has_next_page": true,
+      "has_previous_page": false
+    },
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
 
 ---
 
-## 📝 Notes for Backend Implementation
+## ❤️ Like Endpoints
 
-1. **Consistent Response Format**: All endpoints should return the standard response format
-2. **Pagination**: Consider adding pagination for posts, followers, etc.
-3. **Rate Limiting**: Implement rate limiting for API endpoints
-4. **File Upload**: Profile pictures and media uploads not yet implemented
-5. **Real-time Updates**: Consider WebSocket integration for live updates
-6. **Search**: Search functionality not yet implemented
-7. **Notifications**: Notification system endpoints not yet defined
+### POST /api/like
+**Authentication**: Required  
+**Description**: Like a post
 
-This documentation covers all current frontend-backend interactions. Update as new features are added.
+**Request Body**:
+```json
+{
+  "post_id": "clx1234567890"
+}
+```
+
+**Success Response (200)**:
+```json
+{
+  "success": true,
+  "message": "Post liked successfully",
+  "data": {
+    "is_liked": true
+  },
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+**Error Response (400) - Already Liked**:
+```json
+{
+  "success": false,
+  "message": "Post already liked",
+  "data": null,
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+### DELETE /api/like/{post_id}
+**Authentication**: Required  
+**Description**: Unlike a post
+
+**Success Response (200)**:
+```json
+{
+  "success": true,
+  "message": "Post unliked successfully",
+  "data": {
+    "is_liked": false
+  },
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+---
+
+## 🔖 Bookmark Endpoints
+
+### POST /api/bookmark
+**Authentication**: Required  
+**Description**: Bookmark a post
+
+**Request Body**:
+```json
+{
+  "post_id": "clx1234567890"
+}
+```
+
+**Success Response (200)**:
+```json
+{
+  "success": true,
+  "message": "Post bookmarked successfully",
+  "data": {
+    "is_bookmarked": true
+  },
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+### DELETE /api/bookmark/{post_id}
+**Authentication**: Required  
+**Description**: Remove bookmark from a post
+
+**Success Response (200)**:
+```json
+{
+  "success": true,
+  "message": "Bookmark removed successfully",
+  "data": {
+    "is_bookmarked": false
+  },
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+---
+
+## 👥 Follow System Endpoints
+
+### POST /api/follow
+**Authentication**: Required  
+**Rate Limit**: 20 requests per 15 minutes  
+**Description**: Follow or unfollow a user
+
+**Request Body**:
+```json
+{
+  "following": "clx1234567890",
+  "operation": "follow"
+}
+```
+
+**Validation Rules**:
+- `following`: User ID (required)
+- `operation`: "follow" or "unfollow" (required)
+
+**Success Response (200)**:
+```json
+{
+  "success": true,
+  "message": "User followed successfully",
+  "data": "followed",
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+### GET /api/follow/followers/{username}
+**Authentication**: Required  
+**Description**: Get user's followers with pagination
+
+**Query Parameters**:
+- `cursor` (optional): Cursor for pagination
+- `limit` (optional): Number of items per page (max 50, default 10)
+
+**Success Response (200)**:
+```json
+{
+  "success": true,
+  "message": "Followers retrieved successfully",
+  "data": [
+    {
+      "id": "clx1234567890",
+      "user": {
+        "id": "clx0987654321",
+        "username": "follower1",
+        "first_name": "John",
+        "last_name": "Doe",
+        "avatar": "https://example.com/avatar1.jpg"
+      },
+      "created_at": "2024-12-20T10:30:00Z"
+    },
+    {
+      "id": "clx1234567891",
+      "user": {
+        "id": "clx0987654322",
+        "username": "follower2",
+        "first_name": "Jane",
+        "last_name": "Smith",
+        "avatar": "https://example.com/avatar2.jpg"
+      },
+      "created_at": "2024-12-19T15:45:00Z"
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "cursor": "clx1234567892",
+      "has_next_page": true,
+      "has_previous_page": false
+    },
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+### GET /api/follow/following/{username}
+**Authentication**: Required  
+**Description**: Get users that a user is following with pagination
+
+**Query Parameters**:
+- `cursor` (optional): Cursor for pagination
+- `limit` (optional): Number of items per page (max 50, default 10)
+
+**Success Response (200)**:
+```json
+{
+  "success": true,
+  "message": "Following retrieved successfully",
+  "data": [
+    {
+      "id": "clx1234567890",
+      "user": {
+        "id": "clx0987654321",
+        "username": "following1",
+        "first_name": "Alice",
+        "last_name": "Johnson",
+        "avatar": "https://example.com/avatar3.jpg"
+      },
+      "created_at": "2024-12-18T09:15:00Z"
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "cursor": "clx1234567891",
+      "has_next_page": false,
+      "has_previous_page": false
+    },
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+---
+
+## 📊 Pagination
+
+All list endpoints support cursor-based pagination for optimal performance:
+
+### Query Parameters
+- `cursor` (optional): Cursor for next page (get from previous response)
+- `limit` (optional): Items per page (1-50, default: 10)
+
+### Pagination Metadata
+```json
+{
+  "meta": {
+    "pagination": {
+      "cursor": "clx1234567890",
+      "has_next_page": true,
+      "has_previous_page": false
+    }
+  }
+}
+```
+
+### Example Usage
+```
+GET /api/post?limit=20
+GET /api/post?cursor=clx1234567890&limit=20
+GET /api/feed?cursor=clx1234567890&limit=15
+```
+
+---
+
+## 🚦 Rate Limiting
+
+Different endpoint categories have specific rate limits:
+
+| Category | Limit | Window | Endpoints |
+|----------|-------|--------|-----------|
+| **Authentication** | 5 requests | 15 minutes | `/api/auth/*` |
+| **Post Creation** | 10 requests | 15 minutes | `POST /api/post/*` |
+| **Follow Actions** | 20 requests | 15 minutes | `POST /api/follow` |
+| **General** | 100 requests | 15 minutes | All other endpoints |
+
+### Rate Limit Headers
+```
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1640995200
+```
+
+### Rate Limit Exceeded Response (429)
+```json
+{
+  "success": false,
+  "message": "Too many requests, please try again later",
+  "data": null,
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+---
+
+## ❌ Error Codes & Responses
+
+| Code | Description | Example |
+|------|-------------|---------|
+| **400** | Bad Request | Validation errors, invalid data |
+| **401** | Unauthorized | Invalid/missing token |
+| **403** | Forbidden | Insufficient permissions |
+| **404** | Not Found | Resource doesn't exist |
+| **429** | Too Many Requests | Rate limit exceeded |
+| **500** | Internal Server Error | Server-side error |
+
+### Validation Error Example (400)
+```json
+{
+  "success": false,
+  "message": "Validation failed",
+  "data": [
+    {
+      "field": "email",
+      "message": "Invalid email format"
+    },
+    {
+      "field": "password",
+      "message": "Password must be at least 6 characters"
+    }
+  ],
+  "meta": {
+    "timestamp": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
+---
+
+## 📝 Post Types & Validation
+
+| Type | Description | Content Required | Parent Required |
+|------|-------------|------------------|-----------------|
+| **POST** | Regular post | ✅ Yes (1-280 chars) | ❌ No |
+| **COMMENT** | Comment on post | ✅ Yes (1-280 chars) | ✅ Yes |
+| **QUOTE** | Quote with content | ✅ Yes (1-280 chars) | ✅ Yes |
+| **REPOST** | Share without content | ❌ No | ✅ Yes |
+
+---
+
+## 👤 User Profile Fields
+
+### Available Profile Fields
+```json
+{
+  "first_name": "John",
+  "last_name": "Doe",
+  "date_of_birth": "1990-01-01T00:00:00Z",
+  "gender": "male",
+  "bio": "Software developer passionate about technology",
+  "avatar": "https://example.com/avatar.jpg",
+  "city": "New York",
+  "state": "NY",
+  "country": "USA",
+  "phone": "+1234567890",
+  "website": "https://johndoe.com"
+}
+```
+
+### Field Validation
+- All fields are optional
+- `date_of_birth`: ISO 8601 datetime format
+- `bio`: Maximum 280 characters
+- `website`: Valid URL format
+- `email`: Valid email format (unique)
+- `username`: Alphanumeric + underscore (unique)
+
+---
+
+## 🔒 Security Features
+
+### Authentication
+- **JWT Tokens**: Access tokens (15min) + Refresh tokens (7 days)
+- **Password Hashing**: bcrypt with salt rounds
+- **Email Verification**: Required for account activation
+
+### Protection
+- **Rate Limiting**: Endpoint-specific limits
+- **Input Validation**: Zod schema validation
+- **CORS**: Cross-origin request protection
+- **Helmet**: Security headers
+- **SQL Injection**: Prisma ORM protection
+
+### Headers Required
+```
+Authorization: Bearer <jwt-token>
+Content-Type: application/json
+```
+
+---
+
+## 🚀 Production Deployment Checklist
+
+### Environment Variables
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/wrensly"
+JWT_SECRET="your-super-secret-jwt-key"
+REFRESH_TOKEN_SECRET="your-refresh-token-secret"
+EMAIL_SERVICE_API_KEY="your-email-service-key"
+FRONTEND_URL="https://your-frontend-domain.com"
+```
+
+### Database Migration
+```bash
+npx prisma migrate deploy
+npx prisma generate
+```
+
+### Health Check Endpoint
+```
+GET /health
+Response: { "status": "ok", "timestamp": "2024-12-25T10:30:00Z" }
+```
+
+---
+
+## 📞 Support & Contact
+
+For API support or questions:
+- **Documentation**: This file
+- **Issues**: Check implementation files in `/src`
+- **Rate Limits**: Contact admin for increases
+- **Status**: Monitor via health check endpoint
+
+**API Version**: 1.0  
+**Last Updated**: December 25, 2024

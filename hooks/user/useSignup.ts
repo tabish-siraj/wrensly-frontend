@@ -8,7 +8,13 @@ export const useSignup = () => {
 
   return useMutation({
     mutationFn: async (payload: { username: string; email: string; password: string }) => {
-      await api.post("/user", payload);
+      const response = await api.post("/user", payload);
+
+      if (!response.data.success) {
+        throw new Error(response.data.message || "Signup failed");
+      }
+
+      return response.data;
     },
     onSuccess: () => {
       router.replace("/auth/login");

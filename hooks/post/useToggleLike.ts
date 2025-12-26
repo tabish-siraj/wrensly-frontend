@@ -16,12 +16,17 @@ export function useToggleLike() {
     return useMutation({
         mutationFn: async ({ postId, is_liked }: ToggleLikeVariables) => {
             if (is_liked) {
-                return api.delete(`/like/${postId}`);
+                const response = await api.delete(`/like/${postId}`);
+                if (!response.data.success) {
+                    throw new Error(response.data.message || "Failed to unlike post");
+                }
+                return response.data;
             } else {
-                return api.post('/like', {
-                    postId,
-                    is_liked: true
-                });
+                const response = await api.post('/like', { post_id: postId });
+                if (!response.data.success) {
+                    throw new Error(response.data.message || "Failed to like post");
+                }
+                return response.data;
             }
         },
         onMutate: async ({ postId, is_liked, screen }) => {

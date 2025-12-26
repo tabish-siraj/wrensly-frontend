@@ -4,7 +4,13 @@ import api from "@/lib/api";
 export const useForgotPassword = () => {
     return useMutation({
         mutationFn: async (email: { email: string }) => {
-            return await api.post("/auth/forgot-password", email);
+            const response = await api.post("/auth/forgot-password", email);
+
+            if (!response.data.success) {
+                throw new Error(response.data.message || "Failed to send password reset email");
+            }
+
+            return response.data;
         },
     });
 };

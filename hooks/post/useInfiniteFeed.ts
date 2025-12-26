@@ -6,90 +6,79 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { Post } from "@/src/types";
 
 interface FeedResponse {
+    success: boolean;
+    message: string;
     data: Post[];
     meta: {
         pagination: {
-            page: number;
-            limit: number;
-            total: number;
-            totalPages: number;
-            hasNextPage: boolean;
+            cursor: string;
+            has_next_page: boolean;
+            has_previous_page: boolean;
         };
+        timestamp: string;
     };
 }
 
 export function useInfiniteFeed() {
     return useInfiniteQuery({
         queryKey: ["infinite-feed"],
-        queryFn: async ({ pageParam = 1 }) => {
-            const resp = await api.get(`/feed?page=${pageParam}&limit=10`);
+        queryFn: async ({ pageParam }) => {
+            const url = pageParam
+                ? `/feed?cursor=${pageParam}&limit=10`
+                : `/feed?limit=10`;
 
-            // Handle both paginated and non-paginated responses
-            if (resp.data.meta?.pagination) {
-                return {
-                    data: normalizePosts(resp.data.data),
-                    meta: resp.data.meta
-                } as FeedResponse;
-            } else {
-                // Fallback for non-paginated response
-                const posts = normalizePosts(resp.data.data);
-                return {
-                    data: posts,
-                    meta: {
-                        pagination: {
-                            page: pageParam,
-                            limit: 10,
-                            total: posts.length,
-                            totalPages: 1,
-                            hasNextPage: false
-                        }
-                    }
-                } as FeedResponse;
+            const resp = await api.get(url);
+
+            if (!resp.data.success) {
+                throw new Error(resp.data.message || "Failed to fetch feed");
             }
+
+            return {
+                success: resp.data.success,
+                message: resp.data.message,
+                data: normalizePosts(resp.data.data),
+                meta: resp.data.meta
+            } as FeedResponse;
         },
         getNextPageParam: (lastPage) => {
-            const { pagination } = lastPage.meta;
-            return pagination.hasNextPage ? pagination.page + 1 : undefined;
+            return lastPage.meta.pagination.has_next_page
+                ? lastPage.meta.pagination.cursor
+                : undefined;
         },
-        initialPageParam: 1,
+        initialPageParam: undefined,
         retry: 3,
         staleTime: 2 * 60 * 1000, // 2 minutes
     });
 }
 
-export function useInfiniteUserPosts(username: string) {
+export function useInfiniteUserPosts(userId: string) {
     return useInfiniteQuery({
-        queryKey: ["infinite-user-posts", username],
-        queryFn: async ({ pageParam = 1 }) => {
-            const resp = await api.get(`/post/user/${username}?page=${pageParam}&limit=10`);
+        queryKey: ["infinite-user-posts", userId],
+        queryFn: async ({ pageParam }) => {
+            const url = pageParam
+                ? `/post/user/${userId}?cursor=${pageParam}&limit=10`
+                : `/post/user/${userId}?limit=10`;
 
-            if (resp.data.meta?.pagination) {
-                return {
-                    data: normalizePosts(resp.data.data),
-                    meta: resp.data.meta
-                } as FeedResponse;
-            } else {
-                const posts = normalizePosts(resp.data.data);
-                return {
-                    data: posts,
-                    meta: {
-                        pagination: {
-                            page: pageParam,
-                            limit: 10,
-                            total: posts.length,
-                            totalPages: 1,
-                            hasNextPage: false
-                        }
-                    }
-                } as FeedResponse;
+            const resp = await api.get(url);
+
+            if (!resp.data.success) {
+                throw new Error(resp.data.message || "Failed to fetch user posts");
             }
+
+            return {
+                success: resp.data.success,
+                message: resp.data.message,
+                data: normalizePosts(resp.data.data),
+                meta: resp.data.meta
+            } as FeedResponse;
         },
         getNextPageParam: (lastPage) => {
-            const { pagination } = lastPage.meta;
-            return pagination.hasNextPage ? pagination.page + 1 : undefined;
+            return lastPage.meta.pagination.has_next_page
+                ? lastPage.meta.pagination.cursor
+                : undefined;
         },
-        initialPageParam: 1,
-        enabled: !!username,
+        initialPageParam: undefined,
+        enabled: !!userId,
         retry: 3,
         staleTime: 2 * 60 * 1000,
     });

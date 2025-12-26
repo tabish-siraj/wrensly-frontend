@@ -5,14 +5,27 @@ import { normalizePosts } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 
 export function usePostComments(postId: string) {
-    const { data: comments, isLoading: loading, isError: error } = useQuery({
+    const { data: commentsResponse, isLoading: loading, isError: error } = useQuery({
         queryKey: ["comments", postId],
         queryFn: async () => {
             const resp = await api.get(`/post/${postId}/comments`);
-            return normalizePosts(resp.data.data);
+
+            if (!resp.data.success) {
+                throw new Error(resp.data.message || "Failed to fetch comments");
+            }
+
+            return {
+                comments: normalizePosts(resp.data.data),
+                meta: resp.data.meta
+            };
         },
         enabled: !!postId,
     });
 
-    return { comments, loading, error };
+    return {
+        comments: commentsResponse?.comments || [],
+        loading,
+        error,
+        meta: commentsResponse?.meta
+    };
 }
