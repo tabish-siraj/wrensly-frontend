@@ -85,13 +85,8 @@ export default function FeedPage() {
         }}
         screen={SCREEN.FEED}
       />
-      <div className="text-green-500 p-4 text-center">
-        Posts loaded successfully: {posts.length} posts
-      </div>
-      {posts.slice(0, 1).map((post: Post) => (
-        <div key={post.id} className="p-4 border rounded">
-          <pre className="text-xs">{JSON.stringify(post, null, 2)}</pre>
-        </div>
+      {posts.map((post: Post) => (
+        <PostCard screen={SCREEN.FEED} key={post.id} post={post} />
       ))}
     </div>
   );
