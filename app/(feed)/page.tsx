@@ -85,9 +85,11 @@ export default function FeedPage() {
         }}
         screen={SCREEN.FEED}
       />
-      {posts.map((post: Post) => (
-        <PostCard screen={SCREEN.FEED} key={post.id} post={post} />
-      ))}
+      {posts
+        .filter((post: Post) => post && post.id) // Filter out invalid posts
+        .map((post: Post) => (
+          <PostCard screen={SCREEN.FEED} key={post.id} post={post} />
+        ))}
     </div>
   );
 }

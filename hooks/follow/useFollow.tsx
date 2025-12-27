@@ -28,15 +28,10 @@ export const useFollowUnfollow = () => {
 
 // Hook to get followers by username
 export const useGetFollowers = (username: string) => {
-    console.log("useGetFollowers called with username:", username);
-    console.log("Username is truthy:", !!username);
-
-    const { data: followersResponse, isLoading: loading, isError: isErrorState, error: queryError } = useQuery({
+    const { data: followersResponse, isLoading: loading, isError: isErrorState } = useQuery({
         queryKey: ["followers", username],
         queryFn: async () => {
-            console.log("Fetching followers for username:", username);
             const response = await api.get(`/follow/followers/${username}`);
-            console.log("Followers API response:", response);
 
             if (!response.data.success) {
                 throw new Error(response.data.message || "Failed to fetch followers");
@@ -45,18 +40,11 @@ export const useGetFollowers = (username: string) => {
             return response.data;
         },
         enabled: !!username,
-        retry: 1, // Only retry once to avoid spam
-    });
-
-    console.log("useGetFollowers result:", {
-        followersResponse,
-        loading,
-        isErrorState,
-        queryError: queryError?.message || queryError?.toString() || queryError
+        retry: 1,
     });
 
     return {
-        followers: followersResponse || { data: [] },
+        followersResponse: followersResponse,
         loading,
         error: isErrorState,
         meta: followersResponse?.meta
@@ -64,15 +52,10 @@ export const useGetFollowers = (username: string) => {
 };
 
 export const useGetFollowings = (username: string) => {
-    console.log("useGetFollowings called with username:", username);
-    console.log("Username is truthy:", !!username);
-
-    const { data: followingResponse, isLoading: loading, isError: isErrorState, error: queryError } = useQuery({
+    const { data: followingResponse, isLoading: loading, isError: isErrorState } = useQuery({
         queryKey: ["following", username],
         queryFn: async () => {
-            console.log("Fetching following for username:", username);
             const response = await api.get(`/follow/following/${username}`);
-            console.log("Following API response:", response);
 
             if (!response.data.success) {
                 throw new Error(response.data.message || "Failed to fetch following");
@@ -81,18 +64,11 @@ export const useGetFollowings = (username: string) => {
             return response.data;
         },
         enabled: !!username,
-        retry: 1, // Only retry once to avoid spam
-    });
-
-    console.log("useGetFollowings result:", {
-        followingResponse,
-        loading,
-        isErrorState,
-        queryError: queryError?.message || queryError?.toString() || queryError
+        retry: 1,
     });
 
     return {
-        following: followingResponse || { data: [] },
+        followingResponse: followingResponse,
         loading,
         error: isErrorState,
         meta: followingResponse?.meta

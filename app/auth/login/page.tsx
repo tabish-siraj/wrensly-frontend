@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useLogin } from "@/hooks/user/useLogin";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,7 +14,26 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    loginMutation.mutate({ email, password });
+
+    // Basic client-side validation
+    if (!email.trim()) {
+      toast.error("Please enter your email address");
+      return;
+    }
+
+    if (!password.trim()) {
+      toast.error("Please enter your password");
+      return;
+    }
+
+    loginMutation.mutate({ email: email.trim(), password }, {
+      onError: (error) => {
+        toast.error(error instanceof Error ? error.message : "Login failed. Please try again.");
+      },
+      onSuccess: () => {
+        toast.success("Login successful! Redirecting...");
+      }
+    });
   };
 
   return (
@@ -60,9 +80,10 @@ export default function LoginPage() {
 
           <Button
             type="submit"
-            className="w-full bg-black hover:bg-neutral-800 text-white font-bold py-2 rounded-full transition-all"
+            disabled={loginMutation.isPending}
+            className="w-full bg-black hover:bg-neutral-800 text-white font-bold py-2 rounded-full transition-all disabled:opacity-50"
           >
-            Login
+            {loginMutation.isPending ? "Logging in..." : "Login"}
           </Button>
         </form>
 
@@ -73,7 +94,7 @@ export default function LoginPage() {
         </div>
 
         <div className="mt-4 text-center text-sm text-gray-500">
-          Don’t have an account yet?{" "}
+          Don't have an account yet?{" "}
           <Link href="/auth/signup" className="font-semibold text-black hover:underline">
             Create your account
           </Link>

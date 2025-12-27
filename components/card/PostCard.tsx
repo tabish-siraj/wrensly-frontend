@@ -67,22 +67,26 @@ export function PostCard({ screen, post }: PostCardProps) {
   };
 
   try {
-    // Handle different post types
-    const isRepost = post.type === POST_TYPE.REPOST;
+    // Handle repost display (Twitter-like behavior)
+    const isRepostedPost = !!post.reposted_by;
     const isQuote = post.type === POST_TYPE.QUOTE;
-    const hasParent = safeParent && (isRepost || isQuote);
+    const hasParent = safeParent && isQuote; // Only quotes have parent content now
+
+    // Safe repost user access
+    const repostUser = post.reposted_by?.user;
+    const repostUserName = repostUser ? (
+      repostUser.first_name && repostUser.last_name
+        ? `${repostUser.first_name} ${repostUser.last_name}`
+        : repostUser.username
+    ) : 'Someone';
 
     return (
       <Card className="shadow-md hover:shadow-lg transition-shadow">
-        {/* Show repost indicator */}
-        {isRepost && (
+        {/* Show repost indicator for reposted posts */}
+        {isRepostedPost && repostUser && (
           <div className="flex items-center gap-2 px-4 pt-3 text-sm text-gray-500">
             <RepeatIcon className="w-4 h-4" />
-            <span>
-              {post.user.first_name && post.user.last_name
-                ? `${post.user.first_name} ${post.user.last_name}`
-                : post.user.username} reposted
-            </span>
+            <span>@{repostUserName} reposted</span>
           </div>
         )}
 
@@ -98,13 +102,13 @@ export function PostCard({ screen, post }: PostCardProps) {
             </Link>
           )}
 
-          {/* Show parent post for reposts and quotes */}
+          {/* Show parent post for quotes */}
           {hasParent && (
             <ParentPostCard post={safeParent} />
           )}
 
-          {/* Show regular content for normal posts */}
-          {!isRepost && !isQuote && (
+          {/* Show regular content for normal posts and reposted posts */}
+          {!isQuote && (
             <Link href={`/post/${post.id}`}>
               <p className="text-gray-800 mb-4 whitespace-pre-line">{post.content}</p>
             </Link>

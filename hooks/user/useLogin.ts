@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import api from "@/lib/api";
 import useUserStore from "@/src/stores/userStore";
-import { useRouter } from "next/navigation"; // useRouter from next/navigation for app directory
+import { useRouter } from "next/navigation";
 
 export const useLogin = () => {
   const router = useRouter();
@@ -11,7 +11,6 @@ export const useLogin = () => {
     mutationFn: async (credentials: { email: string; password: string }) => {
       const response = await api.post("/auth/login", credentials);
 
-      // Handle new standardized response format
       if (!response.data.success) {
         throw new Error(response.data.message || "Login failed");
       }
@@ -24,7 +23,7 @@ export const useLogin = () => {
         throw new Error(user.data.message || "Failed to fetch user data");
       }
 
-      setUser(user.data.data); // use the store's setUser action
+      setUser(user.data.data);
     },
     onSuccess: () => {
       router.replace("/");

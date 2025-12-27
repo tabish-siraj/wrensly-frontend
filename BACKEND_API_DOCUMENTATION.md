@@ -403,6 +403,37 @@ Authorization: Bearer <your-jwt-token>
       "is_liked": false,
       "is_bookmarked": true,
       "is_reposted": false
+    },
+    {
+      "id": "clx1234567891",
+      "content": "Original post content that was reposted",
+      "type": "POST",
+      "created_at": "2024-12-24T15:20:00Z",
+      "user": {
+        "id": "clx0987654322",
+        "username": "originaluser",
+        "first_name": "Original",
+        "last_name": "User",
+        "avatar": "https://example.com/avatar2.jpg"
+      },
+      "reposted_by": {
+        "user": {
+          "id": "clx0987654323",
+          "username": "reposter",
+          "first_name": "Reposter",
+          "last_name": "User",
+          "avatar": "https://example.com/avatar3.jpg"
+        },
+        "reposted_at": "2024-12-25T09:15:00Z"
+      },
+      "stats": {
+        "likes": 15,
+        "comments": 2,
+        "reposts": 8
+      },
+      "is_liked": true,
+      "is_bookmarked": false,
+      "is_reposted": false
     }
   ],
   "meta": {
@@ -415,6 +446,8 @@ Authorization: Bearer <your-jwt-token>
   }
 }
 ```
+
+**Note**: When a post is reposted, it appears in feeds showing the original post content with a `reposted_by` field indicating who reposted it and when, similar to Twitter's repost behavior.
 
 ### POST /api/post
 **Authentication**: Required  
@@ -679,6 +712,37 @@ Authorization: Bearer <your-jwt-token>
       "is_liked": false,
       "is_bookmarked": true,
       "is_reposted": false
+    },
+    {
+      "id": "clx1234567891",
+      "content": "This is an original post that was reposted",
+      "type": "POST",
+      "created_at": "2024-12-24T14:20:00Z",
+      "user": {
+        "id": "clx0987654322",
+        "username": "originalauthor",
+        "first_name": "Original",
+        "last_name": "Author",
+        "avatar": "https://example.com/avatar2.jpg"
+      },
+      "reposted_by": {
+        "user": {
+          "id": "clx0987654321",
+          "username": "followeduser",
+          "first_name": "Followed",
+          "last_name": "User",
+          "avatar": "https://example.com/avatar.jpg"
+        },
+        "reposted_at": "2024-12-25T08:45:00Z"
+      },
+      "stats": {
+        "likes": 28,
+        "comments": 7,
+        "reposts": 12
+      },
+      "is_liked": true,
+      "is_bookmarked": false,
+      "is_reposted": false
     }
   ],
   "meta": {
@@ -691,6 +755,8 @@ Authorization: Bearer <your-jwt-token>
   }
 }
 ```
+
+**Note**: The feed shows posts from followed users. When someone you follow reposts content, it displays the original post with a `reposted_by` field showing who reposted it, similar to Twitter's timeline behavior.
 
 ---
 
@@ -824,12 +890,18 @@ Authorization: Bearer <your-jwt-token>
 {
   "success": true,
   "message": "User followed successfully",
-  "data": "followed",
+  "data": {
+    "operation": "followed"
+  },
   "meta": {
     "timestamp": "2024-12-25T10:30:00Z"
   }
 }
 ```
+
+**Error Responses**:
+- **400**: Already following/not following user
+- **404**: User to follow/unfollow not found
 
 ### GET /api/follow/followers/{username}
 **Authentication**: Required  
@@ -843,7 +915,7 @@ Authorization: Bearer <your-jwt-token>
 ```json
 {
   "success": true,
-  "message": "Followers retrieved successfully",
+  "message": "Followers list retrieved successfully",
   "data": [
     {
       "id": "clx1234567890",
@@ -879,6 +951,10 @@ Authorization: Bearer <your-jwt-token>
 }
 ```
 
+**Error Responses**:
+- **401**: Authentication required
+- **404**: User not found
+
 ### GET /api/follow/following/{username}
 **Authentication**: Required  
 **Description**: Get users that a user is following with pagination
@@ -891,7 +967,7 @@ Authorization: Bearer <your-jwt-token>
 ```json
 {
   "success": true,
-  "message": "Following retrieved successfully",
+  "message": "Following list retrieved successfully",
   "data": [
     {
       "id": "clx1234567890",
@@ -915,6 +991,10 @@ Authorization: Bearer <your-jwt-token>
   }
 }
 ```
+
+**Error Responses**:
+- **401**: Authentication required
+- **404**: User not found
 
 ---
 
@@ -1023,6 +1103,36 @@ X-RateLimit-Reset: 1640995200
 | **QUOTE** | Quote with content | ✅ Yes (1-280 chars) | ✅ Yes |
 | **REPOST** | Share without content | ❌ No | ✅ Yes |
 
+### Repost Behavior (Twitter-like)
+
+When a user reposts content, the API implements Twitter-like behavior:
+
+- **In Feeds/Lists**: Reposts show the **original post content** with a `reposted_by` field
+- **Original Author**: The `user` field shows the original post author
+- **Repost Metadata**: The `reposted_by` field contains:
+  - `user`: Information about who reposted it
+  - `reposted_at`: Timestamp when it was reposted
+- **Stats**: Like/comment/repost counts belong to the original post
+- **Interactions**: Users interact with the original post, not the repost record
+
+**Example Repost in Feed**:
+```json
+{
+  "id": "original-post-id",
+  "content": "Original post content",
+  "type": "POST",
+  "user": {
+    "username": "original_author"
+  },
+  "reposted_by": {
+    "user": {
+      "username": "reposter"
+    },
+    "reposted_at": "2024-12-25T10:30:00Z"
+  }
+}
+```
+
 ---
 
 ## 👤 User Profile Fields
@@ -1110,4 +1220,11 @@ For API support or questions:
 - **Status**: Monitor via health check endpoint
 
 **API Version**: 1.0  
-**Last Updated**: December 25, 2024
+**Last Updated**: December 27, 2024
+
+### Recent Updates (December 27, 2024)
+- ✅ Fixed followers/following list endpoints (500 errors resolved)
+- ✅ Added proper authentication to follow system endpoints
+- ✅ Implemented Twitter-like repost behavior in feeds
+- ✅ Enhanced soft delete filtering for user relationships
+- ✅ Improved followers/following count accuracy

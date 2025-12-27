@@ -1,7 +1,6 @@
 "use client";
 
 import api from "@/lib/api";
-import { normalizePosts } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 
 export function useFeed() {
@@ -14,8 +13,14 @@ export function useFeed() {
                 throw new Error(resp.data.message || "Failed to load feed");
             }
 
+            // Deduplicate posts by ID to prevent duplicate key errors
+            const posts = resp.data.data || [];
+            const uniquePosts = posts.filter((post: any, index: number, array: any[]) =>
+                array.findIndex(p => p.id === post.id) === index
+            );
+
             return {
-                posts: normalizePosts(resp.data.data),
+                posts: uniquePosts,
                 meta: resp.data.meta
             };
         },

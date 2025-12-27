@@ -45,6 +45,10 @@ export interface Post {
   is_reposted: boolean;
   is_bookmarked: boolean;
   stats: PostStats;
+  reposted_by?: {
+    user: Pick<User, "id" | "username" | "first_name" | "last_name" | "avatar">;
+    reposted_at: string;
+  };
 }
 
 export interface Posts {

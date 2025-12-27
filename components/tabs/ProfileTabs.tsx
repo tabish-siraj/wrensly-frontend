@@ -10,7 +10,7 @@ import { SCREEN } from "@/src/constants";
 
 const TABS = [
     { key: "posts", label: "Posts" },
-    { key: "reposts", label: "Reposts" },
+    // { key: "reposts", label: "Reposts" }, // Reposts appear in feeds with reposted_by field, not in user posts
     { key: "media", label: "Media" },
     { key: "likes", label: "Likes" },
 ];
@@ -38,8 +38,6 @@ export default function ProfileTabs() {
         switch (activeTab) {
             case "posts":
                 return posts.data.filter((post: Post) => post.type === "POST");
-            case "reposts":
-                return posts.data.filter((post: Post) => post.type === "REPOST" || post.type === "QUOTE");
             case "media":
                 // For now, return all posts - you can add media filtering logic later
                 return posts.data.filter((post: Post) => post.content?.includes("http") || post.content?.includes("image"));
@@ -72,7 +70,6 @@ export default function ProfileTabs() {
         if (filteredPosts.length === 0) {
             const emptyMessages = {
                 posts: "No posts yet",
-                reposts: "No reposts yet",
                 media: "No media posts yet",
                 likes: "No liked posts yet"
             };

@@ -21,8 +21,8 @@ export default function ProfileCard() {
   console.log("ProfileCard render - Current user:", user);
   console.log("ProfileCard render - Params username:", params.username);
 
-  const { followers, loading: followersLoading, error: followersError } = useGetFollowers(params.username as string)
-  const { following, loading: followingLoading, error: followingError } = useGetFollowings(params.username as string)
+  const { followersResponse, loading: followersLoading, error: followersError } = useGetFollowers(params.username as string)
+  const { followingResponse, loading: followingLoading, error: followingError } = useGetFollowings(params.username as string)
 
   const { mutate: followUnfollow } = useFollowUnfollow();
   const { user: userData, loading: userLoading, error: userError } = useUserByUsername(params.username as string);
@@ -195,8 +195,8 @@ export default function ProfileCard() {
           onClose={() => setShowFollowersModal(false)}
           users={
             modalType === "followers"
-              ? followers?.data ?? []
-              : following?.data ?? []
+              ? followersResponse?.data ?? []
+              : followingResponse?.data ?? []
           }
           _type={modalType}
           loading={modalType === "followers" ? followersLoading : followingLoading}

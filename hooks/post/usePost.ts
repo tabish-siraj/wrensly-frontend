@@ -15,8 +15,14 @@ export function usePost() {
                 throw new Error(resp.data.message || "Failed to fetch posts");
             }
 
+            // Deduplicate posts by ID
+            const posts = resp.data.data || [];
+            const uniquePosts = posts.filter((post: any, index: number, array: any[]) =>
+                array.findIndex(p => p.id === post.id) === index
+            );
+
             return {
-                posts: normalizePosts(resp.data.data),
+                posts: uniquePosts,
                 meta: resp.data.meta
             };
         },
@@ -41,7 +47,7 @@ export function usePostByID(postID: string) {
             }
 
             return {
-                post: normalizePost(resp.data.data),
+                post: resp.data.data, // Use raw data
                 meta: resp.data.meta
             };
         },
@@ -66,7 +72,16 @@ export function usePostByUserID(userID: string) {
                 throw new Error(response.data.message || "Failed to fetch user posts");
             }
 
-            return response.data;
+            // Deduplicate posts by ID
+            const posts = response.data.data || [];
+            const uniquePosts = posts.filter((post: any, index: number, array: any[]) =>
+                array.findIndex(p => p.id === post.id) === index
+            );
+
+            return {
+                ...response.data,
+                data: uniquePosts
+            };
         },
         enabled: !!userID,
     });
@@ -78,7 +93,6 @@ export function usePostByUserID(userID: string) {
         meta: postsResponse?.meta
     };
 }
-
 
 export function usePostByUsername(username: string) {
     // First get the user data to get the user ID
@@ -98,7 +112,16 @@ export function usePostByUsername(username: string) {
                 throw new Error(response.data.message || "Failed to fetch user posts");
             }
 
-            return response.data;
+            // Deduplicate posts by ID
+            const posts = response.data.data || [];
+            const uniquePosts = posts.filter((post: any, index: number, array: any[]) =>
+                array.findIndex(p => p.id === post.id) === index
+            );
+
+            return {
+                ...response.data,
+                data: uniquePosts
+            };
         },
         enabled: !!userId, // Only run when we have a user ID
     });
@@ -131,6 +154,72 @@ export function usePostMutation() {
             queryClient.invalidateQueries({
                 queryKey: ["infinite-feed"],
             });
+            queryClient.invalidateQueries({
+                queryKey: ["feed"],
+            });
+        },
+    });
+}
+
+// New hook for creating comments
+export function useCommentMutation() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ postId, content }: { postId: string; content: string }) => {
+            const response = await api.post(`/post/${postId}/comment`, { content });
+
+            if (!response.data.success) {
+                throw new Error(response.data.message || "Failed to create comment");
+            }
+
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["posts"] });
+            queryClient.invalidateQueries({ queryKey: ["feed"] });
+        },
+    });
+}
+
+// New hook for creating quote posts
+export function useQuoteMutation() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ postId, content }: { postId: string; content: string }) => {
+            const response = await api.post(`/post/${postId}/quote`, { content });
+
+            if (!response.data.success) {
+                throw new Error(response.data.message || "Failed to create quote");
+            }
+
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["posts"] });
+            queryClient.invalidateQueries({ queryKey: ["feed"] });
+        },
+    });
+}
+
+// New hook for reposts
+export function useRepostMutation() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (postId: string) => {
+            const response = await api.post(`/post/${postId}/repost`, {});
+
+            if (!response.data.success) {
+                throw new Error(response.data.message || "Failed to repost");
+            }
+
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["posts"] });
+            queryClient.invalidateQueries({ queryKey: ["feed"] });
         },
     });
 }
