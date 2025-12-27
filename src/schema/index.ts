@@ -8,7 +8,7 @@ export const UserSchema = z.object({
     last_name: z.string().min(1).max(50).nullable().optional(),
     date_of_birth: z.string().nullable().optional(),
     gender: z.string().nullable().optional(),
-    bio: z.string().nullable().optional(),
+    bio: z.string().max(160).nullable().optional(), // Twitter-like bio limit
     avatar: z.string().nullable().optional(),
     cover: z.string().nullable().optional(),
     city: z.string().nullable().optional(),
@@ -31,7 +31,7 @@ export const EditProfileSchema = z.object({
     last_name: z.string().min(1).max(50).nullable().optional(),
     date_of_birth: z.string().nullable().optional(),
     gender: z.string().nullable().optional(),
-    bio: z.string().nullable().optional(),
+    bio: z.string().max(160).nullable().optional(), // Twitter-like bio limit
     avatar: z.string().nullable().optional(),
     cover: z.string().nullable().optional(),
     city: z.string().nullable().optional(),

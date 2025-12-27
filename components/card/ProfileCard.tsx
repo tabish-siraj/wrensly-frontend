@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { MapPin, Link as LuicideLink, Calendar, Cake } from "lucide-react";
+import { MapPin, Link as LuicideLink, Calendar, Cake, CheckCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import Image from "next/image";
@@ -92,22 +92,28 @@ export default function ProfileCard() {
         {/* Cover and Avatar */}
         <div>
           <div className="relative w-full h-[200px] bg-gray-200">
-            <Image
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQp8_W4z4PTHC0ogzdUY3UO9t35bbtSzvxFiA&s"
-              alt={`${user_data?.username || 'User'}'s cover photo`}
-              fill
-              className="object-cover"
-            />
+            {user_data?.cover ? (
+              <Image
+                src={user_data.cover}
+                alt={`${user_data?.username || 'User'}'s cover photo`}
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-r from-blue-400 to-purple-500" />
+            )}
           </div>
           <div className="px-4 flex justify-between">
             <div className="relative">
               <div className="absolute -top-16 left-4">
                 <Avatar className="w-32 h-32 border-4 border-white">
                   <AvatarImage
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlHPCQDGxzqlFNGeeP1WPx_5tLK03EMXLwpA&s"
+                    src={user_data?.avatar || ""}
                     alt={`${user_data?.username || 'User'}'s profile picture`}
                   />
-                  <AvatarFallback>{user_data?.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
+                  <AvatarFallback className="text-2xl font-bold">
+                    {user_data?.first_name?.[0]?.toUpperCase() || user_data?.username?.[0]?.toUpperCase() || 'U'}
+                  </AvatarFallback>
                 </Avatar>
               </div>
             </div>
@@ -127,7 +133,12 @@ export default function ProfileCard() {
         {/* Profile Info */}
         <div className="px-4">
           <div className="pt-5">
-            <h1 className="text-xl font-bold">{user_data?.first_name} {user_data?.last_name}</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-bold">{user_data?.first_name} {user_data?.last_name}</h1>
+              {user_data?.is_verified && (
+                <CheckCircle className="w-5 h-5 text-blue-500" />
+              )}
+            </div>
             <p className="text-gray-500">@{user_data?.username}</p>
 
             {/* Followers / Following buttons */}
@@ -157,34 +168,59 @@ export default function ProfileCard() {
           </div>
 
           <div className="pt-5 pb-2">
-            <p className="text-gray-500">Bio: {user_data?.bio}</p>
+            {user_data?.bio && (
+              <p className="text-gray-700 leading-relaxed">{user_data.bio}</p>
+            )}
           </div>
 
           <div className="flex justify-between flex-wrap gap-2 text-sm text-gray-600">
-            <span className="flex items-center"><MapPin className="size-4 mr-1" /> {user_data?.country}</span>
-            <span className="flex items-center">
-              <LuicideLink className="size-4 mr-1" />
-              <Link className="text-blue-500 hover:underline" href={user_data?.website || ""}>
-                {user_data?.website}
-              </Link>
-            </span>
-            <span className="flex items-center">
-              <Cake className="size-4 mr-1" />{" "}
-              {user_data?.date_of_birth &&
-                new Date(user_data.date_of_birth).toLocaleDateString(undefined, {
+            {/* Location */}
+            {(user_data?.city || user_data?.state || user_data?.country) && (
+              <span className="flex items-center">
+                <MapPin className="size-4 mr-1" />
+                {[user_data?.city, user_data?.state, user_data?.country]
+                  .filter(Boolean)
+                  .join(", ")}
+              </span>
+            )}
+
+            {/* Website */}
+            {user_data?.website && (
+              <span className="flex items-center">
+                <LuicideLink className="size-4 mr-1" />
+                <Link
+                  className="text-blue-500 hover:underline truncate max-w-[200px]"
+                  href={user_data.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {user_data.website.replace(/^https?:\/\//, '')}
+                </Link>
+              </span>
+            )}
+
+            {/* Date of Birth */}
+            {user_data?.date_of_birth && (
+              <span className="flex items-center">
+                <Cake className="size-4 mr-1" />
+                Born {new Date(user_data.date_of_birth).toLocaleDateString(undefined, {
                   month: "long",
                   day: "numeric",
+                  year: "numeric",
                 })}
-            </span>
-            <span className="flex items-center">
-              <Calendar className="size-4 mr-1" /> Joined{" "}
-              {user_data?.created_at &&
-                new Date(user_data.created_at).toLocaleDateString(undefined, {
+              </span>
+            )}
+
+            {/* Join Date */}
+            {user_data?.created_at && (
+              <span className="flex items-center">
+                <Calendar className="size-4 mr-1" />
+                Joined {new Date(user_data.created_at).toLocaleDateString(undefined, {
                   year: "numeric",
                   month: "long",
-                  day: "numeric",
                 })}
-            </span>
+              </span>
+            )}
           </div>
         </div>
       </div>

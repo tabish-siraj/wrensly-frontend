@@ -39,8 +39,24 @@ export default function ProfileTabs() {
             case "posts":
                 return posts.data.filter((post: Post) => post.type === "POST");
             case "media":
-                // For now, return all posts - you can add media filtering logic later
-                return posts.data.filter((post: Post) => post.content?.includes("http") || post.content?.includes("image"));
+                // Filter posts that have actual media attachments or image URLs
+                return posts.data.filter((post: Post) => {
+                    // Check for image URLs in content
+                    const hasImageUrl = post.content && (
+                        post.content.includes('.jpg') ||
+                        post.content.includes('.jpeg') ||
+                        post.content.includes('.png') ||
+                        post.content.includes('.gif') ||
+                        post.content.includes('.webp') ||
+                        post.content.includes('imgur.com') ||
+                        post.content.includes('image')
+                    );
+
+                    // TODO: Add check for actual media attachments when implemented
+                    // const hasAttachments = post.attachments && post.attachments.length > 0;
+
+                    return hasImageUrl;
+                });
             case "likes":
                 return posts.data.filter((post: Post) => post.is_liked);
             default:

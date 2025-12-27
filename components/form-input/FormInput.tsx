@@ -1,5 +1,6 @@
 import { FormControl, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 import { useFormContext } from "react-hook-form";
 
 interface FormInputProps {
@@ -11,6 +12,7 @@ interface FormInputProps {
     className?: string;
     required?: boolean;
     defaultValue?: string;
+    maxLength?: number;
 }
 
 const FormInput = ({
@@ -22,21 +24,51 @@ const FormInput = ({
     className = "",
     required = false,
     defaultValue = "",
+    maxLength,
 }: FormInputProps) => {
-    const { control } = useFormContext();
+    const { control, watch } = useFormContext();
+    const currentValue = watch(name) || "";
+
+    const renderInput = () => {
+        if (type === "textarea") {
+            return (
+                <div>
+                    <Textarea
+                        className="w-full resize-none"
+                        placeholder={placeholder}
+                        disabled={disabled}
+                        defaultValue={defaultValue}
+                        maxLength={maxLength}
+                        rows={3}
+                        {...control.register(name, { required })}
+                    />
+                    {maxLength && (
+                        <div className="text-right text-sm text-gray-500 mt-1">
+                            {currentValue.length}/{maxLength}
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        return (
+            <Input
+                className="w-full"
+                type={type}
+                placeholder={placeholder}
+                disabled={disabled}
+                defaultValue={defaultValue}
+                maxLength={maxLength}
+                {...control.register(name, { required })}
+            />
+        );
+    };
 
     return (
         <FormItem className={className}>
             {label && <FormLabel>{label}</FormLabel>}
             <FormControl>
-                <Input
-                    className="w-full"
-                    type={type}
-                    placeholder={placeholder}
-                    disabled={disabled}
-                    defaultValue={defaultValue}
-                    {...control.register(name, { required })}
-                />
+                {renderInput()}
             </FormControl>
             <FormMessage />
         </FormItem>
