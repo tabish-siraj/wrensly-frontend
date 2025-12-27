@@ -67,20 +67,20 @@ api.interceptors.response.use(
                     return Promise.reject(error);
                 }
 
-                const refreshToken = localStorage.getItem("refreshToken");
-                if (!refreshToken) {
+                const refresh_token = localStorage.getItem("refresh_token");
+                if (!refresh_token) {
                     throw new Error("No refresh token available");
                 }
 
                 logApiRequest('POST', '/auth/token/refresh');
                 const response = await axios.post(`${API_BASE_URL}/auth/token/refresh`, {
-                    token: refreshToken,
+                    token: refresh_token,
                 });
 
                 if (response.status === 200 && response.data.success) {
-                    const { token, refreshToken: newRefreshToken } = response.data.data;
+                    const { token, refresh_token } = response.data.data;
                     localStorage.setItem("token", token);
-                    localStorage.setItem("refreshToken", newRefreshToken);
+                    localStorage.setItem("refresh_token", refresh_token);
                     originalRequest.headers.Authorization = `Bearer ${token}`;
 
                     logApiResponse('POST', '/auth/token/refresh', 200, true);
@@ -93,7 +93,7 @@ api.interceptors.response.use(
 
                 if (typeof window !== 'undefined') {
                     localStorage.removeItem("token");
-                    localStorage.removeItem("refreshToken");
+                    localStorage.removeItem("refresh_token");
                     window.location.href = "/auth/login";
                 }
                 return Promise.reject(refreshError);

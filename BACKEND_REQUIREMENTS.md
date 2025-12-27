@@ -475,11 +475,11 @@ const transformPost = (post: any, userId?: string) => ({
 
 ```typescript
 // POST /auth/token/refresh
-const refreshToken = async (req: Request, res: Response) => {
-  const { token: refreshToken } = req.body;
+const refresh_token = async (req: Request, res: Response) => {
+  const { token: refresh_token } = req.body;
 
   try {
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const decoded = jwt.verify(refresh_token, process.env.REFRESH_TOKEN_SECRET);
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId }
     });
@@ -498,7 +498,7 @@ const refreshToken = async (req: Request, res: Response) => {
       { expiresIn: '15m' }
     );
 
-    const newRefreshToken = jwt.sign(
+    const newrefresh_token = jwt.sign(
       { userId: user.id },
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: '7d' }
@@ -509,7 +509,7 @@ const refreshToken = async (req: Request, res: Response) => {
       message: "Tokens refreshed successfully",
       data: {
         token: newAccessToken,
-        refreshToken: newRefreshToken
+        refresh_token: newrefresh_token
       }
     });
   } catch (error) {

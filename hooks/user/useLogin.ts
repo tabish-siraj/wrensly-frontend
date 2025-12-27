@@ -15,15 +15,27 @@ export const useLogin = () => {
         throw new Error(response.data.message || "Login failed");
       }
 
-      localStorage.setItem("token", response.data.data.token);
-      localStorage.setItem("refreshToken", response.data.data.refreshToken);
+      // Handle snake_case response from API
+      const { token, refresh_token, user } = response.data.data;
 
-      const user = await api.get("/user/me");
-      if (!user.data.success) {
-        throw new Error(user.data.message || "Failed to fetch user data");
+      // Store tokens
+      localStorage.setItem("token", token);
+      localStorage.setItem("refresh_token", refresh_token);
+
+      // Use user data from login response (API returns snake_case, which matches frontend types)
+      if (user) {
+        setUser(user);
+        return response.data.data;
       }
 
-      setUser(user.data.data);
+      // Fallback: fetch user data if not included in login response
+      const userResponse = await api.get("/user/me");
+      if (!userResponse.data.success) {
+        throw new Error(userResponse.data.message || "Failed to fetch user data");
+      }
+
+      setUser(userResponse.data.data);
+      return response.data.data;
     },
     onSuccess: () => {
       router.replace("/");

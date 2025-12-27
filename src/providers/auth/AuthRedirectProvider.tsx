@@ -2,30 +2,51 @@
 
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-
+import useUserStore from "@/src/stores/userStore";
 
 export function AuthRedirectProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
+  const { user, isAuthenticated, _hasHydrated } = useUserStore();
 
   useEffect(() => {
+    // Wait for store to hydrate before making routing decisions
+    if (!_hasHydrated) return;
+
     // Ensure we're on the client side before accessing localStorage
     if (typeof window === 'undefined') return;
 
     const token = localStorage.getItem("token");
 
     // If not logged in, redirect to /auth/login
-    const allowedPaths = ["/auth/login", "/auth/reset-password", "/auth/forgot-password", "/auth/signup", "/auth/verify-email"];
+    const allowedPaths = [
+      "/auth/login",
+      "/auth/reset-password",
+      "/auth/forgot-password",
+      "/auth/signup",
+      "/auth/verify-email"
+    ];
 
     if (!token && !allowedPaths.includes(pathname)) {
       router.replace("/auth/login");
+      return;
     }
 
     // If logged in and on /auth/login, redirect to /
     if (token && pathname === "/auth/login") {
       router.replace("/");
+      return;
     }
-  }, [router, pathname]);
+
+    // If user is authenticated but email not verified, redirect to verification page
+    // (except if already on verification-related pages)
+    if (isAuthenticated && user && !user.is_email_verified &&
+      !pathname.startsWith("/auth/verify-email") &&
+      !pathname.startsWith("/auth/resend-verification")) {
+      router.replace("/auth/verify-email");
+      return;
+    }
+  }, [router, pathname, user, isAuthenticated, _hasHydrated]);
 
   return <>{children}</>;
 }

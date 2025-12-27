@@ -65,7 +65,7 @@ const useUserStore = create<UserState>()(
       clearUser: (redirectCallback) => {
         if (typeof window !== 'undefined') {
           localStorage.removeItem("token");
-          localStorage.removeItem("refreshToken");
+          localStorage.removeItem("refresh_token");
 
           // Use callback if provided, otherwise fallback to window.location
           if (redirectCallback) {
