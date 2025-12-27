@@ -10,7 +10,7 @@ const demoUser = {
     username: "johndoe",
     first_name: "John",
     last_name: "Doe",
-    avatar: "/default-avatar.png"
+    avatar: null
 };
 
 const originalPost: Post = {
@@ -42,7 +42,7 @@ const pureRepost: Post = {
         username: "janedoe",
         first_name: "Jane",
         last_name: "Doe",
-        avatar: "/default-avatar.png"
+        avatar: null
     },
     parent_id: "original-1",
     parent: originalPost,
@@ -68,7 +68,7 @@ const quotePost: Post = {
         username: "bobsmith",
         first_name: "Bob",
         last_name: "Smith",
-        avatar: "/default-avatar.png"
+        avatar: null
     },
     parent_id: "original-1",
     parent: originalPost,

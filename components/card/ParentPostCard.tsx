@@ -19,10 +19,12 @@ export function ParentPostCard({ post }: ParentPostCardProps) {
                 {/* User info */}
                 <div className="flex items-center gap-2 mb-2">
                     <Avatar className="w-5 h-5">
-                        <AvatarImage
-                            src={post.user.avatar || '/default-avatar.png'}
-                            alt={`${post.user.first_name || post.user.username}'s avatar`}
-                        />
+                        {post.user.avatar && (
+                            <AvatarImage
+                                src={post.user.avatar}
+                                alt={`${post.user.first_name || post.user.username}'s avatar`}
+                            />
+                        )}
                         <AvatarFallback className="text-xs">
                             {post.user.first_name?.[0] || post.user.username[0]}
                         </AvatarFallback>

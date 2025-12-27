@@ -3,6 +3,7 @@
 import api from "@/lib/api";
 import { normalizePosts, normalizePost } from "@/lib/utils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useUserByUsername } from "@/hooks/user/useGetUser";
 
 export function usePost() {
     const { data: postsResponse, isLoading: loading, isError: error } = useQuery({
@@ -80,23 +81,31 @@ export function usePostByUserID(userID: string) {
 
 
 export function usePostByUsername(username: string) {
+    // First get the user data to get the user ID
+    const { user: userData } = useUserByUsername(username);
+    const userId = userData?.id;
+
     const { data: postsResponse, isLoading: loading, isError: error } = useQuery({
-        queryKey: ["posts", username],
+        queryKey: ["posts", "user", userId],
         queryFn: async () => {
-            const response = await api.get(`/post`);
+            if (!userId) {
+                throw new Error("User ID not available");
+            }
+
+            const response = await api.get(`/post/user/${userId}`);
 
             if (!response.data.success) {
-                throw new Error(response.data.message || "Failed to fetch posts");
+                throw new Error(response.data.message || "Failed to fetch user posts");
             }
 
             return response.data;
         },
-        enabled: !!username,
+        enabled: !!userId, // Only run when we have a user ID
     });
 
     return {
-        posts: postsResponse?.data || [],
-        loading,
+        posts: postsResponse || { data: [] },
+        loading: loading || !userId, // Show loading while getting user ID too
         error,
         meta: postsResponse?.meta
     };

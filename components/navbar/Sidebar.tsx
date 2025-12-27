@@ -62,13 +62,21 @@ const Sidebar = () => {
       </div>
 
       <div className="flex items-center gap-3 mt-6 px-3 py-2 hover:bg-gray-100 rounded-full transition">
-        <Image
-          src={user.avatar || '/default-avatar.png'}
-          alt={`${user.first_name || user.username}'s profile picture`}
-          width={40}
-          height={40}
-          className="rounded-full"
-        />
+        {user.avatar ? (
+          <Image
+            src={user.avatar}
+            alt={`${user.first_name || user.username}'s profile picture`}
+            width={40}
+            height={40}
+            className="rounded-full"
+          />
+        ) : (
+          <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+            <span className="text-gray-600 font-semibold">
+              {user.first_name?.[0] || user.username[0]}
+            </span>
+          </div>
+        )}
         <div>
           <p className="font-semibold text-sm">
             {user.first_name && user.last_name

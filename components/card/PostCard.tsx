@@ -21,6 +21,10 @@ interface PostCardProps {
 }
 
 export function PostCard({ screen, post }: PostCardProps) {
+  const [isCommenting, setIsCommenting] = useState(false);
+  const { user } = useUserStore();
+  const postMutation = useCreateComment({ screen });
+
   // Safety checks
   if (!post) {
     console.error('PostCard: post is null or undefined');
@@ -32,28 +36,106 @@ export function PostCard({ screen, post }: PostCardProps) {
     return null;
   }
 
+  // Additional safety checks for parent post
+  const safeParent = post.parent && post.parent.user ? post.parent : null;
+
+  const handleCommentClick = () => {
+    setIsCommenting(!isCommenting);
+  };
+
+  const handleSubmitComment = (content: string) => {
+    if (!user) {
+      toast.error("You must be logged in to comment.");
+      return;
+    }
+    postMutation.mutate(
+      {
+        content: content.trim(),
+        post_id: post.id,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Your comment has been posted.");
+          setIsCommenting(false);
+        },
+        onError: (error) => {
+          toast.error("Failed to post your comment.");
+          console.error(error);
+        },
+      }
+    );
+  };
+
   try {
+    // Handle different post types
+    const isRepost = post.type === POST_TYPE.REPOST;
+    const isQuote = post.type === POST_TYPE.QUOTE;
+    const hasParent = safeParent && (isRepost || isQuote);
+
     return (
       <Card className="shadow-md hover:shadow-lg transition-shadow">
-        <CardHeader>
-          <div className="flex items-center">
-            <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-              {post.user.username?.[0]?.toUpperCase() || 'U'}
-            </div>
-            <div className="ml-3">
-              <span className="font-bold text-lg">
-                {post.user.first_name} {post.user.last_name}
-              </span>
-              <p className="text-sm text-gray-500">@{post.user.username}</p>
-            </div>
+        {/* Show repost indicator */}
+        {isRepost && (
+          <div className="flex items-center gap-2 px-4 pt-3 text-sm text-gray-500">
+            <RepeatIcon className="w-4 h-4" />
+            <span>
+              {post.user.first_name && post.user.last_name
+                ? `${post.user.first_name} ${post.user.last_name}`
+                : post.user.username} reposted
+            </span>
           </div>
+        )}
+
+        <CardHeader>
+          <PostHeader user={post.user} />
         </CardHeader>
+
         <CardContent>
-          <p className="text-gray-800 mb-4 whitespace-pre-line">{post.content}</p>
+          {/* Show quote content if it's a quote */}
+          {isQuote && post.content && (
+            <Link href={`/post/${post.id}`}>
+              <p className="text-gray-800 mb-4 whitespace-pre-line">{post.content}</p>
+            </Link>
+          )}
+
+          {/* Show parent post for reposts and quotes */}
+          {hasParent && (
+            <ParentPostCard post={safeParent} />
+          )}
+
+          {/* Show regular content for normal posts */}
+          {!isRepost && !isQuote && (
+            <Link href={`/post/${post.id}`}>
+              <p className="text-gray-800 mb-4 whitespace-pre-line">{post.content}</p>
+            </Link>
+          )}
+
           <div className="text-sm text-gray-500">
-            <span>{new Date(post.created_at).toLocaleString()}</span>
+            <span>
+              {(() => {
+                try {
+                  return new Date(post.created_at).toLocaleString();
+                } catch (error) {
+                  console.error('Error formatting date:', error, post.created_at);
+                  return post.created_at || 'Unknown date';
+                }
+              })()}
+            </span>
           </div>
         </CardContent>
+
+        <PostActions screen={screen} post={post} onCommentClick={handleCommentClick} />
+
+        {/* Comment composer */}
+        {isCommenting && user && (
+          <CommentComposer
+            user={user}
+            placeholder={`Replying to @${post.user.username}`}
+            onSubmit={handleSubmitComment}
+            screen={screen}
+            post={post}
+          />
+        )}
       </Card>
     );
   } catch (error) {

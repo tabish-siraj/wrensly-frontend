@@ -12,7 +12,7 @@ export interface User {
   date_of_birth: string; // Changed from Date to string as APIs typically return ISO strings
   gender: string;
   bio: string;
-  avatar: string;
+  avatar: string | null;
   cover: string;
   city: string;
   state: string;

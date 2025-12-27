@@ -31,7 +31,7 @@ export default function FeedPage() {
         <PostComposer
           user={{
             username: user?.username || "anonymous",
-            avatar: user?.avatar || "/default-avatar.png"
+            avatar: user?.avatar || null
           }}
           screen={SCREEN.FEED}
         />
@@ -48,7 +48,7 @@ export default function FeedPage() {
         <PostComposer
           user={{
             username: user?.username || "anonymous",
-            avatar: user?.avatar || "/default-avatar.png"
+            avatar: user?.avatar || null
           }}
           screen={SCREEN.FEED}
         />
@@ -65,7 +65,7 @@ export default function FeedPage() {
         <PostComposer
           user={{
             username: user?.username || "anonymous",
-            avatar: user?.avatar || "/default-avatar.png"
+            avatar: user?.avatar || null
           }}
           screen={SCREEN.FEED}
         />
@@ -81,7 +81,7 @@ export default function FeedPage() {
       <PostComposer
         user={{
           username: user?.username || "anonymous",
-          avatar: user?.avatar || "/default-avatar.png"
+          avatar: user?.avatar || null
         }}
         screen={SCREEN.FEED}
       />

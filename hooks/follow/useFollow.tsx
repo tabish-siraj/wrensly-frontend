@@ -1,10 +1,8 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
-import { useRouter } from "next/navigation"; // useRouter from next/navigation for app directory
-
 
 export const useFollowUnfollow = () => {
-    const router = useRouter();
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: async (credentials: { following: string; operation: string; }) => {
@@ -16,18 +14,29 @@ export const useFollowUnfollow = () => {
 
             return response.data;
         },
-        onSuccess: () => {
-            router.refresh(); // Refresh the current route to reflect changes
+        onSuccess: (data) => {
+            // Invalidate relevant queries to refresh the data
+            queryClient.invalidateQueries({ queryKey: ["userByUsername"] });
+            queryClient.invalidateQueries({ queryKey: ["followers"] });
+            queryClient.invalidateQueries({ queryKey: ["following"] });
         },
+        onError: (error) => {
+            console.error("Follow operation failed:", error);
+        }
     });
 };
 
 // Hook to get followers by username
 export const useGetFollowers = (username: string) => {
-    const { data: followersResponse, isLoading: loading, isError: error } = useQuery({
+    console.log("useGetFollowers called with username:", username);
+    console.log("Username is truthy:", !!username);
+
+    const { data: followersResponse, isLoading: loading, isError: isErrorState, error: queryError } = useQuery({
         queryKey: ["followers", username],
         queryFn: async () => {
+            console.log("Fetching followers for username:", username);
             const response = await api.get(`/follow/followers/${username}`);
+            console.log("Followers API response:", response);
 
             if (!response.data.success) {
                 throw new Error(response.data.message || "Failed to fetch followers");
@@ -35,22 +44,35 @@ export const useGetFollowers = (username: string) => {
 
             return response.data;
         },
+        enabled: !!username,
+        retry: 1, // Only retry once to avoid spam
+    });
+
+    console.log("useGetFollowers result:", {
+        followersResponse,
+        loading,
+        isErrorState,
+        queryError: queryError?.message || queryError?.toString() || queryError
     });
 
     return {
-        followers: followersResponse?.data || [],
+        followers: followersResponse || { data: [] },
         loading,
-        error,
+        error: isErrorState,
         meta: followersResponse?.meta
     };
 };
 
-
 export const useGetFollowings = (username: string) => {
-    const { data: followingResponse, isLoading: loading, isError: error } = useQuery({
+    console.log("useGetFollowings called with username:", username);
+    console.log("Username is truthy:", !!username);
+
+    const { data: followingResponse, isLoading: loading, isError: isErrorState, error: queryError } = useQuery({
         queryKey: ["following", username],
         queryFn: async () => {
+            console.log("Fetching following for username:", username);
             const response = await api.get(`/follow/following/${username}`);
+            console.log("Following API response:", response);
 
             if (!response.data.success) {
                 throw new Error(response.data.message || "Failed to fetch following");
@@ -58,12 +80,21 @@ export const useGetFollowings = (username: string) => {
 
             return response.data;
         },
+        enabled: !!username,
+        retry: 1, // Only retry once to avoid spam
+    });
+
+    console.log("useGetFollowings result:", {
+        followingResponse,
+        loading,
+        isErrorState,
+        queryError: queryError?.message || queryError?.toString() || queryError
     });
 
     return {
-        following: followingResponse?.data || [],
+        following: followingResponse || { data: [] },
         loading,
-        error,
+        error: isErrorState,
         meta: followingResponse?.meta
     };
 };

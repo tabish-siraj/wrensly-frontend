@@ -17,21 +17,58 @@ export default function ProfileCard() {
   const { user } = useUserStore();
   const params = useParams();
   const router = useRouter();
+
+  console.log("ProfileCard render - Current user:", user);
+  console.log("ProfileCard render - Params username:", params.username);
+
   const { followers, loading: followersLoading, error: followersError } = useGetFollowers(params.username as string)
   const { following, loading: followingLoading, error: followingError } = useGetFollowings(params.username as string)
 
   const { mutate: followUnfollow } = useFollowUnfollow();
-  const { user: userData } = useUserByUsername(params.username as string);
-  const isCurrentUser = params.username === user?.username || null;
-  const user_data = userData?.data;
+  const { user: userData, loading: userLoading, error: userError } = useUserByUsername(params.username as string);
+  const isCurrentUser = params.username === user?.username;
+  const user_data = userData;
+
+  console.log("ProfileCard render - userData from hook:", userData);
+  console.log("ProfileCard render - userLoading:", userLoading);
+  console.log("ProfileCard render - userError:", userError);
+  console.log("ProfileCard render - params.username:", params.username);
+  console.log("ProfileCard render - user_data (final):", user_data);
+  console.log("ProfileCard render - isCurrentUser:", isCurrentUser);
+
+  // Log followers/following errors but don't let them block functionality
+  if (followersError) {
+    console.warn("Followers API error (non-blocking):", followersError);
+  }
+  if (followingError) {
+    console.warn("Following API error (non-blocking):", followingError);
+  }
 
   const [showFollowersModal, setShowFollowersModal] = useState(false);
   const [modalType, setModalType] = useState<"followers" | "following">("followers");
 
   const handleFollowUnfollow = () => {
-    if (isCurrentUser || !user_data) return;
+    if (userLoading) {
+      toast.error("Please wait, loading user data...");
+      return;
+    }
 
-    const wasFollowing = user_data.isFollowing;
+    if (userError) {
+      toast.error("Error loading user data");
+      return;
+    }
+
+    if (isCurrentUser) {
+      return;
+    }
+
+    if (!user_data) {
+      toast.error("User data not available");
+      return;
+    }
+
+    const wasFollowing = user_data.is_following;
+
     followUnfollow({
       following: user_data.id,
       operation: wasFollowing ? "unfollow" : "follow",
@@ -39,12 +76,12 @@ export default function ProfileCard() {
       onSuccess: () => {
         toast.success(`${wasFollowing ? "Unfollowed" : "Followed"} ${user_data.username}`);
         // Optimistically update the UI
-        user_data.isFollowing = !wasFollowing;
+        user_data.is_following = !wasFollowing;
         user_data.followers_count += wasFollowing ? -1 : 1;
       },
       onError: (error) => {
         toast.error(`Failed to ${wasFollowing ? "unfollow" : "follow"} user`);
-        console.error(error);
+        console.error("Follow/unfollow error:", error);
       }
     });
   };
@@ -82,7 +119,7 @@ export default function ProfileCard() {
                   : handleFollowUnfollow
               }
             >
-              {isCurrentUser ? "Edit Profile" : user_data?.isFollowing ? "Following" : "Follow"}
+              {isCurrentUser ? "Edit Profile" : user_data?.is_following ? "Following" : "Follow"}
             </Button>
           </div>
         </div>
@@ -158,8 +195,8 @@ export default function ProfileCard() {
           onClose={() => setShowFollowersModal(false)}
           users={
             modalType === "followers"
-              ? followers.data ?? []
-              : following.data ?? []
+              ? followers?.data ?? []
+              : following?.data ?? []
           }
           _type={modalType}
           loading={modalType === "followers" ? followersLoading : followingLoading}
