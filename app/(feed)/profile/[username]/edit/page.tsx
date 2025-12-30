@@ -4,19 +4,25 @@ import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EditProfileSchema, EditProfile } from "@/src/schema";
 import FormInput from "@/components/form-input/FormInput";
+import { MediaUpload } from "@/components/media/MediaUpload";
 import useUserStore from "@/src/stores/userStore";
 import { useUpdateProfile } from "@/hooks/user/useUpdateProfile";
 import { removeEmptyFields } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, Save, User, MapPin, Globe, Phone, Calendar, Camera } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { validateProfile } from "@/lib/profileValidation";
 import { toast } from "sonner";
+import { useState } from "react";
 
 export default function EditProfilePage() {
     const { user } = useUserStore();
     const updateProfile = useUpdateProfile();
     const router = useRouter();
+    const [isMediaUploadDisabled] = useState(true); // Will be enabled when bucket is configured
 
     // Debug logging
     console.log("EditProfilePage - Current user:", user);
@@ -42,26 +48,43 @@ export default function EditProfilePage() {
         }
     });
 
-    const fields = [
-        { name: "first_name", label: "First Name", placeholder: "Enter your first name", required: true, type: "text" },
-        { name: "last_name", label: "Last Name", placeholder: "Enter your last name", required: true, type: "text" },
-        { name: "username", label: "Username", placeholder: "Enter your username", required: true, type: "text" },
+    // Form field configurations
+    const personalFields = [
+        { name: "first_name", label: "First Name", placeholder: "Enter your first name", required: true, type: "text", icon: User },
+        { name: "last_name", label: "Last Name", placeholder: "Enter your last name", required: true, type: "text", icon: User },
+        { name: "username", label: "Username", placeholder: "Enter your username", required: true, type: "text", icon: User },
         { name: "bio", label: "Bio", placeholder: "Tell us about yourself (max 160 characters)", required: false, type: "textarea", maxLength: 160 },
-        { name: "date_of_birth", label: "Date of Birth", placeholder: "Select your date of birth", required: false, type: "date" },
+        { name: "date_of_birth", label: "Date of Birth", placeholder: "Select your date of birth", required: false, type: "date", icon: Calendar },
         { name: "gender", label: "Gender", placeholder: "Enter your gender", required: false, type: "text" },
-        { name: "city", label: "City", placeholder: "Enter your city", required: false, type: "text" },
-        { name: "state", label: "State/Province", placeholder: "Enter your state or province", required: false, type: "text" },
-        { name: "country", label: "Country", placeholder: "Enter your country", required: false, type: "text" },
-        { name: "phone", label: "Phone Number", placeholder: "Enter your phone number", required: false, type: "tel" },
-        { name: "website", label: "Website", placeholder: "https://yourwebsite.com", required: false, type: "url" },
-        { name: "avatar", label: "Avatar URL", placeholder: "https://example.com/avatar.jpg", required: false, type: "url" },
-        { name: "cover", label: "Cover Photo URL", placeholder: "https://example.com/cover.jpg", required: false, type: "url" },
+    ];
+
+    const contactFields = [
+        { name: "phone", label: "Phone Number", placeholder: "Enter your phone number", required: false, type: "tel", icon: Phone },
+        { name: "website", label: "Website", placeholder: "https://yourwebsite.com", required: false, type: "url", icon: Globe },
+    ];
+
+    const locationFields = [
+        { name: "city", label: "City", placeholder: "Enter your city", required: false, type: "text", icon: MapPin },
+        { name: "state", label: "State/Province", placeholder: "Enter your state or province", required: false, type: "text", icon: MapPin },
+        { name: "country", label: "Country", placeholder: "Enter your country", required: false, type: "text", icon: MapPin },
     ];
 
     const onSubmit = (data: EditProfile) => {
         console.log("Form submission data:", data);
 
         try {
+            // Client-side validation
+            const validation = validateProfile(data);
+            if (!validation.isValid) {
+                // Show validation errors
+                Object.entries(validation.fieldErrors).forEach(([field, errors]) => {
+                    errors.forEach(error => {
+                        toast.error(`${field}: ${error}`);
+                    });
+                });
+                return;
+            }
+
             const parsedPayload = removeEmptyFields(data);
             console.log("Parsed payload:", parsedPayload);
 
@@ -78,9 +101,17 @@ export default function EditProfilePage() {
                         toast.success("Profile updated successfully!");
                         router.push(`/profile/${user.username}`);
                     },
-                    onError: (error) => {
+                    onError: (error: any) => {
                         console.error("Profile update error:", error);
-                        toast.error("Failed to update profile. Please try again.");
+
+                        // Handle specific error types
+                        if (error.message?.includes('username')) {
+                            toast.error("Username is already taken. Please choose a different one.");
+                        } else if (error.message?.includes('validation')) {
+                            toast.error("Please check your input and try again.");
+                        } else {
+                            toast.error("Failed to update profile. Please try again.");
+                        }
                     }
                 }
             );
@@ -105,9 +136,9 @@ export default function EditProfilePage() {
     }
 
     return (
-        <div className="max-w-2xl mx-auto p-6">
+        <div className="max-w-4xl mx-auto p-6 space-y-6">
             {/* Header */}
-            <div className="flex items-center gap-4 mb-6">
+            <div className="flex items-center gap-4">
                 <Button
                     variant="ghost"
                     size="sm"
@@ -117,108 +148,186 @@ export default function EditProfilePage() {
                     <ArrowLeft className="w-4 h-4" />
                     Back
                 </Button>
-                <h1 className="text-2xl font-bold">Edit Profile</h1>
+                <div>
+                    <h1 className="text-3xl font-bold">Edit Profile</h1>
+                    <p className="text-gray-600">Update your profile information and media</p>
+                </div>
             </div>
 
             <FormProvider {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                    {/* Profile Picture Section */}
-                    <div className="bg-gray-50 rounded-lg p-6">
-                        <h2 className="text-lg font-semibold mb-4">Profile Images</h2>
-
-                        {/* Avatar */}
-                        <div className="mb-6">
-                            <h3 className="text-md font-medium mb-2">Profile Picture</h3>
-                            <div className="flex items-center gap-4">
-                                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
-                                    {(form.watch("avatar") || user?.avatar) ? (
+                    {/* Profile Media Section */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Camera className="w-5 h-5" />
+                                Profile Media
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            {/* Cover Photo */}
+                            <div>
+                                <h3 className="text-lg font-medium mb-3">Cover Photo</h3>
+                                <div className="w-full h-48 bg-gray-100 rounded-lg overflow-hidden mb-4 relative">
+                                    {form.watch("cover") ? (
                                         <Image
-                                            src={form.watch("avatar") || user?.avatar || ""}
-                                            alt="Profile"
-                                            width={80}
-                                            height={80}
-                                            className="w-full h-full rounded-full object-cover"
+                                            src={form.watch("cover") || ""}
+                                            alt="Cover"
+                                            fill
+                                            className="object-cover"
                                             onError={(e) => {
-                                                // Hide broken images
                                                 e.currentTarget.style.display = 'none';
                                             }}
                                         />
                                     ) : (
-                                        <span className="text-2xl text-gray-500">
-                                            {user?.first_name?.[0] || user?.username?.[0] || 'U'}
-                                        </span>
+                                        <div className="w-full h-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center">
+                                            <span className="text-white text-lg">No cover photo</span>
+                                        </div>
                                     )}
                                 </div>
-                                <div>
-                                    <p className="text-sm text-gray-600 mb-2">
-                                        Add an avatar URL or upload a new profile picture (upload coming soon)
-                                    </p>
+                                <MediaUpload
+                                    value={form.watch("cover") || undefined}
+                                    onChange={(url) => form.setValue("cover", url)}
+                                    onRemove={() => form.setValue("cover", "")}
+                                    disabled={isMediaUploadDisabled}
+                                    type="cover"
+                                />
+                            </div>
+
+                            <Separator />
+
+                            {/* Avatar */}
+                            <div>
+                                <h3 className="text-lg font-medium mb-3">Profile Picture</h3>
+                                <div className="flex items-center gap-6">
+                                    <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden relative">
+                                        {form.watch("avatar") ? (
+                                            <Image
+                                                src={form.watch("avatar") || ""}
+                                                alt="Profile"
+                                                fill
+                                                className="object-cover rounded-full"
+                                                onError={(e) => {
+                                                    e.currentTarget.style.display = 'none';
+                                                }}
+                                            />
+                                        ) : (
+                                            <span className="text-3xl text-gray-500">
+                                                {user?.first_name?.[0] || user?.username?.[0] || 'U'}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="flex-1">
+                                        <MediaUpload
+                                            value={form.watch("avatar") || undefined}
+                                            onChange={(url) => form.setValue("avatar", url)}
+                                            onRemove={() => form.setValue("avatar", "")}
+                                            disabled={isMediaUploadDisabled}
+                                            type="avatar"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </CardContent>
+                    </Card>
 
-                        {/* Cover Photo */}
-                        <div>
-                            <h3 className="text-md font-medium mb-2">Cover Photo</h3>
-                            <div className="w-full h-32 bg-gray-200 rounded-lg overflow-hidden mb-2">
-                                {(form.watch("cover") || user?.cover) ? (
-                                    <Image
-                                        src={form.watch("cover") || user?.cover || ""}
-                                        alt="Cover"
-                                        width={400}
-                                        height={128}
-                                        className="w-full h-full object-cover"
-                                        onError={(e) => {
-                                            // Hide broken images
-                                            e.currentTarget.style.display = 'none';
-                                        }}
-                                    />
-                                ) : (
-                                    <div className="w-full h-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center">
-                                        <span className="text-white text-sm">No cover photo</span>
+                    {/* Personal Information */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <User className="w-5 h-5" />
+                                Personal Information
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {personalFields.map((field) => (
+                                    <div key={field.name} className={field.name === 'bio' ? 'md:col-span-2' : ''}>
+                                        <FormInput
+                                            name={field.name}
+                                            label={field.label}
+                                            placeholder={field.placeholder}
+                                            required={field.required}
+                                            type={field.type}
+                                            maxLength={field.maxLength}
+                                        />
                                     </div>
-                                )}
+                                ))}
                             </div>
-                            <p className="text-sm text-gray-600">
-                                Add a cover photo URL or upload a new cover (upload coming soon)
-                            </p>
-                        </div>
-                    </div>
+                        </CardContent>
+                    </Card>
 
-                    {/* Form Fields */}
-                    <div className="space-y-4">
-                        {fields.map((field) => (
-                            <FormInput
-                                key={field.name}
-                                name={field.name}
-                                label={field.label}
-                                placeholder={field.placeholder}
-                                required={field.required}
-                                type={field.type}
-                                maxLength={field.maxLength}
-                            />
-                        ))}
-                    </div>
+                    {/* Contact Information */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Phone className="w-5 h-5" />
+                                Contact Information
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {contactFields.map((field) => (
+                                    <FormInput
+                                        key={field.name}
+                                        name={field.name}
+                                        label={field.label}
+                                        placeholder={field.placeholder}
+                                        required={field.required}
+                                        type={field.type}
+                                    />
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
 
-                    {/* Submit Button */}
-                    <div className="flex gap-3 pt-6">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => router.back()}
-                            className="flex-1"
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            type="submit"
-                            disabled={updateProfile.isPending}
-                            className="flex-1 flex items-center gap-2"
-                        >
-                            <Save className="w-4 h-4" />
-                            {updateProfile.isPending ? "Saving..." : "Save Changes"}
-                        </Button>
-                    </div>
+                    {/* Location Information */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <MapPin className="w-5 h-5" />
+                                Location
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {locationFields.map((field) => (
+                                    <FormInput
+                                        key={field.name}
+                                        name={field.name}
+                                        label={field.label}
+                                        placeholder={field.placeholder}
+                                        required={field.required}
+                                        type={field.type}
+                                    />
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Submit Buttons */}
+                    <Card>
+                        <CardContent className="pt-6">
+                            <div className="flex gap-3">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => router.back()}
+                                    className="flex-1"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    disabled={updateProfile.isPending}
+                                    className="flex-1 flex items-center gap-2"
+                                >
+                                    <Save className="w-4 h-4" />
+                                    {updateProfile.isPending ? "Saving..." : "Save Changes"}
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
                 </form>
             </FormProvider>
         </div>

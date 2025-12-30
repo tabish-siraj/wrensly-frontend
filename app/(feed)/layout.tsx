@@ -6,6 +6,7 @@ import Sidebar from "@/components/navbar/Sidebar";
 import useUserStore from "@/src/stores/userStore";
 import { usePathname } from "next/navigation";
 import { TopBar } from '@/components/navigation/TopBar';
+import { TrendingHashtags } from "@/components/hashtag/TrendingHashtags";
 
 function Layout({ children }: { children: React.ReactNode }) {
     const { user } = useUserStore();
@@ -38,26 +39,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 
                     {!isProfilePage && (
                         <aside className="hidden xl:block xl:w-1/4">
-                            <div className="bg-[#f7f9f9] dark:bg-[#16181c] rounded-2xl shadow border border-gray-100 p-4 sticky top-16">
-                                <h3 className="text-xl font-bold mb-4">What’s happening</h3>
-                                <ul className="space-y-4 text-sm text-gray-700 dark:text-gray-300">
-                                    <li className="hover:bg-gray-100 p-2 rounded-lg cursor-pointer">
-                                        <div className="text-xs text-gray-500">Trending in Pakistan</div>
-                                        <div className="font-semibold text-md">#ReactJS</div>
-                                        <div className="text-xs text-gray-500">15.7K Chirps</div>
-                                    </li>
-                                    <li className="hover:bg-gray-100 p-2 rounded-lg cursor-pointer">
-                                        <div className="text-xs text-gray-500">Trending in Dev</div>
-                                        <div className="font-semibold text-md">#NextJS</div>
-                                        <div className="text-xs text-gray-500">10.2K Chirps</div>
-                                    </li>
-                                    <li className="hover:bg-gray-100 p-2 rounded-lg cursor-pointer">
-                                        <div className="text-xs text-gray-500">Trending in Tech</div>
-                                        <div className="font-semibold text-md">#OpenAI</div>
-                                        <div className="text-xs text-gray-500">8.9K Chirps</div>
-                                    </li>
-                                </ul>
-                            </div>
+                            <TrendingHashtags className="sticky top-16" />
                         </aside>
                     )}
                 </div>

@@ -13,6 +13,7 @@ import { PostActions } from "./PostActions";
 import { CommentComposer } from "@/components/input/CommentComposer";
 import { CommentThread } from "@/components/comment/CommentThread";
 import { DeleteConfirmationModal } from "@/components/modals/DeleteConfirmationModal";
+import { HashtagText } from "@/components/hashtag/HashtagText";
 import useUserStore from "@/src/stores/userStore";
 import { useCreateComment } from "@/hooks/comment/useCreateComment";
 import { useDeletePost } from "@/hooks/post/useCreatePost";
@@ -111,7 +112,7 @@ export function PostCard({ screen, post }: PostCardProps) {
           {/* Show quote content if it's a quote */}
           {isQuote && post.content && (
             <Link href={`/post/${post.id}`}>
-              <p className="text-gray-800 mb-4 whitespace-pre-line">{post.content}</p>
+              <HashtagText content={post.content} className="text-gray-800 mb-4" />
             </Link>
           )}
 
@@ -123,7 +124,7 @@ export function PostCard({ screen, post }: PostCardProps) {
           {/* Show regular content for normal posts and reposted posts */}
           {!isQuote && (
             <Link href={`/post/${post.id}`}>
-              <p className="text-gray-800 mb-4 whitespace-pre-line">{post.content}</p>
+              <HashtagText content={post.content} className="text-gray-800 mb-4" />
             </Link>
           )}
 
