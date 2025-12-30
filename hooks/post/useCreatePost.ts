@@ -24,7 +24,7 @@ export function useCreatePost({ screen }: { screen: string }) {
     });
 }
 
-export function useDeletePost() {
+export function useDeletePost({ screen }: { screen: string }) {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -37,8 +37,12 @@ export function useDeletePost() {
 
             return response.data;
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries();
+        onSuccess: (data, variables) => {
+            // Invalidate specific queries for better performance
+            queryClient.invalidateQueries({ queryKey: [screen] });
+            queryClient.invalidateQueries({ queryKey: ["infinite-feed"] });
+            queryClient.invalidateQueries({ queryKey: ["post", variables.post_id] });
+            queryClient.invalidateQueries({ queryKey: ["user-posts"] });
         },
         onError: (error) => {
             console.error('Error deleting post:', error);

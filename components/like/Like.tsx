@@ -17,10 +17,17 @@ export function Like({ screen, post }: LikeProps) {
     const toggleLike = useToggleLike();
 
     const handleLikeToggle = () => {
+        const wasLiked = post.is_liked;
+
         toggleLike.mutate({
             screen: screen,
             post_id: post.id,
             is_liked: post.is_liked,
+        }, {
+            onSuccess: () => {
+                // Optional: Add subtle success feedback
+                // toast.success(wasLiked ? "Unliked" : "Liked");
+            }
         });
     };
 

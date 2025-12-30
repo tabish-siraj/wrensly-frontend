@@ -5,16 +5,19 @@ import { Post } from '@/src/types';
 import { POST_TYPE } from '@/src/constants';
 
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 import { PostHeader } from "./PostHeader";
 import { ParentPostCard } from "./ParentPostCard";
 import { PostActions } from "./PostActions";
 import { CommentComposer } from "@/components/input/CommentComposer";
 import { CommentThread } from "@/components/comment/CommentThread";
+import { DeleteConfirmationModal } from "@/components/modals/DeleteConfirmationModal";
 import useUserStore from "@/src/stores/userStore";
 import { useCreateComment } from "@/hooks/comment/useCreateComment";
+import { useDeletePost } from "@/hooks/post/useCreatePost";
 import { toast } from "sonner";
-import { RepeatIcon } from "lucide-react";
+import { RepeatIcon, Trash2, MoreHorizontal } from "lucide-react";
 
 interface PostCardProps {
   post: Post;
@@ -23,6 +26,8 @@ interface PostCardProps {
 
 export function PostCard({ screen, post }: PostCardProps) {
   const { user } = useUserStore();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { mutate: deletePost, isPending: isDeleting } = useDeletePost({ screen });
 
   // Safety checks
   if (!post) {
@@ -37,6 +42,29 @@ export function PostCard({ screen, post }: PostCardProps) {
 
   // Additional safety checks for parent post
   const safeParent = post.parent && post.parent.user ? post.parent : null;
+
+  // Check if current user owns this post
+  const isOwner = user && post.user.id === user.id;
+
+  const handleDeleteClick = () => {
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    deletePost(
+      { post_id: post.id },
+      {
+        onSuccess: () => {
+          toast.success("Post deleted successfully");
+          setShowDeleteModal(false);
+        },
+        onError: (error: any) => {
+          toast.error(error.message || "Failed to delete post");
+          setShowDeleteModal(false);
+        },
+      }
+    );
+  };
 
   try {
     // Handle repost display (Twitter-like behavior)
@@ -63,7 +91,20 @@ export function PostCard({ screen, post }: PostCardProps) {
         )}
 
         <CardHeader>
-          <PostHeader user={post.user} />
+          <div className="flex items-center justify-between">
+            <PostHeader user={post.user} />
+            {isOwner && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleDeleteClick}
+                className="text-gray-400 hover:text-red-500 h-8 w-8 p-0"
+                title="Delete post"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
         </CardHeader>
 
         <CardContent>
@@ -104,6 +145,16 @@ export function PostCard({ screen, post }: PostCardProps) {
 
         {/* Comment Thread - replaces old comment composer */}
         <CommentThread post={post} screen={screen} />
+
+        {/* Delete Confirmation Modal */}
+        <DeleteConfirmationModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleDeleteConfirm}
+          isDeleting={isDeleting}
+          itemType="post"
+          itemContent={post.content}
+        />
       </Card>
     );
   } catch (error) {
