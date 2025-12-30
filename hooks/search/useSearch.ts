@@ -16,12 +16,12 @@ export function useSearch(query: string, filters: SearchFilters = {}, enabled: b
                 return { posts: [], users: [], hashtags: [], total: 0 };
             }
 
-            const params = new URLSearchParams({
-                q: query.trim(),
-                ...(filters.type && { type: filters.type }),
-                ...(filters.dateRange && { dateRange: filters.dateRange }),
-                ...(filters.sortBy && { sortBy: filters.sortBy }),
-            });
+            const params = new URLSearchParams();
+            params.set('q', query.trim());
+
+            if (filters.type) params.set('type', filters.type);
+            if (filters.dateRange) params.set('dateRange', filters.dateRange);
+            if (filters.sortBy) params.set('sortBy', filters.sortBy);
 
             const response = await api.get(`/search?${params.toString()}`);
 
@@ -45,12 +45,12 @@ export function useSearchPosts(query: string, filters: Omit<SearchFilters, 'type
                 return { data: [], meta: { hasNextPage: false, nextCursor: null } };
             }
 
-            const params = new URLSearchParams({
-                q: query.trim(),
-                ...(filters.dateRange && { dateRange: filters.dateRange }),
-                ...(filters.sortBy && { sortBy: filters.sortBy }),
-                ...(pageParam && { cursor: pageParam }),
-            });
+            const params = new URLSearchParams();
+            params.set('q', query.trim());
+
+            if (filters.dateRange) params.set('dateRange', filters.dateRange);
+            if (filters.sortBy) params.set('sortBy', filters.sortBy);
+            if (pageParam) params.set('cursor', pageParam as string);
 
             const response = await api.get(`/search/posts?${params.toString()}`);
 
@@ -63,7 +63,8 @@ export function useSearchPosts(query: string, filters: Omit<SearchFilters, 'type
                 meta: response.data.meta,
             };
         },
-        getNextPageParam: (lastPage) => lastPage.meta?.nextCursor,
+        getNextPageParam: (lastPage: any) => lastPage.meta?.nextCursor,
+        initialPageParam: null,
         enabled: !!query && query.trim().length >= 1,
         staleTime: 2 * 60 * 1000, // 2 minutes
     });
@@ -78,10 +79,9 @@ export function useSearchUsers(query: string) {
                 return { data: [], meta: { hasNextPage: false, nextCursor: null } };
             }
 
-            const params = new URLSearchParams({
-                q: query.trim(),
-                ...(pageParam && { cursor: pageParam }),
-            });
+            const params = new URLSearchParams();
+            params.set('q', query.trim());
+            if (pageParam) params.set('cursor', pageParam as string);
 
             const response = await api.get(`/search/users?${params.toString()}`);
 
@@ -94,7 +94,8 @@ export function useSearchUsers(query: string) {
                 meta: response.data.meta,
             };
         },
-        getNextPageParam: (lastPage) => lastPage.meta?.nextCursor,
+        getNextPageParam: (lastPage: any) => lastPage.meta?.nextCursor,
+        initialPageParam: null,
         enabled: !!query && query.trim().length >= 1,
         staleTime: 2 * 60 * 1000, // 2 minutes
     });
@@ -109,10 +110,9 @@ export function useSearchHashtags(query: string, limit: number = 10) {
                 return [];
             }
 
-            const params = new URLSearchParams({
-                q: query.trim(),
-                limit: limit.toString(),
-            });
+            const params = new URLSearchParams();
+            params.set('q', query.trim());
+            params.set('limit', limit.toString());
 
             const response = await api.get(`/search/hashtags?${params.toString()}`);
 
@@ -136,9 +136,8 @@ export function useSearchSuggestions(query: string, enabled: boolean = true) {
                 return { users: [], hashtags: [], recent_searches: [] };
             }
 
-            const params = new URLSearchParams({
-                q: query.trim(),
-            });
+            const params = new URLSearchParams();
+            params.set('q', query.trim());
 
             const response = await api.get(`/search/suggestions?${params.toString()}`);
 

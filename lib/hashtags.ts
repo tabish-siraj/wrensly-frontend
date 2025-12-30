@@ -1,4 +1,5 @@
 // Hashtag utility functions
+import React from 'react';
 
 /**
  * Extract hashtags from text content
@@ -36,20 +37,20 @@ export const renderContentWithHashtags = (
     return parts.map((part, index) => {
         if (part.startsWith('#')) {
             const hashtag = part.slice(1);
-            return (
-                <span
-                    key= { index }
-            className = "text-blue-500 hover:text-blue-600 cursor-pointer font-medium"
-            onClick = {(e) => {
-    e.stopPropagation();
-    onHashtagClick?.(hashtag);
-}}
-                >
-    { part }
-    </span>
+            return React.createElement(
+                'span',
+                {
+                    key: index,
+                    className: 'text-blue-500 hover:text-blue-600 cursor-pointer font-medium',
+                    onClick: (e: React.MouseEvent) => {
+                        e.stopPropagation();
+                        onHashtagClick?.(hashtag);
+                    }
+                },
+                part
             );
         }
-return part;
+        return part;
     });
 };
 
