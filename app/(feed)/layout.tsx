@@ -2,7 +2,6 @@
 
 import React from "react";
 import { Header } from "@/components/navigation/Header";
-import { Toaster } from "sonner";
 import Sidebar from "@/components/navbar/Sidebar";
 import useUserStore from "@/src/stores/userStore";
 import { usePathname } from "next/navigation";
@@ -63,8 +62,6 @@ function Layout({ children }: { children: React.ReactNode }) {
                     )}
                 </div>
             </main>
-
-            <Toaster position="bottom-center" richColors closeButton />
         </>
     );
 }

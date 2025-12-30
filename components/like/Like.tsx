@@ -17,19 +17,11 @@ export function Like({ screen, post }: LikeProps) {
     const toggleLike = useToggleLike();
 
     const handleLikeToggle = () => {
-        toggleLike.mutate(
-            {
-                screen: screen,
-                post_id: post.id,
-                is_liked: post.is_liked,
-            },
-            {
-                onError: (error) => {
-                    toast.error("Failed to like the post.");
-                    console.error(error);
-                },
-            }
-        );
+        toggleLike.mutate({
+            screen: screen,
+            post_id: post.id,
+            is_liked: post.is_liked,
+        });
     };
 
     return (

@@ -1,6 +1,5 @@
 // creating a bookmark component
 
-import React from 'react';
 import { Button } from '@/components/ui/button';
 import { BookmarkIcon } from 'lucide-react';
 import { Post } from '@/src/types';
@@ -17,6 +16,8 @@ export function Bookmark({ screen, post }: BookmarkProps) {
   const toggleBookmark = useToggleBookmark();
 
   const handleBookmarkToggle = () => {
+    const wasBookmarked = post.is_bookmarked;
+
     toggleBookmark.mutate(
       {
         screen: screen,
@@ -24,12 +25,12 @@ export function Bookmark({ screen, post }: BookmarkProps) {
         is_bookmarked: post.is_bookmarked,
       },
       {
-        onError: (error) => {
-          toast.error("Failed to bookmark.");
-          console.error(error);
-        },
         onSuccess: () => {
-          toast.success("Post bookmarked.");
+          toast.success(wasBookmarked ? "Bookmark removed." : "Post bookmarked.");
+        },
+        onError: (error) => {
+          toast.error(wasBookmarked ? "Failed to remove bookmark." : "Failed to bookmark post.");
+          console.error(error);
         },
       }
     );
