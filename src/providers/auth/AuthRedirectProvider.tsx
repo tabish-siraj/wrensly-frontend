@@ -38,11 +38,14 @@ export function AuthRedirectProvider({ children }: { children: React.ReactNode }
       return;
     }
 
-    // If user is authenticated but email not verified, redirect to verification page
-    // (except if already on verification-related pages)
+    // If user is authenticated but email not verified, allow access to feed
+    // The TopBar component will show the verification banner
+    // Only redirect to verification page if they're trying to access restricted features
     if (isAuthenticated && user && !user.is_email_verified &&
       !pathname.startsWith("/auth/verify-email") &&
-      !pathname.startsWith("/auth/resend-verification")) {
+      !pathname.startsWith("/auth/resend-verification") &&
+      (pathname.startsWith("/profile/") && pathname.includes("/edit"))) {
+      // Only redirect to verification for profile editing or other restricted actions
       router.replace("/auth/verify-email");
       return;
     }

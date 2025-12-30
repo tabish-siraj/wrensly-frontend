@@ -8,8 +8,8 @@ import { CheckCircle2 } from "lucide-react";
 
 interface User {
   id: string;
-  first_name: string;
-  last_name: string;
+  first_name?: string;
+  last_name?: string;
   username: string;
   avatar?: string | null;
 }
@@ -20,7 +20,7 @@ interface FollowListModalProps {
   users: User[];
   _type: "followers" | "following";
   loading?: boolean;
-  error?: boolean;
+  error?: boolean | any; // Allow both boolean and error objects
 }
 
 const FollowListModal = ({
@@ -29,9 +29,12 @@ const FollowListModal = ({
   users,
   _type,
   loading = false,
-  error = false,
+  error = null,
 }: FollowListModalProps) => {
-  const safeUsers = Array.isArray(users) ? users : [];
+  // Ensure users is always an array and handle undefined/null cases
+  const safeUsers = Array.isArray(users)
+    ? users.filter((user): user is User => Boolean(user && user.id && user.username))
+    : [];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -45,7 +48,7 @@ const FollowListModal = ({
             <p className="text-center text-sm text-red-500">Something went wrong.</p>
           ) : loading ? (
             <p className="text-center text-sm text-gray-500">Loading...</p>
-          ) : users.length === 0 ? (
+          ) : safeUsers.length === 0 ? (
             <p className="text-center text-sm text-gray-500">No {_type} found.</p>
           ) : (
             safeUsers.map((user) => (
@@ -59,11 +62,15 @@ const FollowListModal = ({
                       }
                       alt={user.username}
                     />
-                    <AvatarFallback>{user.username[0]}</AvatarFallback>
+                    <AvatarFallback>
+                      {user.username?.[0]?.toUpperCase() || 'U'}
+                    </AvatarFallback>
                   </Avatar>
                   <div>
                     <div className="flex items-center gap-1">
-                      <p className="text-sm font-semibold">{user.first_name} {user.last_name}</p>
+                      <p className="text-sm font-semibold">
+                        {user.first_name || ''} {user.last_name || ''}
+                      </p>
                       {/* {user.verified && ( */}
                       <CheckCircle2 className="w-4 h-4 text-blue-500" />
                       {/* )} */}

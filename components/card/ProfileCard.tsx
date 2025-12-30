@@ -86,6 +86,18 @@ export default function ProfileCard() {
     });
   };
 
+  const handleFollowersClick = () => {
+    console.log("Opening followers modal, data:", followersResponse);
+    setModalType("followers");
+    setShowFollowersModal(true);
+  };
+
+  const handleFollowingClick = () => {
+    console.log("Opening following modal, data:", followingResponse);
+    setModalType("following");
+    setShowFollowersModal(true);
+  };
+
   return (
     <div className="w-full">
       <div className="w-full">
@@ -146,10 +158,7 @@ export default function ProfileCard() {
               <Button
                 variant="outline"
                 className="rounded-full px-4 text-sm font-medium"
-                onClick={() => {
-                  setModalType("followers");
-                  setShowFollowersModal(true);
-                }}
+                onClick={handleFollowersClick}
               >
                 {user_data?.followers_count || 0} Followers
               </Button>
@@ -157,10 +166,7 @@ export default function ProfileCard() {
               <Button
                 variant="outline"
                 className="rounded-full px-4 text-sm font-medium"
-                onClick={() => {
-                  setModalType("following");
-                  setShowFollowersModal(true);
-                }}
+                onClick={handleFollowingClick}
               >
                 {user_data?.following_count || 0} Following
               </Button>
@@ -231,8 +237,8 @@ export default function ProfileCard() {
           onClose={() => setShowFollowersModal(false)}
           users={
             modalType === "followers"
-              ? followersResponse?.data ?? []
-              : followingResponse?.data ?? []
+              ? (followersResponse?.data || []).map((item: any) => item.user)
+              : (followingResponse?.data || []).map((item: any) => item.user)
           }
           _type={modalType}
           loading={modalType === "followers" ? followersLoading : followingLoading}

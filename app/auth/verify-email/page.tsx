@@ -1,14 +1,20 @@
 "use client";
 
 import { Suspense, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useVerifyEmail } from "@/hooks/user/useVerifyEmail";
+import { useResendVerifyEmail } from "@/hooks/user/useResendVerifyEmail";
+import useUserStore from "@/src/stores/userStore";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 function VerifyEmailComponent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const token = searchParams.get("token");
+  const { user, setUser } = useUserStore();
+
   const {
     mutate: verifyEmail,
     isPending,
@@ -16,11 +22,50 @@ function VerifyEmailComponent() {
     isError,
   } = useVerifyEmail();
 
+  const {
+    mutate: resendEmail,
+    isPending: isResending,
+  } = useResendVerifyEmail();
+
   useEffect(() => {
     if (token) {
-      verifyEmail({ token });
+      verifyEmail({ token }, {
+        onSuccess: (data) => {
+          // Update user store with verified status
+          if (user) {
+            setUser({ ...user, is_email_verified: true });
+          }
+          toast.success("Email verified successfully!");
+          // Redirect to feed after 2 seconds
+          setTimeout(() => {
+            router.push("/");
+          }, 2000);
+        },
+        onError: (error) => {
+          toast.error("Email verification failed");
+        }
+      });
     }
-  }, [token, verifyEmail]);
+  }, [token, verifyEmail, user, setUser, router]);
+
+  const handleResendEmail = () => {
+    if (!user) {
+      toast.error("User information not available");
+      return;
+    }
+
+    resendEmail({
+      username: user.username,
+      email: user.email
+    }, {
+      onSuccess: () => {
+        toast.success("Verification email sent successfully! Please check your inbox.");
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to resend verification email");
+      }
+    });
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-white px-4">
@@ -33,35 +78,86 @@ function VerifyEmailComponent() {
         </div>
 
         {isPending && (
-          <p className="text-gray-600">Verifying your email, please wait...</p>
+          <div className="space-y-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto"></div>
+            <p className="text-gray-600">Verifying your email, please wait...</p>
+          </div>
         )}
 
         {isSuccess && (
-          <div>
-            <p className="text-green-600">Email verified successfully!</p>
-            <Link href="/">Click Here</Link> to go to the homepage.
+          <div className="space-y-4">
+            <div className="text-green-600 text-6xl mb-4">✓</div>
+            <p className="text-green-600 font-semibold">Email verified successfully!</p>
+            <p className="text-gray-600">Redirecting you to the feed...</p>
+            <Button asChild className="bg-black hover:bg-neutral-800 text-white font-bold py-2 rounded-full transition-all">
+              <Link href="/">Go to Feed Now</Link>
+            </Button>
           </div>
         )}
 
         {isError && (
-          <div>
-            <p className="text-red-600">
-              Failed to verify email. The token might be invalid or expired.
+          <div className="space-y-4">
+            <div className="text-red-600 text-6xl mb-4">✗</div>
+            <p className="text-red-600 font-semibold">
+              Failed to verify email
             </p>
-            <Button asChild className="mt-4 bg-black hover:bg-neutral-800 text-white font-bold py-2 rounded-full transition-all">
-              <Link href="/auth/signup">Go to Signup</Link>
-            </Button>
+            <p className="text-gray-600 text-sm">
+              The verification link might be invalid or expired.
+            </p>
+
+            {user && (
+              <div className="space-y-3">
+                <Button
+                  onClick={handleResendEmail}
+                  disabled={isResending}
+                  className="w-full bg-black hover:bg-neutral-800 text-white font-bold py-2 rounded-full transition-all"
+                >
+                  {isResending ? "Sending..." : "Resend Verification Email"}
+                </Button>
+                <Button asChild variant="outline" className="w-full">
+                  <Link href="/">Continue to Feed</Link>
+                </Button>
+              </div>
+            )}
+
+            {!user && (
+              <Button asChild className="bg-black hover:bg-neutral-800 text-white font-bold py-2 rounded-full transition-all">
+                <Link href="/auth/login">Go to Login</Link>
+              </Button>
+            )}
           </div>
         )}
 
         {!token && !isPending && (
-          <div>
-            <p className="text-gray-600">
-              No verification token found. Please check the link in your email.
+          <div className="space-y-4">
+            <div className="text-yellow-600 text-6xl mb-4">⚠</div>
+            <p className="text-gray-600 font-semibold">
+              No verification token found
             </p>
-            <Button asChild className="mt-4 bg-black hover:bg-neutral-800 text-white font-bold py-2 rounded-full transition-all">
-              <Link href="/">Go to Homepage</Link>
-            </Button>
+            <p className="text-gray-600 text-sm">
+              Please check the verification link in your email.
+            </p>
+
+            {user && (
+              <div className="space-y-3">
+                <Button
+                  onClick={handleResendEmail}
+                  disabled={isResending}
+                  className="w-full bg-black hover:bg-neutral-800 text-white font-bold py-2 rounded-full transition-all"
+                >
+                  {isResending ? "Sending..." : "Resend Verification Email"}
+                </Button>
+                <Button asChild variant="outline" className="w-full">
+                  <Link href="/">Continue to Feed</Link>
+                </Button>
+              </div>
+            )}
+
+            {!user && (
+              <Button asChild className="bg-black hover:bg-neutral-800 text-white font-bold py-2 rounded-full transition-all">
+                <Link href="/">Go to Homepage</Link>
+              </Button>
+            )}
           </div>
         )}
       </div>
@@ -71,7 +167,11 @@ function VerifyEmailComponent() {
 
 export default function VerifyEmailPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
+      </div>
+    }>
       <VerifyEmailComponent />
     </Suspense>
   )
