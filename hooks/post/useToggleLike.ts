@@ -5,7 +5,7 @@ import { Post } from "@/src/types";
 import { toast } from "sonner";
 
 interface ToggleLikeVariables {
-    postId: string;
+    post_id: string;
     is_liked: boolean;
     screen: string;
 }
@@ -14,22 +14,22 @@ export function useToggleLike() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ postId, is_liked }: ToggleLikeVariables) => {
+        mutationFn: async ({ post_id, is_liked }: ToggleLikeVariables) => {
             if (is_liked) {
-                const response = await api.delete(`/like/${postId}`);
+                const response = await api.delete(`/like/${post_id}`);
                 if (!response.data.success) {
                     throw new Error(response.data.message || "Failed to unlike post");
                 }
                 return response.data;
             } else {
-                const response = await api.post('/like', { post_id: postId });
+                const response = await api.post('/like', { post_id });
                 if (!response.data.success) {
                     throw new Error(response.data.message || "Failed to like post");
                 }
                 return response.data;
             }
         },
-        onMutate: async ({ postId, is_liked, screen }) => {
+        onMutate: async ({ post_id, is_liked, screen }) => {
             // Cancel any outgoing refetches
             await queryClient.cancelQueries({ queryKey: [screen] });
             await queryClient.cancelQueries({ queryKey: ["infinite-feed"] });
@@ -44,7 +44,7 @@ export function useToggleLike() {
                 return {
                     ...old,
                     data: old.data.map((post) =>
-                        post.id === postId
+                        post.id === post_id
                             ? {
                                 ...post,
                                 is_liked: !is_liked,
@@ -65,7 +65,7 @@ export function useToggleLike() {
                     pages: old.pages.map((page: any) => ({
                         ...page,
                         data: page.data.map((post: Post) =>
-                            post.id === postId
+                            post.id === post_id
                                 ? {
                                     ...post,
                                     is_liked: !is_liked,

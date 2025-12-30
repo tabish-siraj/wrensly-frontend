@@ -10,6 +10,7 @@ import { PostHeader } from "./PostHeader";
 import { ParentPostCard } from "./ParentPostCard";
 import { PostActions } from "./PostActions";
 import { CommentComposer } from "@/components/input/CommentComposer";
+import { CommentThread } from "@/components/comment/CommentThread";
 import useUserStore from "@/src/stores/userStore";
 import { useCreateComment } from "@/hooks/comment/useCreateComment";
 import { toast } from "sonner";
@@ -21,9 +22,7 @@ interface PostCardProps {
 }
 
 export function PostCard({ screen, post }: PostCardProps) {
-  const [isCommenting, setIsCommenting] = useState(false);
   const { user } = useUserStore();
-  const postMutation = useCreateComment({ screen });
 
   // Safety checks
   if (!post) {
@@ -38,33 +37,6 @@ export function PostCard({ screen, post }: PostCardProps) {
 
   // Additional safety checks for parent post
   const safeParent = post.parent && post.parent.user ? post.parent : null;
-
-  const handleCommentClick = () => {
-    setIsCommenting(!isCommenting);
-  };
-
-  const handleSubmitComment = (content: string) => {
-    if (!user) {
-      toast.error("You must be logged in to comment.");
-      return;
-    }
-    postMutation.mutate(
-      {
-        content: content.trim(),
-        post_id: post.id,
-      },
-      {
-        onSuccess: () => {
-          toast.success("Your comment has been posted.");
-          setIsCommenting(false);
-        },
-        onError: (error) => {
-          toast.error("Failed to post your comment.");
-          console.error(error);
-        },
-      }
-    );
-  };
 
   try {
     // Handle repost display (Twitter-like behavior)
@@ -128,18 +100,10 @@ export function PostCard({ screen, post }: PostCardProps) {
           </div>
         </CardContent>
 
-        <PostActions screen={screen} post={post} onCommentClick={handleCommentClick} />
+        <PostActions screen={screen} post={post} onCommentClick={() => { }} />
 
-        {/* Comment composer */}
-        {isCommenting && user && (
-          <CommentComposer
-            user={user}
-            placeholder={`Replying to @${post.user.username}`}
-            onSubmit={handleSubmitComment}
-            screen={screen}
-            post={post}
-          />
-        )}
+        {/* Comment Thread - replaces old comment composer */}
+        <CommentThread post={post} screen={screen} />
       </Card>
     );
   } catch (error) {

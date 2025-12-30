@@ -20,7 +20,7 @@ export function Bookmark({ screen, post }: BookmarkProps) {
     toggleBookmark.mutate(
       {
         screen: screen,
-        postId: post.id,
+        post_id: post.id,
         is_bookmarked: post.is_bookmarked,
       },
       {

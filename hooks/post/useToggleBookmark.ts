@@ -4,7 +4,7 @@ import api from "@/lib/api";
 import { Post } from "@/src/types";
 
 interface ToggleBookmarkVariables {
-    postId: string;
+    post_id: string;
     is_bookmarked: boolean;
     screen: string;
 }
@@ -13,22 +13,22 @@ export function useToggleBookmark() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ postId, is_bookmarked }: ToggleBookmarkVariables) => {
+        mutationFn: async ({ post_id, is_bookmarked }: ToggleBookmarkVariables) => {
             if (is_bookmarked) {
-                const response = await api.delete(`/bookmark/${postId}`);
+                const response = await api.delete(`/bookmark/${post_id}`);
                 if (!response.data.success) {
                     throw new Error(response.data.message || "Failed to remove bookmark");
                 }
                 return response.data;
             } else {
-                const response = await api.post('/bookmark', { post_id: postId });
+                const response = await api.post('/bookmark', { post_id });
                 if (!response.data.success) {
                     throw new Error(response.data.message || "Failed to bookmark post");
                 }
                 return response.data;
             }
         },
-        onMutate: async ({ postId, is_bookmarked, screen }) => {
+        onMutate: async ({ post_id, is_bookmarked, screen }) => {
             const queryKey = [screen];
             await queryClient.cancelQueries({ queryKey });
 
@@ -39,7 +39,7 @@ export function useToggleBookmark() {
                 return {
                     ...old,
                     data: old.data.map((post) =>
-                        post.id === postId
+                        post.id === post_id
                             ? {
                                 ...post,
                                 is_bookmarked: !is_bookmarked,

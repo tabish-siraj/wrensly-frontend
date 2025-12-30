@@ -51,13 +51,13 @@ export function useInfiniteFeed() {
     });
 }
 
-export function useInfiniteUserPosts(userId: string) {
+export function useInfiniteUserPosts(user_id: string) {
     return useInfiniteQuery({
-        queryKey: ["infinite-user-posts", userId],
+        queryKey: ["infinite-user-posts", user_id],
         queryFn: async ({ pageParam }: { pageParam?: string }) => {
             const url = pageParam
-                ? `/post/user/${userId}?cursor=${pageParam}&limit=10`
-                : `/post/user/${userId}?limit=10`;
+                ? `/post/user/${user_id}?cursor=${pageParam}&limit=10`
+                : `/post/user/${user_id}?limit=10`;
 
             const resp = await api.get(url);
 
@@ -78,7 +78,7 @@ export function useInfiniteUserPosts(userId: string) {
                 : undefined;
         },
         initialPageParam: undefined as string | undefined,
-        enabled: !!userId,
+        enabled: !!user_id,
         retry: 3,
         staleTime: 2 * 60 * 1000,
     });

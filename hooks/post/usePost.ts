@@ -36,11 +36,11 @@ export function usePost() {
     };
 }
 
-export function usePostByID(postID: string) {
+export function usePostByID(post_id: string) {
     const { data: postResponse, isLoading: loading, isError: error } = useQuery({
-        queryKey: ["post", postID],
+        queryKey: ["post", post_id],
         queryFn: async () => {
-            const resp = await api.get(`/post/${postID}`);
+            const resp = await api.get(`/post/${post_id}`);
 
             if (!resp.data.success) {
                 throw new Error(resp.data.message || "Failed to fetch post");
@@ -51,7 +51,7 @@ export function usePostByID(postID: string) {
                 meta: resp.data.meta
             };
         },
-        enabled: !!postID,
+        enabled: !!post_id,
     });
 
     return {
@@ -62,11 +62,11 @@ export function usePostByID(postID: string) {
     };
 }
 
-export function usePostByUserID(userID: string) {
+export function usePostByUserID(user_id: string) {
     const { data: postsResponse, isLoading: loading, isError: error } = useQuery({
-        queryKey: ["posts", userID],
+        queryKey: ["posts", user_id],
         queryFn: async () => {
-            const response = await api.get(`/post/user/${userID}`);
+            const response = await api.get(`/post/user/${user_id}`);
 
             if (!response.data.success) {
                 throw new Error(response.data.message || "Failed to fetch user posts");
@@ -83,7 +83,7 @@ export function usePostByUserID(userID: string) {
                 data: uniquePosts
             };
         },
-        enabled: !!userID,
+        enabled: !!user_id,
     });
 
     return {
@@ -97,16 +97,16 @@ export function usePostByUserID(userID: string) {
 export function usePostByUsername(username: string) {
     // First get the user data to get the user ID
     const { user: userData } = useUserByUsername(username);
-    const userId = userData?.id;
+    const user_id = userData?.id;
 
     const { data: postsResponse, isLoading: loading, isError: error } = useQuery({
-        queryKey: ["posts", "user", userId],
+        queryKey: ["posts", "user", user_id],
         queryFn: async () => {
-            if (!userId) {
+            if (!user_id) {
                 throw new Error("User ID not available");
             }
 
-            const response = await api.get(`/post/user/${userId}`);
+            const response = await api.get(`/post/user/${user_id}`);
 
             if (!response.data.success) {
                 throw new Error(response.data.message || "Failed to fetch user posts");
@@ -123,12 +123,12 @@ export function usePostByUsername(username: string) {
                 data: uniquePosts
             };
         },
-        enabled: !!userId, // Only run when we have a user ID
+        enabled: !!user_id, // Only run when we have a user ID
     });
 
     return {
         posts: postsResponse || { data: [] },
-        loading: loading || !userId, // Show loading while getting user ID too
+        loading: loading || !user_id, // Show loading while getting user ID too
         error,
         meta: postsResponse?.meta
     };
@@ -166,8 +166,8 @@ export function useCommentMutation() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ postId, content }: { postId: string; content: string }) => {
-            const response = await api.post(`/post/${postId}/comment`, { content });
+        mutationFn: async ({ post_id, content }: { post_id: string; content: string }) => {
+            const response = await api.post(`/post/${post_id}/comment`, { content });
 
             if (!response.data.success) {
                 throw new Error(response.data.message || "Failed to create comment");
@@ -187,8 +187,8 @@ export function useQuoteMutation() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ postId, content }: { postId: string; content: string }) => {
-            const response = await api.post(`/post/${postId}/quote`, { content });
+        mutationFn: async ({ post_id, content }: { post_id: string; content: string }) => {
+            const response = await api.post(`/post/${post_id}/quote`, { content });
 
             if (!response.data.success) {
                 throw new Error(response.data.message || "Failed to create quote");
@@ -208,8 +208,8 @@ export function useRepostMutation() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async (postId: string) => {
-            const response = await api.post(`/post/${postId}/repost`, {});
+        mutationFn: async (post_id: string) => {
+            const response = await api.post(`/post/${post_id}/repost`, {});
 
             if (!response.data.success) {
                 throw new Error(response.data.message || "Failed to repost");

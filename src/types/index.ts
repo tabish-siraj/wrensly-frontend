@@ -49,6 +49,7 @@ export interface Post {
     user: Pick<User, "id" | "username" | "first_name" | "last_name" | "avatar">;
     reposted_at: string;
   };
+  replies?: Post[]; // For nested comments/replies
 }
 
 export interface Posts {

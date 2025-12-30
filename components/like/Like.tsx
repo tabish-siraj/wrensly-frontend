@@ -20,7 +20,7 @@ export function Like({ screen, post }: LikeProps) {
         toggleLike.mutate(
             {
                 screen: screen,
-                postId: post.id,
+                post_id: post.id,
                 is_liked: post.is_liked,
             },
             {
