@@ -25,7 +25,9 @@ interface RepostProps {
 
 export function Repost({ screen, post }: RepostProps) {
   const [showQuoteComposer, setShowQuoteComposer] = useState(false);
-  const { mutate: createRepost } = useCreateRepost({ screen });
+  const [isReposted, setIsReposted] = useState(post.is_reposted);
+  const [repostCount, setRepostCount] = useState(post.stats.reposts);
+  const { mutate: createRepost, isPending } = useCreateRepost({ screen });
   const { mutate: createQuote } = useCreateQuote({ screen });
   const { user } = useUserStore();
 
@@ -34,14 +36,24 @@ export function Repost({ screen, post }: RepostProps) {
   };
 
   const handleRepost = () => {
+    // Optimistic update
+    const wasReposted = isReposted;
+    const previousCount = repostCount;
+
+    setIsReposted(!wasReposted);
+    setRepostCount(wasReposted ? previousCount - 1 : previousCount + 1);
+
     createRepost(
       { parent_id: post.id },
       {
         onSuccess: () => {
-          toast.success("Reposted!");
+          toast.success(wasReposted ? "Repost undone!" : "Reposted!");
         },
         onError: () => {
-          toast.error("Failed to repost.");
+          // Rollback optimistic update
+          setIsReposted(wasReposted);
+          setRepostCount(previousCount);
+          toast.error("Failed to update repost.");
         }
       }
     );
@@ -55,18 +67,23 @@ export function Repost({ screen, post }: RepostProps) {
             variant="ghost"
             size="sm"
             className="flex items-center gap-1 text-gray-500 hover:text-green-600 hover:bg-green-50 transition-colors"
+            disabled={isPending}
           >
             <RepeatIcon
-              className={`w-4 h-4 ${post.is_reposted ? "text-green-500" : "text-gray-500"}`}
+              className={`w-4 h-4 ${isReposted ? "text-green-500" : "text-gray-500"}`}
             />
-            <span className="text-sm text-gray-700">{post.stats.reposts}</span>
+            <span className="text-sm text-gray-700">{repostCount}</span>
           </Button>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="start" sideOffset={4}>
-          <DropdownMenuItem onClick={handleRepost} className="flex items-center gap-2">
+          <DropdownMenuItem
+            onClick={handleRepost}
+            className="flex items-center gap-2"
+            disabled={isPending}
+          >
             <RepeatIcon className="w-4 h-4 text-green-600" />
-            Repost
+            {isReposted ? "Undo Repost" : "Repost"}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleQuote} className="flex items-center gap-2">
             <MessageSquare className="w-4 h-4 text-blue-600" />
