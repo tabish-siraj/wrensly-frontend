@@ -57,14 +57,16 @@ export function CommentComposer({
     };
 
     return (
-        <div className="border-b border-gray-200 p-4 mb-4">
+        <div className="w-full">
             <div className="flex space-x-3">
-                <Avatar className="w-12 h-12">
+                <Avatar className="w-10 h-10 flex-shrink-0">
                     <AvatarImage
                         src={user.avatar || "/placeholder.svg"}
                         alt={user.username}
                     />
-                    <AvatarFallback>{user?.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
+                    <AvatarFallback className="bg-gray-100 text-gray-600">
+                        {user?.username?.[0]?.toUpperCase() || 'U'}
+                    </AvatarFallback>
                 </Avatar>
 
                 <div className="flex-1">
@@ -72,45 +74,31 @@ export function CommentComposer({
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         placeholder={placeholder}
-                        className="min-h-[120px] text-xl border-none resize-none focus:ring-0"
+                        className="min-h-[80px] text-base border-gray-200 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent rounded-lg"
                         maxLength={maxLength}
                     />
 
-                    <div className="flex items-center justify-between mt-4">
-                        <div className="flex items-center space-x-4">
+                    <div className="flex items-center justify-between mt-3">
+                        <div className="flex items-center space-x-2">
                             <Button
                                 variant="ghost"
-                                size="icon"
-                                className="text-blue-500 hover:bg-blue-50"
+                                size="sm"
+                                className="text-blue-500 hover:bg-blue-50 h-8 w-8 p-0 rounded-full"
                             >
-                                <ImageIcon className="w-5 h-5" />
+                                <ImageIcon className="w-4 h-4" />
                             </Button>
                             <Button
                                 variant="ghost"
-                                size="icon"
-                                className="text-blue-500 hover:bg-blue-50"
+                                size="sm"
+                                className="text-blue-500 hover:bg-blue-50 h-8 w-8 p-0 rounded-full"
                             >
-                                <Smile className="w-5 h-5" />
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="text-blue-500 hover:bg-blue-50"
-                            >
-                                <Calendar className="w-5 h-5" />
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="text-blue-500 hover:bg-blue-50"
-                            >
-                                <MapPin className="w-5 h-5" />
+                                <Smile className="w-4 h-4" />
                             </Button>
                         </div>
 
                         <div className="flex items-center space-x-3">
                             <span
-                                className={`text-sm ${content.length > maxLength * 0.9
+                                className={`text-sm font-medium ${content.length > maxLength * 0.9
                                     ? "text-red-500"
                                     : "text-gray-500"
                                     }`}
@@ -119,10 +107,10 @@ export function CommentComposer({
                             </span>
                             <Button
                                 onClick={handleSubmit}
-                                disabled={!content.trim()}
-                                className="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6"
+                                disabled={!content.trim() || postMutation.isPending}
+                                className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white rounded-full px-6 h-9 font-medium transition-colors"
                             >
-                                Post
+                                {postMutation.isPending ? "Posting..." : "Post"}
                             </Button>
                         </div>
                     </div>

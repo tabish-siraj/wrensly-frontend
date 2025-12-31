@@ -22,6 +22,9 @@ export function useCreateComment({ screen, root_post_id }: { screen: string; roo
             // Invalidate specific comments query if we have the root post ID
             if (root_post_id) {
                 queryClient.invalidateQueries({ queryKey: ["comments", root_post_id] });
+                queryClient.invalidateQueries({ queryKey: ["post", root_post_id] });
+                // Force refetch to ensure immediate update
+                queryClient.refetchQueries({ queryKey: ["comments", root_post_id] });
             }
         },
         onError: (error) => {

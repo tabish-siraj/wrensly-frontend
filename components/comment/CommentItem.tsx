@@ -87,15 +87,15 @@ export function CommentItem({ comment, screen, root_post, is_reply = false }: Co
     const has_replies = reply_count > 0;
 
     return (
-        <div className={`${is_reply ? 'ml-12 border-l-2 border-gray-100 pl-4' : 'px-4'} py-3`}>
+        <div className={`group ${is_reply ? 'ml-6 border-l border-gray-200 pl-4' : ''} py-3 hover:bg-gray-50/50 transition-colors`}>
             <div className="flex gap-3">
                 {/* Avatar */}
-                <Avatar className="w-8 h-8 flex-shrink-0">
+                <Avatar className="w-10 h-10 flex-shrink-0">
                     <AvatarImage
                         src={comment.user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(comment.user.username)}`}
                         alt={comment.user.username}
                     />
-                    <AvatarFallback>
+                    <AvatarFallback className="bg-gray-100 text-gray-600">
                         {comment.user.username?.[0]?.toUpperCase() || 'U'}
                     </AvatarFallback>
                 </Avatar>
@@ -103,15 +103,17 @@ export function CommentItem({ comment, screen, root_post, is_reply = false }: Co
                 <div className="flex-1 min-w-0">
                     {/* Comment Header */}
                     <div className="flex items-center justify-between mb-1">
-                        <div className="flex items-center gap-2">
-                            <span className="font-semibold text-sm text-gray-900">
+                        <div className="flex items-center gap-1 flex-wrap">
+                            <span className="font-semibold text-gray-900 hover:underline cursor-pointer text-sm">
                                 {comment.user.first_name && comment.user.last_name
                                     ? `${comment.user.first_name} ${comment.user.last_name}`
                                     : comment.user.username}
                             </span>
-                            <span className="text-gray-500 text-sm">@{comment.user.username}</span>
-                            <span className="text-gray-400 text-xs">·</span>
-                            <span className="text-gray-400 text-xs">
+                            <span className="text-gray-500 text-sm hover:underline cursor-pointer">
+                                @{comment.user.username}
+                            </span>
+                            <span className="text-gray-400 text-sm">·</span>
+                            <span className="text-gray-500 text-sm hover:underline cursor-pointer">
                                 {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
                             </span>
                         </div>
@@ -120,36 +122,36 @@ export function CommentItem({ comment, screen, root_post, is_reply = false }: Co
                                 variant="ghost"
                                 size="sm"
                                 onClick={handleDeleteClick}
-                                className="text-gray-400 hover:text-red-500 h-6 w-6 p-0"
+                                className="text-gray-400 hover:text-red-500 hover:bg-red-50 h-7 w-7 p-0 rounded-full transition-colors opacity-0 group-hover:opacity-100"
                                 title={`Delete ${is_reply ? 'reply' : 'comment'}`}
                             >
-                                <Trash2 className="w-3 h-3" />
+                                <Trash2 className="w-3.5 h-3.5" />
                             </Button>
                         )}
                     </div>
 
                     {/* Comment Content */}
-                    <div className="text-gray-800 text-sm mb-2">
+                    <div className="text-gray-800 mb-2 leading-relaxed text-sm">
                         <HashtagText content={comment.content} />
                     </div>
 
                     {/* Comment Actions */}
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 -ml-2">
                         <Button
                             variant="ghost"
                             size="sm"
                             onClick={handleLike}
                             disabled={isLiking}
-                            className={`flex items-center gap-1 text-xs h-7 px-2 ${comment.is_liked
-                                ? 'text-red-500 hover:text-red-600'
-                                : 'text-gray-500 hover:text-red-500'
+                            className={`flex items-center gap-1 text-xs h-7 px-2 rounded-full transition-all ${comment.is_liked
+                                ? 'text-red-500 hover:text-red-600 hover:bg-red-50'
+                                : 'text-gray-500 hover:text-red-500 hover:bg-red-50'
                                 }`}
                         >
                             <Heart
-                                className={`w-3 h-3 ${comment.is_liked ? 'fill-current' : ''}`}
+                                className={`w-3.5 h-3.5 ${comment.is_liked ? 'fill-current' : ''}`}
                             />
                             {comment.stats.likes > 0 && (
-                                <span>{comment.stats.likes}</span>
+                                <span className="font-medium">{comment.stats.likes}</span>
                             )}
                         </Button>
 
@@ -158,10 +160,11 @@ export function CommentItem({ comment, screen, root_post, is_reply = false }: Co
                                 variant="ghost"
                                 size="sm"
                                 onClick={handleReply}
-                                className="flex items-center gap-1 text-xs h-7 px-2 text-gray-500 hover:text-blue-500"
+                                disabled={isCreatingReply}
+                                className="flex items-center gap-1 text-xs h-7 px-2 rounded-full text-gray-500 hover:text-blue-500 hover:bg-blue-50 transition-all disabled:opacity-50"
                             >
-                                <MessageCircle className="w-3 h-3" />
-                                Reply
+                                <MessageCircle className="w-3.5 h-3.5" />
+                                <span>{isCreatingReply ? 'Posting...' : 'Reply'}</span>
                             </Button>
                         )}
 
@@ -170,7 +173,7 @@ export function CommentItem({ comment, screen, root_post, is_reply = false }: Co
                                 variant="ghost"
                                 size="sm"
                                 onClick={handleToggleReplies}
-                                className="text-xs h-7 px-2 text-blue-600 hover:text-blue-700"
+                                className="text-xs h-7 px-2 rounded-full text-blue-600 hover:text-blue-700 hover:bg-blue-50 font-medium transition-all"
                             >
                                 {show_replies ? 'Hide' : 'Show'} {reply_count} {reply_count === 1 ? 'reply' : 'replies'}
                             </Button>
@@ -179,37 +182,39 @@ export function CommentItem({ comment, screen, root_post, is_reply = false }: Co
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="text-gray-400 hover:text-gray-600 h-7 w-7 p-0"
+                            className="text-gray-400 hover:text-gray-600 hover:bg-gray-50 h-7 w-7 p-0 rounded-full transition-colors"
                         >
-                            <MoreHorizontal className="w-3 h-3" />
+                            <MoreHorizontal className="w-3.5 h-3.5" />
                         </Button>
                     </div>
 
                     {/* Reply Composer */}
                     {show_reply_composer && user && (
-                        <div className="mt-3">
-                            <CommentComposer
-                                user={{
-                                    username: user.username,
-                                    avatar: user.avatar,
-                                }}
-                                post={comment} // Reply to this comment
-                                screen={screen}
-                                root_post_id={root_post.id} // Pass the root post ID for cache invalidation
-                                placeholder={`Reply to ${comment.user.first_name || comment.user.username}...`}
-                                onSubmit={(content) => {
-                                    createReply({
-                                        content,
-                                        parent_comment_id: comment.id
-                                    });
-                                }}
-                            />
+                        <div className="mt-3 animate-in slide-in-from-top-2 duration-200">
+                            <div className="p-3 bg-gray-50 rounded-xl border border-gray-200">
+                                <CommentComposer
+                                    user={{
+                                        username: user.username,
+                                        avatar: user.avatar,
+                                    }}
+                                    post={comment} // Reply to this comment
+                                    screen={screen}
+                                    root_post_id={root_post.id} // Pass the root post ID for cache invalidation
+                                    placeholder={`Reply to ${comment.user.first_name || comment.user.username}...`}
+                                    onSubmit={(content) => {
+                                        createReply({
+                                            content,
+                                            parent_comment_id: comment.id
+                                        });
+                                    }}
+                                />
+                            </div>
                         </div>
                     )}
 
                     {/* Nested Replies */}
                     {show_replies && has_replies && (
-                        <div className="mt-3 space-y-2">
+                        <div className="mt-3 animate-in slide-in-from-top-2 duration-200">
                             {comment.replies?.map((reply) => (
                                 <CommentItem
                                     key={reply.id}

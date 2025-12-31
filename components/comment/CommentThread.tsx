@@ -20,7 +20,7 @@ export function CommentThread({ post, screen }: Comment_Thread_Props) {
         <div className="border-t border-gray-100">
             {/* Comment Composer - Always show when thread is visible */}
             {user && (
-                <div className="px-4 py-4 border-b border-gray-50">
+                <div className="p-4 bg-gray-50/50 border-b border-gray-100">
                     <CommentComposer
                         user={{
                             username: user.username,
@@ -36,28 +36,29 @@ export function CommentThread({ post, screen }: Comment_Thread_Props) {
             )}
 
             {/* Comments List */}
-            <div>
+            <div className="bg-white">
                 {loading ? (
-                    <div className="flex justify-center py-6">
-                        <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+                    <div className="flex justify-center py-8">
+                        <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
                     </div>
                 ) : error ? (
-                    <div className="px-4 py-6 text-center text-red-500 text-sm">
-                        Failed to load comments
+                    <div className="px-6 py-8 text-center text-red-500">
+                        Failed to load comments. Please try again.
                     </div>
                 ) : comments.length === 0 ? (
-                    <div className="px-4 py-6 text-center text-gray-500 text-sm">
+                    <div className="px-6 py-8 text-center text-gray-500">
                         No comments yet. Be the first to comment!
                     </div>
                 ) : (
-                    <div className="divide-y divide-gray-50">
+                    <div className="divide-y divide-gray-100">
                         {comments.map((comment) => (
-                            <CommentItem
-                                key={comment.id}
-                                comment={comment}
-                                screen={screen}
-                                root_post={post}
-                            />
+                            <div key={comment.id} className="px-4">
+                                <CommentItem
+                                    comment={comment}
+                                    screen={screen}
+                                    root_post={post}
+                                />
+                            </div>
                         ))}
                     </div>
                 )}
