@@ -7,8 +7,8 @@ import React from 'react';
 export const extractHashtags = (content: string): string[] => {
     if (!content) return [];
 
-    // Regex to match hashtags: # followed by alphanumeric characters and underscores
-    const hashtagRegex = /#[a-zA-Z0-9_]+/g;
+    // Regex to match hashtags: # followed by alphanumeric characters, underscores, and hyphens
+    const hashtagRegex = /#[a-zA-Z0-9_-]+/g;
     const matches = content.match(hashtagRegex);
 
     if (!matches) return [];
@@ -32,7 +32,7 @@ export const renderContentWithHashtags = (
     if (!content) return null;
 
     // Split content by hashtags while preserving them
-    const parts = content.split(/(#[a-zA-Z0-9_]+)/g);
+    const parts = content.split(/(#[a-zA-Z0-9_-]+)/g);
 
     return parts.map((part, index) => {
         if (part.startsWith('#')) {
@@ -61,8 +61,8 @@ export const isValidHashtag = (hashtag: string): boolean => {
     if (!hashtag || hashtag.length === 0) return false;
     if (hashtag.length > 50) return false;
 
-    // Only allow alphanumeric characters and underscores
-    const validPattern = /^[a-zA-Z0-9_]+$/;
+    // Only allow alphanumeric characters, underscores, and hyphens
+    const validPattern = /^[a-zA-Z0-9_-]+$/;
     return validPattern.test(hashtag);
 };
 
