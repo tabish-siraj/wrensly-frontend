@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Post } from "@/src/types";
 import { CommentItem } from "./CommentItem";
 import { CommentComposer } from "@/components/input/CommentComposer";
@@ -8,12 +7,12 @@ import { usePostComments } from "@/hooks/comment/usePostComments";
 import { Loader2 } from "lucide-react";
 import useUserStore from "@/src/stores/userStore";
 
-interface CommentThreadProps {
+interface Comment_Thread_Props {
     post: Post;
     screen: string;
 }
 
-export function CommentThread({ post, screen }: CommentThreadProps) {
+export function CommentThread({ post, screen }: Comment_Thread_Props) {
     const { user } = useUserStore();
     const { comments, loading, error } = usePostComments(post.id);
 
@@ -56,7 +55,7 @@ export function CommentThread({ post, screen }: CommentThreadProps) {
                                 key={comment.id}
                                 comment={comment}
                                 screen={screen}
-                                rootPost={post}
+                                root_post={post}
                             />
                         ))}
                     </div>

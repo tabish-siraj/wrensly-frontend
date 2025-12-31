@@ -15,7 +15,9 @@ export const removeEmptyFields = <T extends Record<string, unknown>>(obj: T): Pa
 
 export function normalizePost(post: Post): Post {
   return {
-    ...post
+    ...post,
+    // Recursively normalize replies if they exist
+    replies: post.replies ? post.replies.map(normalizePost) : undefined,
   };
 }
 

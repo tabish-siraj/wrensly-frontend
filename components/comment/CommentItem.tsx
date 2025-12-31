@@ -17,20 +17,20 @@ import { formatDistanceToNow } from "date-fns";
 interface CommentItemProps {
     comment: Post;
     screen: string;
-    rootPost: Post;
-    isReply?: boolean;
+    root_post: Post;
+    is_reply?: boolean;
 }
 
-export function CommentItem({ comment, screen, rootPost, isReply = false }: CommentItemProps) {
-    const [showReplyComposer, setShowReplyComposer] = useState(false);
-    const [showReplies, setShowReplies] = useState(false);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
+export function CommentItem({ comment, screen, root_post, is_reply = false }: CommentItemProps) {
+    const [show_reply_composer, setShowReplyComposer] = useState(false);
+    const [show_replies, setShowReplies] = useState(false);
+    const [show_delete_modal, setShowDeleteModal] = useState(false);
     const { user } = useUserStore();
     const { mutate: toggleLike, isPending: isLiking } = useToggleLike();
     const { mutate: deletePost, isPending: isDeleting } = useDeletePost({ screen });
 
     // Check if current user owns this comment
-    const isOwner = user && comment.user.id === user.id;
+    const is_owner = user && comment.user.id === user.id;
 
     const handleLike = () => {
         if (!user) {
@@ -50,11 +50,11 @@ export function CommentItem({ comment, screen, rootPost, isReply = false }: Comm
             toast.error("Please log in to reply");
             return;
         }
-        setShowReplyComposer(!showReplyComposer);
+        setShowReplyComposer(!show_reply_composer);
     };
 
     const handleToggleReplies = () => {
-        setShowReplies(!showReplies);
+        setShowReplies(!show_replies);
     };
 
     const handleDeleteClick = () => {
@@ -66,22 +66,22 @@ export function CommentItem({ comment, screen, rootPost, isReply = false }: Comm
             { post_id: comment.id },
             {
                 onSuccess: () => {
-                    toast.success(`${isReply ? 'Reply' : 'Comment'} deleted successfully`);
+                    toast.success(`${is_reply ? 'Reply' : 'Comment'} deleted successfully`);
                     setShowDeleteModal(false);
                 },
                 onError: (error: any) => {
-                    toast.error(error.message || `Failed to delete ${isReply ? 'reply' : 'comment'}`);
+                    toast.error(error.message || `Failed to delete ${is_reply ? 'reply' : 'comment'}`);
                     setShowDeleteModal(false);
                 },
             }
         );
     };
 
-    const replyCount = comment.replies?.length || 0;
-    const hasReplies = replyCount > 0;
+    const reply_count = comment.replies?.length || 0;
+    const has_replies = reply_count > 0;
 
     return (
-        <div className={`${isReply ? 'ml-12 border-l-2 border-gray-100 pl-4' : 'px-4'} py-3`}>
+        <div className={`${is_reply ? 'ml-12 border-l-2 border-gray-100 pl-4' : 'px-4'} py-3`}>
             <div className="flex gap-3">
                 {/* Avatar */}
                 <Avatar className="w-8 h-8 flex-shrink-0">
@@ -109,13 +109,13 @@ export function CommentItem({ comment, screen, rootPost, isReply = false }: Comm
                                 {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
                             </span>
                         </div>
-                        {isOwner && (
+                        {is_owner && (
                             <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={handleDeleteClick}
                                 className="text-gray-400 hover:text-red-500 h-6 w-6 p-0"
-                                title={`Delete ${isReply ? 'reply' : 'comment'}`}
+                                title={`Delete ${is_reply ? 'reply' : 'comment'}`}
                             >
                                 <Trash2 className="w-3 h-3" />
                             </Button>
@@ -147,7 +147,7 @@ export function CommentItem({ comment, screen, rootPost, isReply = false }: Comm
                             )}
                         </Button>
 
-                        {!isReply && (
+                        {!is_reply && (
                             <Button
                                 variant="ghost"
                                 size="sm"
@@ -159,14 +159,14 @@ export function CommentItem({ comment, screen, rootPost, isReply = false }: Comm
                             </Button>
                         )}
 
-                        {hasReplies && !isReply && (
+                        {has_replies && !is_reply && (
                             <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={handleToggleReplies}
                                 className="text-xs h-7 px-2 text-blue-600 hover:text-blue-700"
                             >
-                                {showReplies ? 'Hide' : 'Show'} {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
+                                {show_replies ? 'Hide' : 'Show'} {reply_count} {reply_count === 1 ? 'reply' : 'replies'}
                             </Button>
                         )}
 
@@ -180,7 +180,7 @@ export function CommentItem({ comment, screen, rootPost, isReply = false }: Comm
                     </div>
 
                     {/* Reply Composer */}
-                    {showReplyComposer && user && (
+                    {show_reply_composer && user && (
                         <div className="mt-3">
                             <CommentComposer
                                 user={{
@@ -196,15 +196,15 @@ export function CommentItem({ comment, screen, rootPost, isReply = false }: Comm
                     )}
 
                     {/* Nested Replies */}
-                    {showReplies && hasReplies && (
+                    {show_replies && has_replies && (
                         <div className="mt-3 space-y-2">
                             {comment.replies?.map((reply) => (
                                 <CommentItem
                                     key={reply.id}
                                     comment={reply}
                                     screen={screen}
-                                    rootPost={rootPost}
-                                    isReply={true}
+                                    root_post={root_post}
+                                    is_reply={true}
                                 />
                             ))}
                         </div>
@@ -214,11 +214,11 @@ export function CommentItem({ comment, screen, rootPost, isReply = false }: Comm
 
             {/* Delete Confirmation Modal */}
             <DeleteConfirmationModal
-                isOpen={showDeleteModal}
+                isOpen={show_delete_modal}
                 onClose={() => setShowDeleteModal(false)}
                 onConfirm={handleDeleteConfirm}
                 isDeleting={isDeleting}
-                itemType={isReply ? "reply" : "comment"}
+                itemType={is_reply ? "reply" : "comment"}
                 itemContent={comment.content}
             />
         </div>

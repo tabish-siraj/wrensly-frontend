@@ -87,7 +87,7 @@ export function PostDetail({ screen, post }: PostDetailProps) {
 
             {/* Comments List - Always show */}
             <div className="mt-6">
-                <CommentList postId={post.id} />
+                <CommentList post_id={post.id} root_post={post} />
             </div>
         </div>
     );

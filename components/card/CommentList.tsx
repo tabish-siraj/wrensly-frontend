@@ -6,11 +6,12 @@ import { Post } from "@/src/types";
 import { Loader2 } from "lucide-react";
 
 interface CommentListProps {
-    postId: string;
+    post_id: string;
+    root_post: Post;
 }
 
-export function CommentList({ postId }: CommentListProps) {
-    const { comments, loading, error } = usePostComments(postId);
+export function CommentList({ post_id, root_post }: CommentListProps) {
+    const { comments, loading, error } = usePostComments(post_id);
 
     if (loading) {
         return (
@@ -47,7 +48,7 @@ export function CommentList({ postId }: CommentListProps) {
                         key={comment.id}
                         comment={comment}
                         screen="post-detail"
-                        rootPost={{ id: postId } as Post}
+                        root_post={root_post}
                     />
                 ))}
             </div>
