@@ -66,7 +66,7 @@ export function Repost({ screen, post }: RepostProps) {
           <Button
             variant="ghost"
             size="sm"
-            className="flex items-center gap-1 text-gray-500 hover:text-green-600 hover:bg-green-50 transition-colors"
+            className="flex items-center gap-1 text-gray-500 hover:text-green-600 hover:bg-transparent transition-colors"
             disabled={isPending}
           >
             <RepeatIcon

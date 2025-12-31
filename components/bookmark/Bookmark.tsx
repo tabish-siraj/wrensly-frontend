@@ -41,7 +41,7 @@ export function Bookmark({ screen, post }: BookmarkProps) {
       size="icon"
       onClick={() => handleBookmarkToggle()}
       disabled={toggleBookmark.isPending}
-      className="text-gray-500 hover:text-blue-500 transition-colors"
+      className="text-gray-500 hover:text-blue-500 hover:bg-transparent transition-colors"
     >
       <BookmarkIcon
         className={`${post.is_bookmarked ? "text-blue-500 fill-blue-500" : "text-gray-500"
