@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import { Post } from '@/src/types';
 import { POST_TYPE } from '@/src/constants';
@@ -27,6 +28,7 @@ interface PostCardProps {
 
 export function PostCard({ screen, post }: PostCardProps) {
   const { user } = useUserStore();
+  const router = useRouter();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const { mutate: deletePost, isPending: isDeleting } = useDeletePost({ screen });
@@ -116,9 +118,12 @@ export function PostCard({ screen, post }: PostCardProps) {
         <CardContent>
           {/* Show quote content if it's a quote */}
           {isQuote && post.content && (
-            <Link href={`/post/${post.id}`}>
+            <div
+              className="cursor-pointer"
+              onClick={() => router.push(`/post/${post.id}`)}
+            >
               <HashtagText content={post.content} className="text-gray-800 mb-4" />
-            </Link>
+            </div>
           )}
 
           {/* Show parent post for quotes */}
@@ -128,9 +133,12 @@ export function PostCard({ screen, post }: PostCardProps) {
 
           {/* Show regular content for normal posts and reposted posts */}
           {!isQuote && (
-            <Link href={`/post/${post.id}`}>
+            <div
+              className="cursor-pointer"
+              onClick={() => router.push(`/post/${post.id}`)}
+            >
               <HashtagText content={post.content} className="text-gray-800 mb-4" />
-            </Link>
+            </div>
           )}
 
           <div className="text-sm text-gray-500">

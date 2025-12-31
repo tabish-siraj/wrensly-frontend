@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Heart, MessageCircle, MoreHorizontal, Trash2 } from "lucide-react";
 import { CommentComposer } from "@/components/input/CommentComposer";
 import { DeleteConfirmationModal } from "@/components/modals/DeleteConfirmationModal";
+import { HashtagText } from "@/components/hashtag/HashtagText";
 import { useToggleLike } from "@/hooks/post/useToggleLike";
 import { useDeletePost } from "@/hooks/post/useCreatePost";
 import { toast } from "sonner";
@@ -122,8 +123,8 @@ export function CommentItem({ comment, screen, rootPost, isReply = false }: Comm
                     </div>
 
                     {/* Comment Content */}
-                    <div className="text-gray-800 text-sm mb-2 whitespace-pre-line">
-                        {comment.content}
+                    <div className="text-gray-800 text-sm mb-2">
+                        <HashtagText content={comment.content} />
                     </div>
 
                     {/* Comment Actions */}

@@ -43,6 +43,7 @@ export const renderContentWithHashtags = (
                     key: index,
                     className: 'text-blue-500 hover:text-blue-600 cursor-pointer font-medium',
                     onClick: (e: React.MouseEvent) => {
+                        e.preventDefault();
                         e.stopPropagation();
                         onHashtagClick?.(hashtag);
                     }
