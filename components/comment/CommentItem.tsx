@@ -87,10 +87,10 @@ export function CommentItem({ comment, screen, root_post, is_reply = false }: Co
     const has_replies = reply_count > 0;
 
     return (
-        <div className={`group ${is_reply ? 'ml-6 border-l border-gray-200 pl-4' : ''} py-3 hover:bg-gray-50/50 transition-colors`}>
+        <div className={`group ${is_reply ? 'ml-3 pl-3' : ''} py-3 hover:bg-gray-50/50 transition-colors`}>
             <div className="flex gap-3">
                 {/* Avatar */}
-                <Avatar className="w-10 h-10 flex-shrink-0">
+                <Avatar className={`${is_reply ? 'w-8 h-8' : 'w-10 h-10'} flex-shrink-0`}>
                     <AvatarImage
                         src={comment.user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(comment.user.username)}`}
                         alt={comment.user.username}
@@ -116,6 +116,12 @@ export function CommentItem({ comment, screen, root_post, is_reply = false }: Co
                             <span className="text-gray-500 text-sm hover:underline cursor-pointer">
                                 {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true })}
                             </span>
+                            {is_reply && (
+                                <>
+                                    <span className="text-gray-400 text-sm">·</span>
+                                    <span className="text-gray-500 text-sm">Reply</span>
+                                </>
+                            )}
                         </div>
                         {is_owner && (
                             <Button
@@ -214,7 +220,7 @@ export function CommentItem({ comment, screen, root_post, is_reply = false }: Co
 
                     {/* Nested Replies */}
                     {show_replies && has_replies && (
-                        <div className="mt-3 animate-in slide-in-from-top-2 duration-200">
+                        <div className="mt-3 animate-in slide-in-from-top-2 duration-200 space-y-1">
                             {comment.replies?.map((reply) => (
                                 <CommentItem
                                     key={reply.id}
