@@ -5,6 +5,7 @@ import { ParentPostCard } from "./ParentPostCard";
 import { PostActions } from "./PostActions";
 import { CommentList } from "./CommentList";
 import { CommentComposer } from "@/components/input/CommentComposer";
+import { HashtagText } from "@/components/hashtag/HashtagText";
 import useUserStore from "@/src/stores/userStore";
 import { useCreateComment } from "@/hooks/comment/useCreateComment";
 import { toast } from "sonner";
@@ -15,12 +16,12 @@ interface PostDetailProps {
 }
 
 export function PostDetail({ screen, post }: PostDetailProps) {
-    const [isCommenting, setIsCommenting] = useState(false);
+    const [showCommentComposer, setShowCommentComposer] = useState(false);
     const { user } = useUserStore();
     const postMutation = useCreateComment({ screen });
 
     const handleCommentClick = () => {
-        setIsCommenting(!isCommenting);
+        setShowCommentComposer(!showCommentComposer);
     };
 
     const handleSubmitComment = (content: string) => {
@@ -36,7 +37,7 @@ export function PostDetail({ screen, post }: PostDetailProps) {
             {
                 onSuccess: () => {
                     toast.success("Your comment has been posted.");
-                    setIsCommenting(false);
+                    setShowCommentComposer(false);
                 },
                 onError: (error) => {
                     toast.error("Failed to post your comment.");
@@ -45,6 +46,7 @@ export function PostDetail({ screen, post }: PostDetailProps) {
             }
         );
     };
+
     const postDate = new Date(post.created_at).toLocaleDateString('en-US', {
         year: 'numeric', month: 'long', day: 'numeric'
     });
@@ -57,7 +59,7 @@ export function PostDetail({ screen, post }: PostDetailProps) {
             <PostHeader user={post.user} />
 
             <div className="mb-4">
-                <p className="text-xl text-gray-800 whitespace-pre-wrap">{post.content}</p>
+                <HashtagText content={post.content} className="text-xl text-gray-800" />
             </div>
 
             {post?.parent && (
@@ -70,17 +72,23 @@ export function PostDetail({ screen, post }: PostDetailProps) {
 
             <PostActions screen={screen} post={post} onCommentClick={handleCommentClick} />
 
-            {isCommenting && user && (
-                <CommentComposer
-                    user={user}
-                    placeholder={`Replying to @${post.user.username}`}
-                    onSubmit={handleSubmitComment}
-                    screen={screen}
-                    post={post}
-                />
+            {/* Comment Composer - Always show if user is logged in */}
+            {user && (
+                <div className="mt-4 mb-6">
+                    <CommentComposer
+                        user={user}
+                        placeholder={`Reply to ${post.user.first_name || post.user.username}...`}
+                        onSubmit={handleSubmitComment}
+                        screen={screen}
+                        post={post}
+                    />
+                </div>
             )}
 
-            <CommentList postId={post.id} />
+            {/* Comments List - Always show */}
+            <div className="mt-6">
+                <CommentList postId={post.id} />
+            </div>
         </div>
     );
 }
