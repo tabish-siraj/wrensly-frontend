@@ -19,6 +19,7 @@ interface CommentComposerProps {
     onSubmit?: (content: string) => void;
     screen?: string;
     post: Post;
+    root_post_id?: string; // Add root post ID for proper cache invalidation
 }
 
 export function CommentComposer({
@@ -27,10 +28,11 @@ export function CommentComposer({
     onSubmit,
     screen = SCREEN.FEED,
     post,
+    root_post_id,
 }: CommentComposerProps) {
     const [content, setContent] = useState("");
     const maxLength = 500;
-    const postMutation = useCreateComment({ screen });
+    const postMutation = useCreateComment({ screen, root_post_id });
 
     const handleSubmit = () => {
         if (content.trim() !== "") {
@@ -40,8 +42,15 @@ export function CommentComposer({
                 postMutation.mutate({
                     content: content.trim(),
                     post_id: post.id,
+                }, {
+                    onSuccess: () => {
+                        toast.success("Comment posted!");
+                        setContent("");
+                    },
+                    onError: (error: any) => {
+                        toast.error(error.message || "Failed to post comment");
+                    }
                 });
-                toast.success("Comment posted!");
             }
             setContent("");
         }

@@ -10,6 +10,7 @@ import { DeleteConfirmationModal } from "@/components/modals/DeleteConfirmationM
 import { HashtagText } from "@/components/hashtag/HashtagText";
 import { useToggleLike } from "@/hooks/post/useToggleLike";
 import { useDeletePost } from "@/hooks/post/useCreatePost";
+import { useCreateReply } from "@/hooks/comment/useCreateReply";
 import { toast } from "sonner";
 import useUserStore from "@/src/stores/userStore";
 import { formatDistanceToNow } from "date-fns";
@@ -28,6 +29,11 @@ export function CommentItem({ comment, screen, root_post, is_reply = false }: Co
     const { user } = useUserStore();
     const { mutate: toggleLike, isPending: isLiking } = useToggleLike();
     const { mutate: deletePost, isPending: isDeleting } = useDeletePost({ screen });
+    const { mutate: createReply, isPending: isCreatingReply } = useCreateReply({
+        screen,
+        root_post_id: root_post.id,
+        onSuccess: () => setShowReplyComposer(false)
+    });
 
     // Check if current user owns this comment
     const is_owner = user && comment.user.id === user.id;
@@ -189,8 +195,14 @@ export function CommentItem({ comment, screen, root_post, is_reply = false }: Co
                                 }}
                                 post={comment} // Reply to this comment
                                 screen={screen}
+                                root_post_id={root_post.id} // Pass the root post ID for cache invalidation
                                 placeholder={`Reply to ${comment.user.first_name || comment.user.username}...`}
-                                onSubmit={() => setShowReplyComposer(false)}
+                                onSubmit={(content) => {
+                                    createReply({
+                                        content,
+                                        parent_comment_id: comment.id
+                                    });
+                                }}
                             />
                         </div>
                     )}
