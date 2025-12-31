@@ -28,6 +28,7 @@ interface PostCardProps {
 export function PostCard({ screen, post }: PostCardProps) {
   const { user } = useUserStore();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showComments, setShowComments] = useState(false);
   const { mutate: deletePost, isPending: isDeleting } = useDeletePost({ screen });
 
   // Safety checks
@@ -65,6 +66,10 @@ export function PostCard({ screen, post }: PostCardProps) {
         },
       }
     );
+  };
+
+  const handleCommentClick = () => {
+    setShowComments(!showComments);
   };
 
   try {
@@ -142,10 +147,12 @@ export function PostCard({ screen, post }: PostCardProps) {
           </div>
         </CardContent>
 
-        <PostActions screen={screen} post={post} onCommentClick={() => { }} />
+        <PostActions screen={screen} post={post} onCommentClick={handleCommentClick} />
 
-        {/* Comment Thread - replaces old comment composer */}
-        <CommentThread post={post} screen={screen} />
+        {/* Comment Thread - only show when comments are toggled */}
+        {showComments && (
+          <CommentThread post={post} screen={screen} />
+        )}
 
         {/* Delete Confirmation Modal */}
         <DeleteConfirmationModal
