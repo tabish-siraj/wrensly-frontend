@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { toast } from "sonner";
-import useUserStore from "@/src/stores/userStore";
 
 export function useCreateReply({
     screen,
@@ -13,7 +12,6 @@ export function useCreateReply({
     onSuccess?: () => void;
 }) {
     const queryClient = useQueryClient();
-    const { user } = useUserStore();
 
     return useMutation({
         mutationFn: async ({ content, parent_comment_id }: { content: string; parent_comment_id: string }) => {
@@ -25,17 +23,12 @@ export function useCreateReply({
 
             return response.data;
         },
-        onSuccess: (data) => {
+        onSuccess: () => {
             // Invalidate and refetch comments immediately
             queryClient.invalidateQueries({ queryKey: ["comments", root_post_id] });
 
             // Invalidate post queries to update comment counts
-            queryClient.invalidateQueries({ queryKey: [screen] });
-            queryClient.invalidateQueries({ queryKey: ["infinite-feed"] });
             queryClient.invalidateQueries({ queryKey: ["post", root_post_id] });
-
-            // Force refetch to ensure immediate update
-            queryClient.refetchQueries({ queryKey: ["comments", root_post_id] });
 
             toast.success("Reply posted!");
 
