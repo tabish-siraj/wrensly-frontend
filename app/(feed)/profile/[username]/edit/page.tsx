@@ -5,6 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EditProfileSchema, EditProfile } from "@/src/schema";
 import FormInput from "@/components/form-input/FormInput";
 import { MediaUpload } from "@/components/media/MediaUpload";
+import { SelectField } from "@/components/ui/select-field";
+import { PhoneInput } from "@/components/ui/phone-input";
 import useUserStore from "@/src/stores/userStore";
 import { useUpdateProfile } from "@/hooks/user/useUpdateProfile";
 import { removeEmptyFields } from "@/lib/utils";
@@ -12,11 +14,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
-import { ArrowLeft, Save, User, MapPin, Globe, Phone, Calendar, Camera } from "lucide-react";
+import { ArrowLeft, Save, User, MapPin, Globe, Phone, Calendar, Camera, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { validateProfile } from "@/lib/profileValidation";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import {
+    GENDER_OPTIONS,
+    COUNTRIES,
+    getStatesForCountry,
+    getCitiesForState
+} from "@/lib/locationData";
 
 export default function EditProfilePage() {
     const { user } = useUserStore();
@@ -24,15 +31,17 @@ export default function EditProfilePage() {
     const router = useRouter();
     const [isMediaUploadDisabled] = useState(true); // Will be enabled when bucket is configured
 
-    // Debug logging
-    console.log("EditProfilePage - Current user:", user);
+    // Location state management
+    const [selectedCountry, setSelectedCountry] = useState("");
+    const [selectedState, setSelectedState] = useState("");
+    const [availableStates, setAvailableStates] = useState<string[]>([]);
+    const [availableCities, setAvailableCities] = useState<string[]>([]);
 
     const date_of_birth = user?.date_of_birth ? new Date(user.date_of_birth).toISOString().split("T")[0] : "";
 
     const form = useForm<EditProfile>({
         resolver: zodResolver(EditProfileSchema),
         defaultValues: {
-            username: user?.username || "",
             first_name: user?.first_name || "",
             last_name: user?.last_name || "",
             date_of_birth: date_of_birth || "",
@@ -48,45 +57,53 @@ export default function EditProfilePage() {
         }
     });
 
-    // Form field configurations
-    const personalFields = [
-        { name: "first_name", label: "First Name", placeholder: "Enter your first name", required: true, type: "text", icon: User },
-        { name: "last_name", label: "Last Name", placeholder: "Enter your last name", required: true, type: "text", icon: User },
-        { name: "username", label: "Username", placeholder: "Enter your username", required: true, type: "text", icon: User },
-        { name: "bio", label: "Bio", placeholder: "Tell us about yourself (max 160 characters)", required: false, type: "textarea", maxLength: 160 },
-        { name: "date_of_birth", label: "Date of Birth", placeholder: "Select your date of birth", required: false, type: "date", icon: Calendar },
-        { name: "gender", label: "Gender", placeholder: "Enter your gender", required: false, type: "text" },
-    ];
+    // Initialize location dropdowns based on user's current data
+    useEffect(() => {
+        if (user?.country) {
+            setSelectedCountry(user.country);
+            const states = getStatesForCountry(user.country);
+            setAvailableStates(states);
 
-    const contactFields = [
-        { name: "phone", label: "Phone Number", placeholder: "Enter your phone number", required: false, type: "tel", icon: Phone },
-        { name: "website", label: "Website", placeholder: "https://yourwebsite.com", required: false, type: "url", icon: Globe },
-    ];
+            if (user?.state) {
+                setSelectedState(user.state);
+                const cities = getCitiesForState(user.country, user.state);
+                setAvailableCities(cities);
+            }
+        }
+    }, [user]);
 
-    const locationFields = [
-        { name: "city", label: "City", placeholder: "Enter your city", required: false, type: "text", icon: MapPin },
-        { name: "state", label: "State/Province", placeholder: "Enter your state or province", required: false, type: "text", icon: MapPin },
-        { name: "country", label: "Country", placeholder: "Enter your country", required: false, type: "text", icon: MapPin },
-    ];
+    // Handle country change
+    const handleCountryChange = (country: string) => {
+        setSelectedCountry(country);
+        setSelectedState("");
+        form.setValue("country", country);
+        form.setValue("state", "");
+        form.setValue("city", "");
+
+        const states = getStatesForCountry(country);
+        setAvailableStates(states);
+        setAvailableCities([]);
+    };
+
+    // Handle state change
+    const handleStateChange = (state: string) => {
+        setSelectedState(state);
+        form.setValue("state", state);
+        form.setValue("city", "");
+
+        const cities = getCitiesForState(selectedCountry, state);
+        setAvailableCities(cities);
+    };
+
+    // Handle city change
+    const handleCityChange = (city: string) => {
+        form.setValue("city", city);
+    };
 
     const onSubmit = (data: EditProfile) => {
-        console.log("Form submission data:", data);
-
         try {
-            // Client-side validation
-            const validation = validateProfile(data);
-            if (!validation.isValid) {
-                // Show validation errors
-                Object.entries(validation.fieldErrors).forEach(([field, errors]) => {
-                    errors.forEach(error => {
-                        toast.error(`${field}: ${error}`);
-                    });
-                });
-                return;
-            }
-
+            // Remove empty fields and prepare payload
             const parsedPayload = removeEmptyFields(data);
-            console.log("Parsed payload:", parsedPayload);
 
             if (!user?.id) {
                 toast.error("User not found. Please log in again.");
@@ -97,21 +114,12 @@ export default function EditProfilePage() {
                 { id: user.id, payload: parsedPayload },
                 {
                     onSuccess: (response) => {
-                        console.log("Profile update success:", response);
                         toast.success("Profile updated successfully!");
                         router.push(`/profile/${user.username}`);
                     },
                     onError: (error: any) => {
                         console.error("Profile update error:", error);
-
-                        // Handle specific error types
-                        if (error.message?.includes('username')) {
-                            toast.error("Username is already taken. Please choose a different one.");
-                        } else if (error.message?.includes('validation')) {
-                            toast.error("Please check your input and try again.");
-                        } else {
-                            toast.error("Failed to update profile. Please try again.");
-                        }
+                        toast.error("Failed to update profile. Please try again.");
                     }
                 }
             );
@@ -134,6 +142,21 @@ export default function EditProfilePage() {
             </div>
         );
     }
+
+    const countryOptions = COUNTRIES.map(country => ({
+        value: country,
+        label: country
+    }));
+
+    const stateOptions = availableStates.map(state => ({
+        value: state,
+        label: state
+    }));
+
+    const cityOptions = availableCities.map(city => ({
+        value: city,
+        label: city
+    }));
 
     return (
         <div className="max-w-4xl mx-auto p-6 space-y-6">
@@ -241,18 +264,65 @@ export default function EditProfilePage() {
                         </CardHeader>
                         <CardContent>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {personalFields.map((field) => (
-                                    <div key={field.name} className={field.name === 'bio' ? 'md:col-span-2' : ''}>
-                                        <FormInput
-                                            name={field.name}
-                                            label={field.label}
-                                            placeholder={field.placeholder}
-                                            required={field.required}
-                                            type={field.type}
-                                            maxLength={field.maxLength}
-                                        />
+                                {/* Username - Read Only */}
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Username
+                                        <Lock className="w-4 h-4 inline ml-1 text-gray-400" />
+                                    </label>
+                                    <div className="px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-500 flex items-center gap-2">
+                                        <span>@{user.username}</span>
+                                        <span className="text-xs text-gray-400">(Cannot be changed)</span>
                                     </div>
-                                ))}
+                                </div>
+
+                                {/* First Name */}
+                                <FormInput
+                                    name="first_name"
+                                    label="First Name"
+                                    placeholder="Enter your first name"
+                                    type="text"
+                                />
+
+                                {/* Last Name */}
+                                <FormInput
+                                    name="last_name"
+                                    label="Last Name"
+                                    placeholder="Enter your last name"
+                                    type="text"
+                                />
+
+                                {/* Date of Birth */}
+                                <FormInput
+                                    name="date_of_birth"
+                                    label="Date of Birth"
+                                    placeholder="Select your date of birth"
+                                    type="date"
+                                />
+
+                                {/* Gender */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Gender
+                                    </label>
+                                    <SelectField
+                                        options={GENDER_OPTIONS}
+                                        value={form.watch("gender") || ""}
+                                        onChange={(value) => form.setValue("gender", value)}
+                                        placeholder="Select your gender"
+                                    />
+                                </div>
+
+                                {/* Bio */}
+                                <div className="md:col-span-2">
+                                    <FormInput
+                                        name="bio"
+                                        label="Bio"
+                                        placeholder="Tell us about yourself (max 160 characters)"
+                                        type="textarea"
+                                        maxLength={160}
+                                    />
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
@@ -267,16 +337,27 @@ export default function EditProfilePage() {
                         </CardHeader>
                         <CardContent>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {contactFields.map((field) => (
-                                    <FormInput
-                                        key={field.name}
-                                        name={field.name}
-                                        label={field.label}
-                                        placeholder={field.placeholder}
-                                        required={field.required}
-                                        type={field.type}
+                                {/* Phone Number with Country Code */}
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Phone Number
+                                    </label>
+                                    <PhoneInput
+                                        value={form.watch("phone") || ""}
+                                        onChange={(value) => form.setValue("phone", value)}
+                                        placeholder="Enter your phone number"
                                     />
-                                ))}
+                                </div>
+
+                                {/* Website */}
+                                <div className="md:col-span-2">
+                                    <FormInput
+                                        name="website"
+                                        label="Website"
+                                        placeholder="https://yourwebsite.com"
+                                        type="url"
+                                    />
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
@@ -291,16 +372,46 @@ export default function EditProfilePage() {
                         </CardHeader>
                         <CardContent>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                {locationFields.map((field) => (
-                                    <FormInput
-                                        key={field.name}
-                                        name={field.name}
-                                        label={field.label}
-                                        placeholder={field.placeholder}
-                                        required={field.required}
-                                        type={field.type}
+                                {/* Country */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Country
+                                    </label>
+                                    <SelectField
+                                        options={countryOptions}
+                                        value={selectedCountry}
+                                        onChange={handleCountryChange}
+                                        placeholder="Select your country"
                                     />
-                                ))}
+                                </div>
+
+                                {/* State/Province */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        State/Province
+                                    </label>
+                                    <SelectField
+                                        options={stateOptions}
+                                        value={selectedState}
+                                        onChange={handleStateChange}
+                                        placeholder="Select your state"
+                                        disabled={!selectedCountry || availableStates.length === 0}
+                                    />
+                                </div>
+
+                                {/* City */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        City
+                                    </label>
+                                    <SelectField
+                                        options={cityOptions}
+                                        value={form.watch("city") || ""}
+                                        onChange={handleCityChange}
+                                        placeholder="Select your city"
+                                        disabled={!selectedState || availableCities.length === 0}
+                                    />
+                                </div>
                             </div>
                         </CardContent>
                     </Card>

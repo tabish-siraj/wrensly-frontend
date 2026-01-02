@@ -30,7 +30,6 @@ export function CommentThread({ post, screen }: Comment_Thread_Props) {
                         screen={screen}
                         root_post_id={post.id}
                         placeholder={`Reply to ${post.user.first_name || post.user.username}...`}
-                        onSubmit={() => { }}
                     />
                 </div>
             )}

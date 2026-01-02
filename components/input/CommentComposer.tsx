@@ -37,8 +37,11 @@ export function CommentComposer({
     const handleSubmit = () => {
         if (content.trim() !== "") {
             if (onSubmit) {
+                // Custom submit handler (for replies)
                 onSubmit(content.trim());
+                setContent("");
             } else {
+                // Default submit handler (for regular comments)
                 postMutation.mutate({
                     content: content.trim(),
                     post_id: post.id,
@@ -52,7 +55,6 @@ export function CommentComposer({
                     }
                 });
             }
-            setContent("");
         }
     };
 

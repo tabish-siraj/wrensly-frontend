@@ -26,9 +26,9 @@ export const UserSchema = z.object({
 });
 
 export const EditProfileSchema = z.object({
-    username: z.string().min(1).optional(),
-    first_name: z.string().min(1).max(50).nullable().optional(),
-    last_name: z.string().min(1).max(50).nullable().optional(),
+    // Username is not editable - removed from schema
+    first_name: z.string().max(50).nullable().optional(),
+    last_name: z.string().max(50).nullable().optional(),
     date_of_birth: z.string().nullable().optional(),
     gender: z.string().nullable().optional(),
     bio: z.string().max(160).nullable().optional(), // Twitter-like bio limit
@@ -38,7 +38,7 @@ export const EditProfileSchema = z.object({
     state: z.string().nullable().optional(),
     country: z.string().nullable().optional(),
     phone: z.string().nullable().optional(),
-    website: z.string().url().nullable().optional(),
+    website: z.string().url().nullable().optional().or(z.literal("")), // Allow empty string
 });
 
 export const PostStatsSchema = z.object({
