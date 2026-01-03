@@ -18,7 +18,7 @@ function Layout({ children }: { children: React.ReactNode }) {
     const isNotificationsPage = pathname === "/notifications";
     const isSearchPage = pathname.startsWith("/search");
 
-    // Pages that should have full width
+    // Pages that should have full width content but still show sidebar
     const isFullWidthPage = isExplorePage || isNotificationsPage || isSearchPage;
 
     return (
@@ -32,7 +32,7 @@ function Layout({ children }: { children: React.ReactNode }) {
             <main className="min-h-screen bg-gray-50/30">
                 <div className="container mx-auto px-2 sm:px-4 md:px-6 lg:px-8 xl:px-12 py-6">
                     <div className="flex gap-6 lg:gap-8">
-                        {/* Left Sidebar */}
+                        {/* Left Sidebar - Always visible on desktop */}
                         <aside className="hidden lg:block lg:w-64 xl:w-72 sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto">
                             <Sidebar />
                         </aside>
@@ -42,7 +42,7 @@ function Layout({ children }: { children: React.ReactNode }) {
                             className={`
                                 flex-1 min-w-0 transition-all duration-200
                                 ${isFullWidthPage
-                                    ? "max-w-none"
+                                    ? "max-w-4xl" // Full width pages get more space but not unlimited
                                     : isProfilePage
                                         ? "max-w-4xl"
                                         : "max-w-2xl"
@@ -50,7 +50,7 @@ function Layout({ children }: { children: React.ReactNode }) {
                                 ${!isFullWidthPage ? "mx-auto" : ""}
                             `}
                         >
-                            <div className="bg-white rounded-lg shadow-sm border border-gray-200 min-h-[600px]">
+                            <div className="bg-white rounded-lg shadow-sm border border-gray-200 min-h-[600px] overflow-hidden">
                                 {children}
                             </div>
                         </section>
@@ -61,7 +61,7 @@ function Layout({ children }: { children: React.ReactNode }) {
                                 <div className="space-y-4">
                                     <TrendingHashtags className="bg-white rounded-lg shadow-sm border border-gray-200" />
 
-                                    {/* Additional widgets can go here */}
+                                    {/* Additional widgets */}
                                     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                                         <h3 className="font-semibold text-gray-900 mb-3">Quick Actions</h3>
                                         <div className="space-y-2 text-sm">

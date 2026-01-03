@@ -41,17 +41,8 @@ const Sidebar = () => {
 
   return (
     <aside className="w-full max-w-[280px] h-full flex flex-col">
-      {/* Logo */}
-      <div className="px-4 py-2 mb-4">
-        <Link href="/" className="inline-block hover:opacity-80 transition-opacity">
-          <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">W</span>
-          </div>
-        </Link>
-      </div>
-
       {/* Navigation */}
-      <nav className="flex-1 px-2" role="navigation" aria-label="Main navigation">
+      <nav className="flex-1 px-2 pt-4" role="navigation" aria-label="Main navigation">
         <div className="space-y-1">
           {navItems.map((item) => {
             const isActive = pathname === item.href ||

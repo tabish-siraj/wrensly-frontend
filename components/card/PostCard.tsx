@@ -7,6 +7,13 @@ import { POST_TYPE } from '@/src/constants';
 
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
 
 import { PostHeader } from "./PostHeader";
 import { ParentPostCard } from "./ParentPostCard";
@@ -19,7 +26,7 @@ import useUserStore from "@/src/stores/userStore";
 import { useCreateComment } from "@/hooks/comment/useCreateComment";
 import { useDeletePost } from "@/hooks/post/useCreatePost";
 import { toast } from "sonner";
-import { RepeatIcon, Trash2, MoreHorizontal } from "lucide-react";
+import { RepeatIcon, Trash2, MoreHorizontal, Flag, Copy, Share, Bookmark } from "lucide-react";
 
 interface PostCardProps {
   post: Post;
@@ -52,6 +59,42 @@ export function PostCard({ screen, post }: PostCardProps) {
 
   const handleDeleteClick = () => {
     setShowDeleteModal(true);
+  };
+
+  const handleReportClick = () => {
+    toast.info("Report functionality coming soon");
+    // TODO: Implement report functionality
+  };
+
+  const handleCopyLinkClick = () => {
+    const postUrl = `${window.location.origin}/post/${post.id}`;
+    navigator.clipboard.writeText(postUrl).then(() => {
+      toast.success("Link copied to clipboard");
+    }).catch(() => {
+      toast.error("Failed to copy link");
+    });
+  };
+
+  const handleShareClick = () => {
+    const postUrl = `${window.location.origin}/post/${post.id}`;
+    if (navigator.share) {
+      navigator.share({
+        title: `Post by @${post.user.username}`,
+        text: post.content,
+        url: postUrl,
+      }).catch(() => {
+        // Fallback to copy link if share fails
+        handleCopyLinkClick();
+      });
+    } else {
+      // Fallback for browsers that don't support Web Share API
+      handleCopyLinkClick();
+    }
+  };
+
+  const handleBookmarkClick = () => {
+    toast.info("Bookmark functionality coming soon");
+    // TODO: Implement bookmark functionality
   };
 
   const handleDeleteConfirm = () => {
@@ -101,17 +144,62 @@ export function PostCard({ screen, post }: PostCardProps) {
         <CardHeader>
           <div className="flex items-center justify-between">
             <PostHeader user={post.user} />
-            {isOwner && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleDeleteClick}
-                className="text-gray-400 hover:text-red-500 h-8 w-8 p-0"
-                title="Delete post"
-              >
-                <Trash2 className="w-4 h-4" />
-              </Button>
-            )}
+
+            {/* Three-dot menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-400 hover:text-gray-600 h-8 w-8 p-0 rounded-full"
+                  title="More options"
+                >
+                  <MoreHorizontal className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent align="end" className="w-48">
+                {/* Copy Link - Available to everyone */}
+                <DropdownMenuItem onClick={handleCopyLinkClick} className="cursor-pointer">
+                  <Copy className="w-4 h-4 mr-2" />
+                  Copy link
+                </DropdownMenuItem>
+
+                {/* Share - Available to everyone */}
+                <DropdownMenuItem onClick={handleShareClick} className="cursor-pointer">
+                  <Share className="w-4 h-4 mr-2" />
+                  Share post
+                </DropdownMenuItem>
+
+                {/* Bookmark - Available to everyone */}
+                <DropdownMenuItem onClick={handleBookmarkClick} className="cursor-pointer">
+                  <Bookmark className="w-4 h-4 mr-2" />
+                  Bookmark
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+
+                {/* Owner-only actions */}
+                {isOwner ? (
+                  <DropdownMenuItem
+                    onClick={handleDeleteClick}
+                    className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Delete post
+                  </DropdownMenuItem>
+                ) : (
+                  /* Report - Available to non-owners */
+                  <DropdownMenuItem
+                    onClick={handleReportClick}
+                    className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
+                  >
+                    <Flag className="w-4 h-4 mr-2" />
+                    Report post
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </CardHeader>
 
