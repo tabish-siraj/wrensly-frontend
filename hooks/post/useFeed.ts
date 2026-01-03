@@ -1,10 +1,23 @@
 "use client";
 
 import api from "@/lib/api";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
-export function useFeed() {
-    const { data: feedResponse, isLoading: loading, error } = useQuery({
+interface FeedData {
+    posts: any[];
+    meta: any;
+}
+
+interface UseFeedReturn {
+    posts: any[];
+    loading: boolean;
+    error: { message: string; } | null;
+    meta: any;
+    refetch: () => void;
+}
+
+export function useFeed(): UseFeedReturn {
+    const { data: feedResponse, isLoading: loading, error, refetch } = useQuery<FeedData>({
         queryKey: ["feed"],
         queryFn: async () => {
             const resp = await api.get("/feed");
@@ -32,6 +45,7 @@ export function useFeed() {
         posts: feedResponse?.posts || [],
         loading,
         error: error ? { message: error.message || 'Failed to load feed' } : null,
-        meta: feedResponse?.meta
+        meta: feedResponse?.meta,
+        refetch: () => refetch()
     };
 }

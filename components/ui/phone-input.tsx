@@ -41,8 +41,11 @@ export function PhoneInput({
     const [number, setNumber] = useState(initialNumber);
 
     const handleCountryCodeChange = (newCountryCode: string) => {
-        setCountryCode(newCountryCode);
-        onChange(`${newCountryCode} ${number}`.trim());
+        const actualCode = newCountryCode.split('-')[0]; // Extract "+1" from "+1-US"
+        if (actualCode) {
+            setCountryCode(actualCode);
+            onChange(`${actualCode} ${number}`.trim());
+        }
     };
 
     const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,11 +54,19 @@ export function PhoneInput({
         onChange(`${countryCode} ${newNumber}`.trim());
     };
 
+    const getCurrentValue = () => {
+        // Find the matching option based on current country code
+        const matchingOption = countryCodeOptions.find(option =>
+            option.value.startsWith(countryCode)
+        );
+        return matchingOption?.value || `${countryCode}-US`; // Default to US if not found
+    };
+
     const countryCodeOptions = COUNTRY_CODES.map(cc => ({
-        value: cc.code,
-        label: `${cc.country} ${cc.code}`,
-        flag: cc.flag,
-        code: cc.code,
+        value: `${cc.code}-${cc.country}`, // Unique value: "+1-US", "+1-CA"
+        label: `${cc.country} ${cc.code}`,  // Clean display: "US +1", "CA +1"
+        // flag: cc.flag,
+        // code: cc.code,
     }));
 
     return (
@@ -63,11 +74,13 @@ export function PhoneInput({
             <div className="w-32">
                 <SelectField
                     options={countryCodeOptions}
-                    value={countryCode}
+                    value={getCurrentValue()}
                     onChange={handleCountryCodeChange}
                     placeholder="Code"
                     disabled={disabled}
                     showFlag={true}
+                    searchable={true}
+                    searchPlaceholder="Search countries..."
                 />
             </div>
             <div className="flex-1">

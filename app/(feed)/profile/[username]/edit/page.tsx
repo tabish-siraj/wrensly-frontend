@@ -382,6 +382,8 @@ export default function EditProfilePage() {
                                         value={selectedCountry}
                                         onChange={handleCountryChange}
                                         placeholder="Select your country"
+                                        searchable={true}
+                                        searchPlaceholder="Search countries..."
                                     />
                                 </div>
 
@@ -396,6 +398,8 @@ export default function EditProfilePage() {
                                         onChange={handleStateChange}
                                         placeholder="Select your state"
                                         disabled={!selectedCountry || availableStates.length === 0}
+                                        searchable={true}
+                                        searchPlaceholder="Search states..."
                                     />
                                 </div>
 
@@ -410,6 +414,8 @@ export default function EditProfilePage() {
                                         onChange={handleCityChange}
                                         placeholder="Select your city"
                                         disabled={!selectedState || availableCities.length === 0}
+                                        searchable={true}
+                                        searchPlaceholder="Search cities..."
                                     />
                                 </div>
                             </div>
