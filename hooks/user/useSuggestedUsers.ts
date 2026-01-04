@@ -10,10 +10,8 @@ interface SuggestedUser {
     last_name?: string;
     avatar?: string | null;
     bio?: string | null;
-    _count: {
-        followers: number;
-        posts: number;
-    };
+    followers_count: number;
+    following_count: number;
     isFollowing: boolean;
     followsYou: boolean;
 }

@@ -25,7 +25,7 @@ const Sidebar = () => {
   const pathname = usePathname();
 
   const navItems = [
-    { name: "Home", icon: Home, href: "/" },
+    { name: "Home", icon: Home, href: "/feed" },
     { name: "Explore", icon: Search, href: "/explore" },
     { name: "Notifications", icon: Bell, href: "/notifications" },
     { name: "Messages", icon: Mail, href: "/messages" },

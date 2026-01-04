@@ -27,7 +27,6 @@ export const SuggestedUsers = ({
     const [followingStates, setFollowingStates] = useState<Record<string, boolean>>({});
 
     const suggestedUsers = response?.data || [];
-    const pagination = response?.meta?.pagination;
 
     const handleUserClick = (username: string) => {
         router.push(`/profile/${username}`);
@@ -154,7 +153,7 @@ export const SuggestedUsers = ({
                                 </div>
                                 <p className="text-xs text-gray-500 truncate">@{user.username}</p>
                                 <p className="text-xs text-gray-400">
-                                    {user._count.followers.toLocaleString()} followers
+                                    {user.followers_count?.toLocaleString() || 0} followers
                                 </p>
                             </div>
 
