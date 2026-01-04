@@ -47,7 +47,7 @@ export const useSuggestedUsers = (options: UseSuggestedUsersOptions = {}) => {
                 params.append('cursor', cursor);
             }
 
-            const response = await api.get(`/users/suggested?${params.toString()}`);
+            const response = await api.get(`/user/suggested?${params.toString()}`);
             return response.data;
         },
         enabled,
