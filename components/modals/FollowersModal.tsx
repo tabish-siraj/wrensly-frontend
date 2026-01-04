@@ -8,6 +8,7 @@ import { CheckCircle2 } from "lucide-react";
 import { useFollowUnfollow } from "@/hooks/follow/useFollow";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface User {
   id: string;
@@ -38,11 +39,18 @@ const FollowListModal = ({
 }: FollowListModalProps) => {
   const { mutate: followUnfollow, isPending: isFollowPending } = useFollowUnfollow();
   const [followingStates, setFollowingStates] = useState<Record<string, boolean>>({});
+  const router = useRouter();
 
   // Ensure users is always an array and handle undefined/null cases
   const safeUsers = Array.isArray(users)
     ? users.filter((user): user is User => Boolean(user && user.id && user.username))
     : [];
+
+  // Handle user profile navigation
+  const handleUserClick = (username: string) => {
+    onClose(); // Close modal first
+    router.push(`/profile/${username}`);
+  };
 
   // Initialize following states from user data
   const initializeFollowingStates = () => {
@@ -120,7 +128,10 @@ const FollowListModal = ({
           ) : (
             safeUsers.map((user) => (
               <div key={user.id} className="flex items-center justify-between gap-3 mb-4">
-                <div className="flex items-center gap-3">
+                <div
+                  className="flex items-center gap-3 flex-1 cursor-pointer hover:bg-gray-50 rounded-lg p-2 -m-2 transition-colors"
+                  onClick={() => handleUserClick(user.username)}
+                >
                   <Avatar className="w-12 h-12">
                     <AvatarImage
                       src={
@@ -133,23 +144,26 @@ const FollowListModal = ({
                       {user.username?.[0]?.toUpperCase() || 'U'}
                     </AvatarFallback>
                   </Avatar>
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1">
-                      <p className="text-sm font-semibold">
+                      <p className="text-sm font-semibold truncate">
                         {user.first_name || ''} {user.last_name || ''}
                       </p>
                       {/* {user.verified && ( */}
-                      <CheckCircle2 className="w-4 h-4 text-blue-500" />
+                      <CheckCircle2 className="w-4 h-4 text-blue-500 flex-shrink-0" />
                       {/* )} */}
                     </div>
-                    <p className="text-sm text-gray-500">@{user.username}</p>
+                    <p className="text-sm text-gray-500 truncate">@{user.username}</p>
                   </div>
                 </div>
                 <Button
                   size="sm"
-                  className="rounded-full px-4 text-xs"
+                  className="rounded-full px-4 text-xs flex-shrink-0"
                   variant={getButtonVariant(user)}
-                  onClick={() => handleFollowUnfollow(user)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent triggering the user click
+                    handleFollowUnfollow(user);
+                  }}
                   disabled={isFollowPending || user.is_current_user}
                 >
                   {isFollowPending ? "..." : getButtonText(user)}

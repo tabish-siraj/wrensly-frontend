@@ -2,8 +2,9 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { TrendingUp, Search, Hash, Users, Sparkles, ArrowLeft } from "lucide-react";
+import { TrendingUp, Search, Hash, Sparkles, ArrowLeft } from "lucide-react";
 import { SearchInput } from "@/components/search/SearchInput";
+import { SuggestedUsers } from "@/components/user/SuggestedUsers";
 import { useRouter } from "next/navigation";
 
 const mockTrends = [
@@ -13,12 +14,6 @@ const mockTrends = [
   { title: "WrenslyLaunch", posts: "5.4K", category: "Platform" },
   { title: "CodeLife", posts: "4.2K", category: "Programming" },
   { title: "DesignTrends", posts: "3.8K", category: "Design" },
-];
-
-const suggestedUsers = [
-  { username: "techguru", name: "Tech Guru", followers: "15.2K", verified: true },
-  { username: "designpro", name: "Design Pro", followers: "8.7K", verified: false },
-  { username: "codewiz", name: "Code Wizard", followers: "12.1K", verified: true },
 ];
 
 export default function ExplorePage() {
@@ -127,39 +122,7 @@ export default function ExplorePage() {
 
           {/* Suggested Users */}
           <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="w-5 h-5 text-green-500" />
-                  Who to Follow
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {suggestedUsers.map((user, index) => (
-                  <div key={index} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-semibold text-sm">
-                        {user.name[0]}
-                      </span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1">
-                        <p className="font-medium text-sm text-gray-900 truncate">
-                          {user.name}
-                        </p>
-                        {user.verified && (
-                          <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
-                            <span className="text-white text-xs">✓</span>
-                          </div>
-                        )}
-                      </div>
-                      <p className="text-xs text-gray-500">@{user.username}</p>
-                      <p className="text-xs text-gray-400">{user.followers} followers</p>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+            <SuggestedUsers limit={6} />
           </div>
         </div>
       </div>

@@ -7,6 +7,7 @@ import useUserStore from "@/src/stores/userStore";
 import { usePathname } from "next/navigation";
 import { TopBar } from '@/components/navigation/TopBar';
 import { TrendingHashtags } from "@/components/hashtag/TrendingHashtags";
+import { SuggestedUsers } from "@/components/user/SuggestedUsers";
 
 function Layout({ children }: { children: React.ReactNode }) {
     const { user } = useUserStore();
@@ -60,6 +61,11 @@ function Layout({ children }: { children: React.ReactNode }) {
                             <aside className="hidden xl:block xl:w-80 sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto">
                                 <div className="space-y-4">
                                     <TrendingHashtags className="bg-white rounded-lg shadow-sm border border-gray-200" />
+
+                                    <SuggestedUsers
+                                        limit={5}
+                                        className="bg-white rounded-lg shadow-sm border border-gray-200"
+                                    />
 
                                     {/* Additional widgets */}
                                     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
