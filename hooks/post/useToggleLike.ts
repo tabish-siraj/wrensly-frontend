@@ -98,6 +98,7 @@ export function useToggleLike() {
             // Always refetch after error or success to ensure consistency
             queryClient.invalidateQueries({ queryKey: [variables.screen] });
             queryClient.invalidateQueries({ queryKey: ["infinite-feed"] });
+            queryClient.invalidateQueries({ queryKey: ["posts"] });
         },
     });
 }

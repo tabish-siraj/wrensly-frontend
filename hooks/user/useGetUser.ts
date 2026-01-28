@@ -49,7 +49,7 @@ export function useUserByEmail(email: string) {
     };
 }
 
-export function useUserByid(id: string) {
+export function useUserById(id: string) {
     const { data: userResponse, isLoading: loading, isError: error } = useQuery({
         queryKey: ["userById", id],
         queryFn: async () => {

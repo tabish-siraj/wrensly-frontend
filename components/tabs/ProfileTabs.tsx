@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react";
-import { usePostByUsername } from "@/hooks/post/usePost";
+import { usePostByUsername, useLikedPostsByUsername } from "@/hooks/post/usePost";
 import { PostCard } from "../card/PostCard";
 import { Post } from "@/src/types";
 import { Loader2 } from "lucide-react";
@@ -21,7 +21,9 @@ export default function ProfileTabs() {
 
     // Safely handle username parameter
     const username = Array.isArray(params.username) ? params.username[0] : params.username;
-    const { posts, loading, error } = usePostByUsername(username || "");
+
+    const userPostsQuery = usePostByUsername(username || "");
+    const likedPostsQuery = useLikedPostsByUsername(username || "");
 
     if (!username) {
         return (
@@ -30,6 +32,10 @@ export default function ProfileTabs() {
             </div>
         );
     }
+
+    // Determine which data to use based on active tab
+    const currentQuery = activeTab === 'likes' ? likedPostsQuery : userPostsQuery;
+    const { posts, loading, error } = currentQuery;
 
     // Filter posts based on active tab
     const getFilteredPosts = () => {
@@ -58,7 +64,8 @@ export default function ProfileTabs() {
                     return hasImageUrl;
                 });
             case "likes":
-                return posts.data.filter((post: Post) => post.is_liked);
+                // Backend returns specific liked posts, so direct return
+                return posts.data;
             default:
                 return posts.data;
         }

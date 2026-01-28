@@ -134,6 +134,38 @@ export function usePostByUsername(username: string) {
     };
 }
 
+export function useLikedPostsByUsername(username: string) {
+    // First get the user data to get the user ID
+    const { user: userData } = useUserByUsername(username);
+    const user_id = userData?.id;
+
+    const { data: postsResponse, isLoading: loading, isError: error } = useQuery({
+        queryKey: ["posts", "liked", user_id],
+        queryFn: async () => {
+            if (!user_id) {
+                throw new Error("User ID not available");
+            }
+
+            const response = await api.get(`/post/user/${user_id}/likes`);
+
+            if (!response.data.success) {
+                throw new Error(response.data.message || "Failed to fetch liked posts");
+            }
+
+            // Deduplicate not needed for likes list usually, but safe to keep if multiple pages (not implemented here yet)
+            return response.data;
+        },
+        enabled: !!user_id, // Only run when we have a user ID
+    });
+
+    return {
+        posts: postsResponse || { data: [] },
+        loading: loading || !user_id,
+        error,
+        meta: postsResponse?.meta
+    };
+}
+
 export function usePostMutation() {
     const queryClient = useQueryClient();
 

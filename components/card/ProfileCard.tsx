@@ -18,9 +18,6 @@ export default function ProfileCard() {
   const params = useParams();
   const router = useRouter();
 
-  console.log("ProfileCard render - Current user:", user);
-  console.log("ProfileCard render - Params username:", params.username);
-
   const { followersResponse, loading: followersLoading, error: followersError } = useGetFollowers(params.username as string)
   const { followingResponse, loading: followingLoading, error: followingError } = useGetFollowings(params.username as string)
 
@@ -28,13 +25,6 @@ export default function ProfileCard() {
   const { user: userData, loading: userLoading, error: userError } = useUserByUsername(params.username as string);
   const isCurrentUser = params.username === user?.username;
   const user_data = userData;
-
-  console.log("ProfileCard render - userData from hook:", userData);
-  console.log("ProfileCard render - userLoading:", userLoading);
-  console.log("ProfileCard render - userError:", userError);
-  console.log("ProfileCard render - params.username:", params.username);
-  console.log("ProfileCard render - user_data (final):", user_data);
-  console.log("ProfileCard render - isCurrentUser:", isCurrentUser);
 
   // Log followers/following errors but don't let them block functionality
   if (followersError) {
@@ -87,13 +77,11 @@ export default function ProfileCard() {
   };
 
   const handleFollowersClick = () => {
-    console.log("Opening followers modal, data:", followersResponse);
     setModalType("followers");
     setShowFollowersModal(true);
   };
 
   const handleFollowingClick = () => {
-    console.log("Opening following modal, data:", followingResponse);
     setModalType("following");
     setShowFollowersModal(true);
   };
